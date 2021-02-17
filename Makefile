@@ -291,7 +291,7 @@ backup-snapshot:
 	cargo run --release -p backup-cli --bin db-backup -- one-shot backup --backup-service-address http://167.172.248.37:6186 state-snapshot --state-version 41315058 local-fs --dir ~/.0L/db
 
 restore-snapshot:
-	cargo run --release -p backup-cli --bin db-restore -- --target-db-dir ~/.0L/db state-snapshot --transaction-manifest ~/epoch-archive/transaction_37538428-.215e/transaction.manifest local-fs --dir ~/.0L/db
+	cargo run --release -p backup-cli --bin db-restore -- --target-db-dir ~/.0L/db state-snapshot --transaction-manifest ~/epoch-archive/state_ver_41315058.6168/state.manifest local-fs --dir ~/.0L/db
 
 ##### SMOKE TEST #####
 smoke-reg:
