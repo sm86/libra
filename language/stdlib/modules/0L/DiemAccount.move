@@ -206,12 +206,12 @@ module DiemAccount {
 
     /// Initialize this module. This is only callable from genesis.
     public fun initialize(
-        dr_account: &signer,
+        lr_account: &signer,
         dummy_auth_key_prefix: vector<u8>,
     ) acquires AccountOperationsCapability {
         DiemTimestamp::assert_genesis();
         // Operational constraint, not a privilege constraint.
-        CoreAddresses::assert_diem_root(dr_account);
+        CoreAddresses::assert_diem_root(lr_account);
 
         create_diem_root_account(
             copy dummy_auth_key_prefix,
@@ -275,7 +275,7 @@ module DiemAccount {
         //Create Owner Account
         let (new_account_address, auth_key_prefix) = VDF::extract_address_from_challenge(challenge);
         let new_signer = create_signer(new_account_address);
-        // The dr_account account is verified to have the diem root role in `Roles::new_validator_role`
+        // The lr_account account is verified to have the diem root role in `Roles::new_validator_role`
         Roles::new_validator_role_with_proof(&new_signer);
         Event::publish_generator(&new_signer);
         ValidatorConfig::publish_with_proof(&new_signer, ow_human_name);
@@ -1154,21 +1154,21 @@ module DiemAccount {
         auth_key_prefix: vector<u8>,
     ) acquires AccountOperationsCapability {
         DiemTimestamp::assert_genesis();
-        let dr_account = create_signer(CoreAddresses::LIBRA_ROOT_ADDRESS());
-        CoreAddresses::assert_diem_root(&dr_account);
-        Roles::grant_diem_root_role(&dr_account);
-        SlidingNonce::publish_nonce_resource(&dr_account, &dr_account);
-        Event::publish_generator(&dr_account);
+        let lr_account = create_signer(CoreAddresses::LIBRA_ROOT_ADDRESS());
+        CoreAddresses::assert_diem_root(&lr_account);
+        Roles::grant_diem_root_role(&lr_account);
+        SlidingNonce::publish_nonce_resource(&lr_account, &lr_account);
+        Event::publish_generator(&lr_account);
 
         assert(
             !exists<AccountOperationsCapability>(CoreAddresses::LIBRA_ROOT_ADDRESS()),
             Errors::already_published(EACCOUNT_OPERATIONS_CAPABILITY)
         );
         move_to(
-            &dr_account,
+            &lr_account,
             AccountOperationsCapability {
-                limits_cap: AccountLimits::grant_mutation_capability(&dr_account),
-                creation_events: Event::new_event_handle<CreateAccountEvent>(&dr_account),
+                limits_cap: AccountLimits::grant_mutation_capability(&lr_account),
+                creation_events: Event::new_event_handle<CreateAccountEvent>(&lr_account),
             }
         );
         assert(
@@ -1176,12 +1176,12 @@ module DiemAccount {
             Errors::already_published(EWRITESET_MANAGER)
         );
         move_to(
-            &dr_account,
+            &lr_account,
             DiemWriteSetManager {
-                upgrade_events: Event::new_event_handle<Self::AdminTransactionEvent>(&dr_account),
+                upgrade_events: Event::new_event_handle<Self::AdminTransactionEvent>(&lr_account),
             }
         );
-        make_account(dr_account, auth_key_prefix)
+        make_account(lr_account, auth_key_prefix)
     }
 
     /// Create a treasury/compliance account at `new_account_address` with authentication key
@@ -1189,15 +1189,15 @@ module DiemAccount {
     /// Also, publishes the treasury compliance role, the SlidingNonce resource, and
     /// event handle generator, then makes the account.
     fun create_treasury_compliance_account(
-        dr_account: &signer,
+        lr_account: &signer,
         auth_key_prefix: vector<u8>,
     ) acquires AccountOperationsCapability {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         let new_account_address = CoreAddresses::TREASURY_COMPLIANCE_ADDRESS();
         let new_account = create_signer(new_account_address);
-        Roles::grant_treasury_compliance_role(&new_account, dr_account);
-        SlidingNonce::publish_nonce_resource(dr_account, &new_account);
+        Roles::grant_treasury_compliance_role(&new_account, lr_account);
+        SlidingNonce::publish_nonce_resource(lr_account, &new_account);
         Event::publish_generator(&new_account);
         make_account(new_account, auth_key_prefix)
     }
@@ -1823,7 +1823,7 @@ module DiemAccount {
 
     /// Epilogue for WriteSet trasnaction
     fun writeset_epilogue(
-        dr_account: &signer,
+        lr_account: &signer,
         txn_sequence_number: u64,
         should_trigger_reconfiguration: bool,
     ) acquires DiemWriteSetManager, DiemAccount, Balance {
@@ -1833,23 +1833,23 @@ module DiemAccount {
             AdminTransactionEvent { committed_timestamp_secs: DiemTimestamp::now_seconds() },
         );
         // Currency code don't matter here as it won't be charged anyway.
-        epilogue<Coin1>(dr_account, txn_sequence_number, 0, 0, 0);
-        if (should_trigger_reconfiguration) DiemConfig::reconfigure(dr_account)
+        epilogue<Coin1>(lr_account, txn_sequence_number, 0, 0, 0);
+        if (should_trigger_reconfiguration) DiemConfig::reconfigure(lr_account)
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Proof of concept code used for Validator and ValidatorOperator roles management
     ///////////////////////////////////////////////////////////////////////////
     public fun create_validator_account(
-        dr_account: &signer,
+        lr_account: &signer,
         new_account_address: address,
         auth_key_prefix: vector<u8>,
         human_name: vector<u8>,
     ) acquires AccountOperationsCapability {
         let new_account = create_signer(new_account_address);
-        Roles::new_validator_role(dr_account, &new_account);
+        Roles::new_validator_role(lr_account, &new_account);
         Event::publish_generator(&new_account);
-        ValidatorConfig::publish(&new_account, dr_account, human_name);
+        ValidatorConfig::publish(&new_account, lr_account, human_name);
         add_currencies_for_account<GAS>(&new_account, false);
         make_account(new_account, auth_key_prefix)
     }
@@ -1860,10 +1860,10 @@ module DiemAccount {
     }
 
     spec schema CreateValidatorAccountAbortsIf {
-        dr_account: signer;
+        lr_account: signer;
         new_account_address: address;
         // from `Roles::new_validator_role`
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         include MakeAccountAbortsIf{addr: new_account_address};
         // from `ValidatorConfig::publish`
         include DiemTimestamp::AbortsIfNotOperating;
@@ -1879,16 +1879,16 @@ module DiemAccount {
     }
 
     public fun create_validator_operator_account(
-        dr_account: &signer,
+        lr_account: &signer,
         new_account_address: address,
         auth_key_prefix: vector<u8>,
         human_name: vector<u8>,
     ) acquires AccountOperationsCapability {
         let new_account = create_signer(new_account_address);
-        // The dr_account is verified to have the diem root role in `Roles::new_validator_operator_role`
-        Roles::new_validator_operator_role(dr_account, &new_account);
+        // The lr_account is verified to have the diem root role in `Roles::new_validator_operator_role`
+        Roles::new_validator_operator_role(lr_account, &new_account);
         Event::publish_generator(&new_account);
-        ValidatorOperatorConfig::publish(&new_account, dr_account, human_name);
+        ValidatorOperatorConfig::publish(&new_account, lr_account, human_name);
         add_currencies_for_account<GAS>(&new_account, false);
         make_account(new_account, auth_key_prefix)
     }
@@ -1899,10 +1899,10 @@ module DiemAccount {
     }
 
     spec schema CreateValidatorOperatorAccountAbortsIf {
-        dr_account: signer;
+        lr_account: signer;
         new_account_address: address;
         // from `Roles::new_validator_operator_role`
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         include MakeAccountAbortsIf{addr: new_account_address};
         // from `ValidatorConfig::publish`
         include DiemTimestamp::AbortsIfNotOperating;

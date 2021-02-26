@@ -444,14 +444,14 @@ module DualAttestation {
     ///////////////////////////////////////////////////////////////////////////
 
     /// Travel rule limit set during genesis
-    public fun initialize(dr_account: &signer) {
+    public fun initialize(lr_account: &signer) {
         DiemTimestamp::assert_genesis();
-        CoreAddresses::assert_diem_root(dr_account); // operational constraint.
+        CoreAddresses::assert_diem_root(lr_account); // operational constraint.
         assert(!exists<Limit>(CoreAddresses::LIBRA_ROOT_ADDRESS()), Errors::already_published(ELIMIT));
         let initial_limit = (INITIAL_DUAL_ATTESTATION_LIMIT as u128) * (Diem::scaling_factor<GAS>() as u128);
         assert(initial_limit <= MAX_U64, Errors::limit_exceeded(ELIMIT));
         move_to(
-            dr_account,
+            lr_account,
             Limit {
                 micro_lbr_limit: (initial_limit as u64)
             }
@@ -459,7 +459,7 @@ module DualAttestation {
     }
     spec fun initialize {
         include DiemTimestamp::AbortsIfNotGenesis;
-        include CoreAddresses::AbortsIfNotDiemRoot{account: dr_account};
+        include CoreAddresses::AbortsIfNotDiemRoot{account: lr_account};
         aborts_if exists<Limit>(CoreAddresses::LIBRA_ROOT_ADDRESS()) with Errors::ALREADY_PUBLISHED;
         let initial_limit = INITIAL_DUAL_ATTESTATION_LIMIT * Diem::spec_scaling_factor<GAS>();
         aborts_if initial_limit > MAX_U64 with Errors::LIMIT_EXCEEDED;

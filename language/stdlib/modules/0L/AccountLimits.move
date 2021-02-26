@@ -61,14 +61,14 @@ module AccountLimits {
 
     /// Grant a capability to call this module. This does not necessarily
     /// need to be a unique capability.
-    public fun grant_mutation_capability(dr_account: &signer): AccountLimitMutationCapability {
+    public fun grant_mutation_capability(lr_account: &signer): AccountLimitMutationCapability {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         AccountLimitMutationCapability{}
     }
     spec fun grant_mutation_capability {
         include DiemTimestamp::AbortsIfNotGenesis;
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
     }
 
     /// Determines if depositing `amount` of `CoinType` coins into the
@@ -140,11 +140,11 @@ module AccountLimits {
     /// Root accounts for multi-account entities will hold this resource at
     /// their root/parent account.
     public fun publish_window<CoinType>(
-        dr_account: &signer,
+        lr_account: &signer,
         to_limit: &signer,
         limit_address: address,
     ) {
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         assert(exists<LimitsDefinition<CoinType>>(limit_address), Errors::not_published(ELIMITS_DEFINITION));
         Roles::assert_parent_vasp_or_child_vasp(to_limit);
         assert(
@@ -166,13 +166,13 @@ module AccountLimits {
         include PublishWindowAbortsIf<CoinType>;
     }
     spec schema PublishWindowAbortsIf<CoinType> {
-        dr_account: signer;
+        lr_account: signer;
         to_limit: signer;
         limit_address: address;
         /// Only ParentVASP and ChildVASP can have the account limits [[E1]][ROLE][[E2]][ROLE][[E3]][ROLE][[E4]][ROLE][[E5]][ROLE][[E6]][ROLE][[E7]][ROLE].
         include Roles::AbortsIfNotParentVaspOrChildVasp{account: to_limit};
 
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         aborts_if !exists<LimitsDefinition<CoinType>>(limit_address) with Errors::NOT_PUBLISHED;
         aborts_if exists<Window<CoinType>>(Signer::spec_address_of(to_limit)) with Errors::ALREADY_PUBLISHED;
     }

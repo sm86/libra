@@ -55,7 +55,7 @@ The type tag representing the <code><a href="Coin1.md#0x1_Coin1">Coin1</a></code
 Registers the <code><a href="Coin1.md#0x1_Coin1">Coin1</a></code> cointype. This can only be called from genesis.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="Coin1.md#0x1_Coin1_initialize">initialize</a>(dr_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="Coin1.md#0x1_Coin1_initialize">initialize</a>(lr_account: &signer)
 </code></pre>
 
 
@@ -65,19 +65,19 @@ Registers the <code><a href="Coin1.md#0x1_Coin1">Coin1</a></code> cointype. This
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="Coin1.md#0x1_Coin1_initialize">initialize</a>(
-    dr_account: &signer,
-    // dr_account: &signer,
+    lr_account: &signer,
+    // lr_account: &signer,
 ) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
     <a href="Diem.md#0x1_Diem_register_SCS_currency">Diem::register_SCS_currency</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;(
-        dr_account,
-        // dr_account,
+        lr_account,
+        // lr_account,
         <a href="FixedPoint32.md#0x1_FixedPoint32_create_from_rational">FixedPoint32::create_from_rational</a>(1, 1), // exchange rate <b>to</b> <a href="GAS.md#0x1_GAS">GAS</a>
         1000000, // scaling_factor = 10^6
         100,     // fractional_part = 10^2
         b"<a href="Coin1.md#0x1_Coin1">Coin1</a>"
     );
-    <a href="AccountLimits.md#0x1_AccountLimits_publish_unrestricted_limits">AccountLimits::publish_unrestricted_limits</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;(dr_account);
+    <a href="AccountLimits.md#0x1_AccountLimits_publish_unrestricted_limits">AccountLimits::publish_unrestricted_limits</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;(lr_account);
 }
 </code></pre>
 
@@ -94,9 +94,9 @@ Registers the <code><a href="Coin1.md#0x1_Coin1">Coin1</a></code> cointype. This
     currency_code: b"<a href="Coin1.md#0x1_Coin1">Coin1</a>",
     scaling_factor: 1000000
 };
-<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsAbortsIf">AccountLimits::PublishUnrestrictedLimitsAbortsIf</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;{publish_account: dr_account};
+<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsAbortsIf">AccountLimits::PublishUnrestrictedLimitsAbortsIf</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;{publish_account: lr_account};
 <b>include</b> <a href="Diem.md#0x1_Diem_RegisterSCSCurrencyEnsures">Diem::RegisterSCSCurrencyEnsures</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;;
-<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsEnsures">AccountLimits::PublishUnrestrictedLimitsEnsures</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;{publish_account: dr_account};
+<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsEnsures">AccountLimits::PublishUnrestrictedLimitsEnsures</a>&lt;<a href="Coin1.md#0x1_Coin1">Coin1</a>&gt;{publish_account: lr_account};
 </code></pre>
 
 
@@ -110,7 +110,7 @@ Registering Coin1 can only be done in genesis.
 Only the DiemRoot account can register a new currency [[H8]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
 </code></pre>
 
 
@@ -118,7 +118,7 @@ Only a TreasuryCompliance account can have the MintCapability [[H1]][PERMISSION]
 Moreover, only a TreasuryCompliance account can have the BurnCapability [[H3]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotTreasuryCompliance">Roles::AbortsIfNotTreasuryCompliance</a>{account: dr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotTreasuryCompliance">Roles::AbortsIfNotTreasuryCompliance</a>{account: lr_account};
 </code></pre>
 
 

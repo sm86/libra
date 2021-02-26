@@ -57,51 +57,51 @@ module Roles {
 
     // /// Publishes diem root role. Granted only in genesis.
     // public fun grant_diem_user_role(
-    //     dr_account: &signer,
+    //     lr_account: &signer,
     // ) {
     //     DiemTimestamp::assert_genesis();
     //     // Checks actual Diem root because Diem root role is not set
     //     // until next line of code.
-    //     CoreAddresses::assert_diem_root(dr_account);
+    //     CoreAddresses::assert_diem_root(lr_account);
     //     // Grant the role to the diem root account
-    //     grant_role(dr_account, OL_USER);
+    //     grant_role(lr_account, OL_USER);
     // }
     // spec fun grant_diem_user_role {
-    //     include GrantRole{addr: Signer::address_of(dr_account), role_id: OL_USER};
+    //     include GrantRole{addr: Signer::address_of(lr_account), role_id: OL_USER};
     // }
 
     /// Publishes diem root role. Granted only in genesis.
     public fun grant_diem_root_role(
-        dr_account: &signer,
+        lr_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
         // Checks actual Diem root because Diem root role is not set
         // until next line of code.
-        CoreAddresses::assert_diem_root(dr_account);
+        CoreAddresses::assert_diem_root(lr_account);
         // Grant the role to the diem root account
-        grant_role(dr_account, LIBRA_ROOT_ROLE_ID);
+        grant_role(lr_account, LIBRA_ROOT_ROLE_ID);
     }
     spec fun grant_diem_root_role {
         include DiemTimestamp::AbortsIfNotGenesis;
-        include CoreAddresses::AbortsIfNotDiemRoot{account: dr_account};
-        include GrantRole{addr: Signer::address_of(dr_account), role_id: LIBRA_ROOT_ROLE_ID};
+        include CoreAddresses::AbortsIfNotDiemRoot{account: lr_account};
+        include GrantRole{addr: Signer::address_of(lr_account), role_id: LIBRA_ROOT_ROLE_ID};
     }
 
     /// Publishes treasury compliance role. Granted only in genesis.
     public fun grant_treasury_compliance_role(
         treasury_compliance_account: &signer,
-        dr_account: &signer,
+        lr_account: &signer,
     ) acquires RoleId {
         DiemTimestamp::assert_genesis();
         CoreAddresses::assert_treasury_compliance(treasury_compliance_account);
-        assert_diem_root(dr_account);
+        assert_diem_root(lr_account);
         // Grant the TC role to the treasury_compliance_account
         grant_role(treasury_compliance_account, TREASURY_COMPLIANCE_ROLE_ID);
     }
     spec fun grant_treasury_compliance_role {
         include DiemTimestamp::AbortsIfNotGenesis;
         include CoreAddresses::AbortsIfNotTreasuryCompliance{account: treasury_compliance_account};
-        include AbortsIfNotDiemRoot{account: dr_account};
+        include AbortsIfNotDiemRoot{account: lr_account};
         include GrantRole{addr: Signer::address_of(treasury_compliance_account), role_id: TREASURY_COMPLIANCE_ROLE_ID};
     }
 

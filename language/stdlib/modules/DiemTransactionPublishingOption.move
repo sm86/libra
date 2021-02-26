@@ -30,15 +30,15 @@ module DiemTransactionPublishingOption {
     }
 
     public fun initialize(
-        dr_account: &signer,
+        lr_account: &signer,
         script_allow_list: vector<vector<u8>>,
         module_publishing_allowed: bool,
     ) {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
 
         DiemConfig::publish_new_config(
-            dr_account,
+            lr_account,
             DiemTransactionPublishingOption {
                 script_allow_list, module_publishing_allowed
             }
@@ -46,7 +46,7 @@ module DiemTransactionPublishingOption {
     }
     spec fun initialize {
         /// Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         include DiemTimestamp::AbortsIfNotGenesis;
         include DiemConfig::PublishNewConfigAbortsIf<DiemTransactionPublishingOption>;
@@ -82,8 +82,8 @@ module DiemTransactionPublishingOption {
     }
 
     /// Add `new_hash` to the list of script hashes that is allowed to be executed by the network.
-    public fun add_to_script_allow_list(dr_account: &signer, new_hash: vector<u8>) {
-        Roles::assert_diem_root(dr_account);
+    public fun add_to_script_allow_list(lr_account: &signer, new_hash: vector<u8>) {
+        Roles::assert_diem_root(lr_account);
 
         assert(Vector::length(&new_hash) == SCRIPT_HASH_LENGTH, Errors::invalid_argument(EINVALID_SCRIPT_HASH));
 
@@ -93,50 +93,50 @@ module DiemTransactionPublishingOption {
         };
         Vector::push_back(&mut publish_option.script_allow_list, new_hash);
 
-        DiemConfig::set<DiemTransactionPublishingOption>(dr_account, publish_option);
+        DiemConfig::set<DiemTransactionPublishingOption>(lr_account, publish_option);
     }
     spec fun add_to_script_allow_list {
         /// Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         let allow_list = DiemConfig::get<DiemTransactionPublishingOption>().script_allow_list;
         aborts_if Vector::length(new_hash) != SCRIPT_HASH_LENGTH with Errors::INVALID_ARGUMENT;
         aborts_if Vector::spec_contains(allow_list, new_hash) with Errors::INVALID_ARGUMENT;
         include DiemConfig::AbortsIfNotPublished<DiemTransactionPublishingOption>;
-        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: dr_account};
+        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: lr_account};
     }
 
     /// Allow the execution of arbitrary script or not.
-    public fun set_open_script(dr_account: &signer) {
-        Roles::assert_diem_root(dr_account);
+    public fun set_open_script(lr_account: &signer) {
+        Roles::assert_diem_root(lr_account);
         let publish_option = DiemConfig::get<DiemTransactionPublishingOption>();
 
         publish_option.script_allow_list = Vector::empty();
-        DiemConfig::set<DiemTransactionPublishingOption>(dr_account, publish_option);
+        DiemConfig::set<DiemTransactionPublishingOption>(lr_account, publish_option);
     }
     spec fun set_open_script {
         /// Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         include DiemConfig::AbortsIfNotPublished<DiemTransactionPublishingOption>;
-        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: dr_account};
+        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: lr_account};
     }
 
     /// Allow module publishing from arbitrary sender or not.
-    public fun set_open_module(dr_account: &signer, open_module: bool) {
-        Roles::assert_diem_root(dr_account);
+    public fun set_open_module(lr_account: &signer, open_module: bool) {
+        Roles::assert_diem_root(lr_account);
 
         let publish_option = DiemConfig::get<DiemTransactionPublishingOption>();
 
         publish_option.module_publishing_allowed = open_module;
-        DiemConfig::set<DiemTransactionPublishingOption>(dr_account, publish_option);
+        DiemConfig::set<DiemTransactionPublishingOption>(lr_account, publish_option);
     }
     spec fun set_open_module {
         /// Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         include DiemConfig::AbortsIfNotPublished<DiemTransactionPublishingOption>;
-        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: dr_account};
+        include DiemConfig::SetAbortsIf<DiemTransactionPublishingOption>{account: lr_account};
     }
 
     spec module { } // Switch documentation context to module level.
@@ -153,8 +153,8 @@ module DiemTransactionPublishingOption {
     /// DiemTransactionPublishingOption config [[H11]][PERMISSION]
     spec schema DiemVersionRemainsSame {
         ensures old(DiemConfig::spec_is_published<DiemTransactionPublishingOption>()) ==>
-            global<DiemConfig<DiemTransactionPublishingOption>>(CoreAddresses::DIEM_ROOT_ADDRESS()) ==
-                old(global<DiemConfig<DiemTransactionPublishingOption>>(CoreAddresses::DIEM_ROOT_ADDRESS()));
+            global<DiemConfig<DiemTransactionPublishingOption>>(CoreAddresses::LIBRA_ROOT_ADDRESS()) ==
+                old(global<DiemConfig<DiemTransactionPublishingOption>>(CoreAddresses::LIBRA_ROOT_ADDRESS()));
     }
     spec module {
         apply DiemVersionRemainsSame to * except add_to_script_allow_list, set_open_script, set_open_module;

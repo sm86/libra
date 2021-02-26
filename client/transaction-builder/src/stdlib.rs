@@ -60,7 +60,9 @@ pub enum ScriptCall {
     /// * `Script::create_child_vasp_account`
     /// * `Script::create_parent_vasp_account`
     /// * `Script::peer_to_peer_with_metadata`
-    AddCurrencyToAccount { currency: TypeTag },
+    AddCurrencyToAccount {
+        currency: TypeTag,
+    },
 
     /// # Summary
     /// Stores the sending accounts ability to rotate its authentication key with a designated recovery
@@ -101,7 +103,9 @@ pub enum ScriptCall {
     /// # Related Scripts
     /// * `Script::create_recovery_address`
     /// * `Script::rotate_authentication_key_with_recovery_address`
-    AddRecoveryRotationCapability { recovery_address: AccountAddress },
+    AddRecoveryRotationCapability {
+        recovery_address: AccountAddress,
+    },
 
     /// # Summary
     /// Adds a script hash to the transaction allowlist. This transaction
@@ -136,58 +140,19 @@ pub enum ScriptCall {
     /// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                                                   | The sending account is not the Diem Root account.                                         |
     /// | `Errors::INVALID_ARGUMENT` | `DiemTransactionPublishingOption::EINVALID_SCRIPT_HASH`               | The script `hash` is an invalid length.                                                    |
     /// | `Errors::INVALID_ARGUMENT` | `DiemTransactionPublishingOption::EALLOWLIST_ALREADY_CONTAINS_SCRIPT` | The on-chain allowlist already contains the script `hash`.                                 |
-    AddToScriptAllowList { hash: Bytes, sliding_nonce: u64 },
-
-    /// # Summary
-    /// Adds a validator account to the validator set, and triggers a
-    /// reconfiguration of the system to admit the account to the validator set for the system. This
-    /// transaction can only be successfully called by the Diem Root account.
-    ///
-    /// # Technical Description
-    /// This script adds the account at `validator_address` to the validator set.
-    /// This transaction emits a `DiemConfig::NewEpochEvent` event and triggers a
-    /// reconfiguration. Once the reconfiguration triggered by this script's
-    /// execution has been performed, the account at the `validator_address` is
-    /// considered to be a validator in the network.
-    ///
-    /// This transaction script will fail if the `validator_address` address is already in the validator set
-    /// or does not have a `ValidatorConfig::ValidatorConfig` resource already published under it.
-    ///
-    /// # Parameters
-    /// | Name                | Type         | Description                                                                                                                        |
-    /// | ------              | ------       | -------------                                                                                                                      |
-    /// | `dr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-    /// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
-    /// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
-    /// | `validator_address` | `address`    | The validator account address to be added to the validator set.                                                                    |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category             | Error Reason                                  | Description                                                                                                                               |
-    /// | ----------------           | --------------                                | -------------                                                                                                                             |
-    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `dr_account`.                                                                            |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.                                                |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                                                                             |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                                                                         |
-    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`                  | The sending account is not the Diem Root account.                                                                                        |
-    /// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                          | The sending account is not the Diem Root account.                                                                                        |
-    /// | 0                          | 0                                             | The provided `validator_name` does not match the already-recorded human name for the validator.                                           |
-    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR` | The validator to be added does not have a `ValidatorConfig::ValidatorConfig` resource published under it, or its `config` field is empty. |
-    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EALREADY_A_VALIDATOR`           | The `validator_address` account is already a registered validator.                                                                        |
-    /// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
-    ///
-    /// # Related Scripts
-    /// * `Script::create_validator_account`
-    /// * `Script::create_validator_operator_account`
-    /// * `Script::register_validator_config`
-    /// * `Script::remove_validator_and_reconfigure`
-    /// * `Script::set_validator_operator`
-    /// * `Script::set_validator_operator_with_nonce_admin`
-    /// * `Script::set_validator_config_and_reconfigure`
-    AddValidatorAndReconfigure {
+    AddToScriptAllowList {
+        hash: Bytes,
         sliding_nonce: u64,
-        validator_name: Bytes,
-        validator_address: AccountAddress,
     },
+
+    AutopayCreateInstruction {
+        uid: u64,
+        payee: AccountAddress,
+        end_epoch: u64,
+        percentage: u64,
+    },
+
+    AutopayEnable {},
 
     /// # Summary
     /// Burns all coins held in the preburn resource at the specified
@@ -280,7 +245,9 @@ pub enum ScriptCall {
     /// # Related Scripts
     /// * `Script::burn`
     /// * `Script::cancel_burn`
-    BurnTxnFees { coin_type: TypeTag },
+    BurnTxnFees {
+        coin_type: TypeTag,
+    },
 
     /// # Summary
     /// Cancels and returns all coins held in the preburn area under
@@ -526,97 +493,13 @@ pub enum ScriptCall {
     /// * `Script::rotate_authentication_key_with_recovery_address`
     CreateRecoveryAddress {},
 
-    /// # Summary
-    /// Creates a Validator account. This transaction can only be sent by the Diem
-    /// Root account.
-    ///
-    /// # Technical Description
-    /// Creates an account with a Validator role at `new_account_address`, with authentication key
-    /// `auth_key_prefix` | `new_account_address`. It publishes a
-    /// `ValidatorConfig::ValidatorConfig` resource with empty `config`, and
-    /// `operator_account` fields. The `human_name` field of the
-    /// `ValidatorConfig::ValidatorConfig` is set to the passed in `human_name`.
-    /// This script does not add the validator to the validator set or the system,
-    /// but only creates the account.
-    ///
-    /// # Parameters
-    /// | Name                  | Type         | Description                                                                                     |
-    /// | ------                | ------       | -------------                                                                                   |
-    /// | `dr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-    /// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
-    /// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
-    /// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
-    /// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category              | Error Reason                            | Description                                                                                |
-    /// | ----------------            | --------------                          | -------------                                                                              |
-    /// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                             |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-    /// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
-    /// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
-    /// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
-    ///
-    /// # Related Scripts
-    /// * `Script::add_validator_and_reconfigure`
-    /// * `Script::create_validator_operator_account`
-    /// * `Script::register_validator_config`
-    /// * `Script::remove_validator_and_reconfigure`
-    /// * `Script::set_validator_operator`
-    /// * `Script::set_validator_operator_with_nonce_admin`
-    /// * `Script::set_validator_config_and_reconfigure`
-    CreateValidatorAccount {
-        sliding_nonce: u64,
-        new_account_address: AccountAddress,
-        auth_key_prefix: Bytes,
-        human_name: Bytes,
+    CreateUserAccount {
+        challenge: Bytes,
+        solution: Bytes,
     },
 
-    /// # Summary
-    /// Creates a Validator Operator account. This transaction can only be sent by the Diem
-    /// Root account.
-    ///
-    /// # Technical Description
-    /// Creates an account with a Validator Operator role at `new_account_address`, with authentication key
-    /// `auth_key_prefix` | `new_account_address`. It publishes a
-    /// `ValidatorOperatorConfig::ValidatorOperatorConfig` resource with the specified `human_name`.
-    /// This script does not assign the validator operator to any validator accounts but only creates the account.
-    ///
-    /// # Parameters
-    /// | Name                  | Type         | Description                                                                                     |
-    /// | ------                | ------       | -------------                                                                                   |
-    /// | `dr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-    /// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
-    /// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
-    /// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
-    /// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category              | Error Reason                            | Description                                                                                |
-    /// | ----------------            | --------------                          | -------------                                                                              |
-    /// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                             |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-    /// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
-    /// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
-    /// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
-    ///
-    /// # Related Scripts
-    /// * `Script::create_validator_account`
-    /// * `Script::add_validator_and_reconfigure`
-    /// * `Script::register_validator_config`
-    /// * `Script::remove_validator_and_reconfigure`
-    /// * `Script::set_validator_operator`
-    /// * `Script::set_validator_operator_with_nonce_admin`
-    /// * `Script::set_validator_config_and_reconfigure`
-    CreateValidatorOperatorAccount {
-        sliding_nonce: u64,
-        new_account_address: AccountAddress,
-        auth_key_prefix: Bytes,
-        human_name: Bytes,
+    DemoE2e {
+        world: u64,
     },
 
     /// # Summary
@@ -665,6 +548,38 @@ pub enum ScriptCall {
     FreezeAccount {
         sliding_nonce: u64,
         to_freeze_account: AccountAddress,
+    },
+
+    MinerstateCommit {
+        challenge: Bytes,
+        solution: Bytes,
+    },
+
+    MinerstateHelper {},
+
+    MinerstateOnboarding {
+        challenge: Bytes,
+        solution: Bytes,
+        ow_human_name: Bytes,
+        op_address: AccountAddress,
+        op_auth_key_prefix: Bytes,
+        op_consensus_pubkey: Bytes,
+        op_validator_network_addresses: Bytes,
+        op_fullnode_network_addresses: Bytes,
+        op_human_name: Bytes,
+    },
+
+    OlOracleTx {
+        id: u64,
+        data: Bytes,
+    },
+
+    OlReconfigBulkUpdateSetup {
+        alice: AccountAddress,
+        bob: AccountAddress,
+        carol: AccountAddress,
+        sha: AccountAddress,
+        ram: AccountAddress,
     },
 
     /// # Summary
@@ -769,7 +684,10 @@ pub enum ScriptCall {
     /// * `Script::cancel_burn`
     /// * `Script::burn`
     /// * `Script::burn_txn_fees`
-    Preburn { token: TypeTag, amount: u64 },
+    Preburn {
+        token: TypeTag,
+        amount: u64,
+    },
 
     /// # Summary
     /// Rotates the authentication key of the sending account to the
@@ -797,7 +715,9 @@ pub enum ScriptCall {
     ///
     /// # Related Scripts
     /// * `Script::rotate_shared_ed25519_public_key`
-    PublishSharedEd25519PublicKey { public_key: Bytes },
+    PublishSharedEd25519PublicKey {
+        public_key: Bytes,
+    },
 
     /// # Summary
     /// Updates a validator's configuration. This does not reconfigure the system and will not update
@@ -843,54 +763,6 @@ pub enum ScriptCall {
     },
 
     /// # Summary
-    /// This script removes a validator account from the validator set, and triggers a reconfiguration
-    /// of the system to remove the validator from the system. This transaction can only be
-    /// successfully called by the Diem Root account.
-    ///
-    /// # Technical Description
-    /// This script removes the account at `validator_address` from the validator set. This transaction
-    /// emits a `DiemConfig::NewEpochEvent` event. Once the reconfiguration triggered by this event
-    /// has been performed, the account at `validator_address` is no longer considered to be a
-    /// validator in the network. This transaction will fail if the validator at `validator_address`
-    /// is not in the validator set.
-    ///
-    /// # Parameters
-    /// | Name                | Type         | Description                                                                                                                        |
-    /// | ------              | ------       | -------------                                                                                                                      |
-    /// | `dr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-    /// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
-    /// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
-    /// | `validator_address` | `address`    | The validator account address to be removed from the validator set.                                                                |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category             | Error Reason                            | Description                                                                                     |
-    /// | ----------------           | --------------                          | -------------                                                                                   |
-    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                                  |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.      |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                                   |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                               |
-    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | The sending account is not the Diem Root account or Treasury Compliance account                |
-    /// | 0                          | 0                                       | The provided `validator_name` does not match the already-recorded human name for the validator. |
-    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::ENOT_AN_ACTIVE_VALIDATOR` | The validator to be removed is not in the validator set.                                        |
-    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                              |
-    /// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                              |
-    /// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
-    ///
-    /// # Related Scripts
-    /// * `Script::create_validator_account`
-    /// * `Script::create_validator_operator_account`
-    /// * `Script::register_validator_config`
-    /// * `Script::add_validator_and_reconfigure`
-    /// * `Script::set_validator_operator`
-    /// * `Script::set_validator_operator_with_nonce_admin`
-    /// * `Script::set_validator_config_and_reconfigure`
-    RemoveValidatorAndReconfigure {
-        sliding_nonce: u64,
-        validator_name: Bytes,
-        validator_address: AccountAddress,
-    },
-
-    /// # Summary
     /// Rotates the transaction sender's authentication key to the supplied new authentication key. May
     /// be sent by any account.
     ///
@@ -915,7 +787,9 @@ pub enum ScriptCall {
     /// * `Script::rotate_authentication_key_with_nonce`
     /// * `Script::rotate_authentication_key_with_nonce_admin`
     /// * `Script::rotate_authentication_key_with_recovery_address`
-    RotateAuthenticationKey { new_key: Bytes },
+    RotateAuthenticationKey {
+        new_key: Bytes,
+    },
 
     /// # Summary
     /// Rotates the sender's authentication key to the supplied new authentication key. May be sent by
@@ -948,7 +822,10 @@ pub enum ScriptCall {
     /// * `Script::rotate_authentication_key`
     /// * `Script::rotate_authentication_key_with_nonce_admin`
     /// * `Script::rotate_authentication_key_with_recovery_address`
-    RotateAuthenticationKeyWithNonce { sliding_nonce: u64, new_key: Bytes },
+    RotateAuthenticationKeyWithNonce {
+        sliding_nonce: u64,
+        new_key: Bytes,
+    },
 
     /// # Summary
     /// Rotates the specified account's authentication key to the supplied new authentication key. May
@@ -981,7 +858,10 @@ pub enum ScriptCall {
     /// * `Script::rotate_authentication_key`
     /// * `Script::rotate_authentication_key_with_nonce`
     /// * `Script::rotate_authentication_key_with_recovery_address`
-    RotateAuthenticationKeyWithNonceAdmin { sliding_nonce: u64, new_key: Bytes },
+    RotateAuthenticationKeyWithNonceAdmin {
+        sliding_nonce: u64,
+        new_key: Bytes,
+    },
 
     /// # Summary
     /// Rotates the authentication key of a specified account that is part of a recovery address to a
@@ -1057,7 +937,10 @@ pub enum ScriptCall {
     /// * `Script::create_parent_vasp_account`
     /// * `Script::create_designated_dealer`
     /// * `Script::rotate_dual_attestation_info`
-    RotateDualAttestationInfo { new_url: Bytes, new_key: Bytes },
+    RotateDualAttestationInfo {
+        new_url: Bytes,
+        new_key: Bytes,
+    },
 
     /// # Summary
     /// Rotates the authentication key in a `SharedEd25519PublicKey`. This transaction can be sent by
@@ -1084,7 +967,9 @@ pub enum ScriptCall {
     ///
     /// # Related Scripts
     /// * `Script::publish_shared_ed25519_public_key`
-    RotateSharedEd25519PublicKey { public_key: Bytes },
+    RotateSharedEd25519PublicKey {
+        public_key: Bytes,
+    },
 
     /// # Summary
     /// Updates a validator's configuration, and triggers a reconfiguration of the system to update the
@@ -1286,6 +1171,10 @@ pub enum ScriptCall {
         tier_index: u64,
     },
 
+    TrustedAccountUpdateTx {
+        world: u64,
+    },
+
     /// # Summary
     /// Unfreezes the account at `address`. The sending account of this transaction must be the
     /// Treasury Compliance account. After the successful execution of this transaction transactions
@@ -1350,7 +1239,10 @@ pub enum ScriptCall {
     /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                          |
     /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`                  | `account` is not the Diem Root account.                                                   |
     /// | `Errors::INVALID_ARGUMENT` | `DiemVersion::EINVALID_MAJOR_VERSION_NUMBER` | `major` is less-than or equal to the current major version stored on-chain.                |
-    UpdateDiemVersion { sliding_nonce: u64, major: u64 },
+    UpdateDiemVersion {
+        sliding_nonce: u64,
+        major: u64,
+    },
 
     /// # Summary
     /// Update the dual attestation limit on-chain. Defined in terms of micro-XDX.  The transaction can
@@ -1383,48 +1275,6 @@ pub enum ScriptCall {
     UpdateDualAttestationLimit {
         sliding_nonce: u64,
         new_micro_xdx_limit: u64,
-    },
-
-    /// # Summary
-    /// Update the rough on-chain exchange rate between a specified currency and XDX (as a conversion
-    /// to micro-XDX). The transaction can only be sent by the Treasury Compliance account. After this
-    /// transaction the updated exchange rate will be used for normalization of gas prices, and for
-    /// dual attestation checking.
-    ///
-    /// # Technical Description
-    /// Updates the on-chain exchange rate from the given `Currency` to micro-XDX.  The exchange rate
-    /// is given by `new_exchange_rate_numerator/new_exchange_rate_denominator`.
-    ///
-    /// # Parameters
-    /// | Name                            | Type      | Description                                                                                                                        |
-    /// | ------                          | ------    | -------------                                                                                                                      |
-    /// | `Currency`                      | Type      | The Move type for the `Currency` whose exchange rate is being updated. `Currency` must be an already-registered currency on-chain. |
-    /// | `tc_account`                    | `&signer` | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                          |
-    /// | `sliding_nonce`                 | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for the transaction.                                                          |
-    /// | `new_exchange_rate_numerator`   | `u64`     | The numerator for the new to micro-XDX exchange rate for `Currency`.                                                               |
-    /// | `new_exchange_rate_denominator` | `u64`     | The denominator for the new to micro-XDX exchange rate for `Currency`.                                                             |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category             | Error Reason                            | Description                                                                                |
-    /// | ----------------           | --------------                          | -------------                                                                              |
-    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `tc_account`.                             |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ETREASURY_COMPLIANCE`   | `tc_account` is not the Treasury Compliance account.                                       |
-    /// | `Errors::REQUIRES_ROLE`    | `Roles::ETREASURY_COMPLIANCE`           | `tc_account` is not the Treasury Compliance account.                                       |
-    /// | `Errors::INVALID_ARGUMENT` | `FixedPoint32::EDENOMINATOR`            | `new_exchange_rate_denominator` is zero.                                                   |
-    /// | `Errors::INVALID_ARGUMENT` | `FixedPoint32::ERATIO_OUT_OF_RANGE`     | The quotient is unrepresentable as a `FixedPoint32`.                                       |
-    /// | `Errors::LIMIT_EXCEEDED`   | `FixedPoint32::ERATIO_OUT_OF_RANGE`     | The quotient is unrepresentable as a `FixedPoint32`.                                       |
-    ///
-    /// # Related Scripts
-    /// * `Script::update_dual_attestation_limit`
-    /// * `Script::update_minting_ability`
-    UpdateExchangeRate {
-        currency: TypeTag,
-        sliding_nonce: u64,
-        new_exchange_rate_numerator: u64,
-        new_exchange_rate_denominator: u64,
     },
 
     /// # Summary
@@ -1473,15 +1323,13 @@ impl ScriptCall {
                 hash,
                 sliding_nonce,
             } => encode_add_to_script_allow_list_script(hash, sliding_nonce),
-            AddValidatorAndReconfigure {
-                sliding_nonce,
-                validator_name,
-                validator_address,
-            } => encode_add_validator_and_reconfigure_script(
-                sliding_nonce,
-                validator_name,
-                validator_address,
-            ),
+            AutopayCreateInstruction {
+                uid,
+                payee,
+                end_epoch,
+                percentage,
+            } => encode_autopay_create_instruction_script(uid, payee, end_epoch, percentage),
+            AutopayEnable {} => encode_autopay_enable_script(),
             Burn {
                 token,
                 sliding_nonce,
@@ -1536,32 +1384,49 @@ impl ScriptCall {
                 add_all_currencies,
             ),
             CreateRecoveryAddress {} => encode_create_recovery_address_script(),
-            CreateValidatorAccount {
-                sliding_nonce,
-                new_account_address,
-                auth_key_prefix,
-                human_name,
-            } => encode_create_validator_account_script(
-                sliding_nonce,
-                new_account_address,
-                auth_key_prefix,
-                human_name,
-            ),
-            CreateValidatorOperatorAccount {
-                sliding_nonce,
-                new_account_address,
-                auth_key_prefix,
-                human_name,
-            } => encode_create_validator_operator_account_script(
-                sliding_nonce,
-                new_account_address,
-                auth_key_prefix,
-                human_name,
-            ),
+            CreateUserAccount {
+                challenge,
+                solution,
+            } => encode_create_user_account_script(challenge, solution),
+            DemoE2e { world } => encode_demo_e2e_script(world),
             FreezeAccount {
                 sliding_nonce,
                 to_freeze_account,
             } => encode_freeze_account_script(sliding_nonce, to_freeze_account),
+            MinerstateCommit {
+                challenge,
+                solution,
+            } => encode_minerstate_commit_script(challenge, solution),
+            MinerstateHelper {} => encode_minerstate_helper_script(),
+            MinerstateOnboarding {
+                challenge,
+                solution,
+                ow_human_name,
+                op_address,
+                op_auth_key_prefix,
+                op_consensus_pubkey,
+                op_validator_network_addresses,
+                op_fullnode_network_addresses,
+                op_human_name,
+            } => encode_minerstate_onboarding_script(
+                challenge,
+                solution,
+                ow_human_name,
+                op_address,
+                op_auth_key_prefix,
+                op_consensus_pubkey,
+                op_validator_network_addresses,
+                op_fullnode_network_addresses,
+                op_human_name,
+            ),
+            OlOracleTx { id, data } => encode_ol_oracle_tx_script(id, data),
+            OlReconfigBulkUpdateSetup {
+                alice,
+                bob,
+                carol,
+                sha,
+                ram,
+            } => encode_ol_reconfig_bulk_update_setup_script(alice, bob, carol, sha, ram),
             PeerToPeerWithMetadata {
                 currency,
                 payee,
@@ -1589,15 +1454,6 @@ impl ScriptCall {
                 consensus_pubkey,
                 validator_network_addresses,
                 fullnode_network_addresses,
-            ),
-            RemoveValidatorAndReconfigure {
-                sliding_nonce,
-                validator_name,
-                validator_address,
-            } => encode_remove_validator_and_reconfigure_script(
-                sliding_nonce,
-                validator_name,
-                validator_address,
             ),
             RotateAuthenticationKey { new_key } => encode_rotate_authentication_key_script(new_key),
             RotateAuthenticationKeyWithNonce {
@@ -1660,6 +1516,7 @@ impl ScriptCall {
                 mint_amount,
                 tier_index,
             ),
+            TrustedAccountUpdateTx { world } => encode_trusted_account_update_tx_script(world),
             UnfreezeAccount {
                 sliding_nonce,
                 to_unfreeze_account,
@@ -1672,17 +1529,6 @@ impl ScriptCall {
                 sliding_nonce,
                 new_micro_xdx_limit,
             } => encode_update_dual_attestation_limit_script(sliding_nonce, new_micro_xdx_limit),
-            UpdateExchangeRate {
-                currency,
-                sliding_nonce,
-                new_exchange_rate_numerator,
-                new_exchange_rate_denominator,
-            } => encode_update_exchange_rate_script(
-                currency,
-                sliding_nonce,
-                new_exchange_rate_numerator,
-                new_exchange_rate_denominator,
-            ),
             UpdateMintingAbility {
                 currency,
                 allow_minting,
@@ -1827,65 +1673,26 @@ pub fn encode_add_to_script_allow_list_script(hash: Vec<u8>, sliding_nonce: u64)
     )
 }
 
-/// # Summary
-/// Adds a validator account to the validator set, and triggers a
-/// reconfiguration of the system to admit the account to the validator set for the system. This
-/// transaction can only be successfully called by the Diem Root account.
-///
-/// # Technical Description
-/// This script adds the account at `validator_address` to the validator set.
-/// This transaction emits a `DiemConfig::NewEpochEvent` event and triggers a
-/// reconfiguration. Once the reconfiguration triggered by this script's
-/// execution has been performed, the account at the `validator_address` is
-/// considered to be a validator in the network.
-///
-/// This transaction script will fail if the `validator_address` address is already in the validator set
-/// or does not have a `ValidatorConfig::ValidatorConfig` resource already published under it.
-///
-/// # Parameters
-/// | Name                | Type         | Description                                                                                                                        |
-/// | ------              | ------       | -------------                                                                                                                      |
-/// | `dr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-/// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
-/// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
-/// | `validator_address` | `address`    | The validator account address to be added to the validator set.                                                                    |
-///
-/// # Common Abort Conditions
-/// | Error Category             | Error Reason                                  | Description                                                                                                                               |
-/// | ----------------           | --------------                                | -------------                                                                                                                             |
-/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `dr_account`.                                                                            |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.                                                |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                                                                             |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                                                                         |
-/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`                  | The sending account is not the Diem Root account.                                                                                        |
-/// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                          | The sending account is not the Diem Root account.                                                                                        |
-/// | 0                          | 0                                             | The provided `validator_name` does not match the already-recorded human name for the validator.                                           |
-/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR` | The validator to be added does not have a `ValidatorConfig::ValidatorConfig` resource published under it, or its `config` field is empty. |
-/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EALREADY_A_VALIDATOR`           | The `validator_address` account is already a registered validator.                                                                        |
-/// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
-///
-/// # Related Scripts
-/// * `Script::create_validator_account`
-/// * `Script::create_validator_operator_account`
-/// * `Script::register_validator_config`
-/// * `Script::remove_validator_and_reconfigure`
-/// * `Script::set_validator_operator`
-/// * `Script::set_validator_operator_with_nonce_admin`
-/// * `Script::set_validator_config_and_reconfigure`
-pub fn encode_add_validator_and_reconfigure_script(
-    sliding_nonce: u64,
-    validator_name: Vec<u8>,
-    validator_address: AccountAddress,
+pub fn encode_autopay_create_instruction_script(
+    uid: u64,
+    payee: AccountAddress,
+    end_epoch: u64,
+    percentage: u64,
 ) -> Script {
     Script::new(
-        ADD_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
+        AUTOPAY_CREATE_INSTRUCTION_CODE.to_vec(),
         vec![],
         vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::U8Vector(validator_name),
-            TransactionArgument::Address(validator_address),
+            TransactionArgument::U64(uid),
+            TransactionArgument::Address(payee),
+            TransactionArgument::U64(end_epoch),
+            TransactionArgument::U64(percentage),
         ],
     )
+}
+
+pub fn encode_autopay_enable_script() -> Script {
+    Script::new(AUTOPAY_ENABLE_CODE.to_vec(), vec![], vec![])
 }
 
 /// # Summary
@@ -2276,118 +2083,22 @@ pub fn encode_create_recovery_address_script() -> Script {
     Script::new(CREATE_RECOVERY_ADDRESS_CODE.to_vec(), vec![], vec![])
 }
 
-/// # Summary
-/// Creates a Validator account. This transaction can only be sent by the Diem
-/// Root account.
-///
-/// # Technical Description
-/// Creates an account with a Validator role at `new_account_address`, with authentication key
-/// `auth_key_prefix` | `new_account_address`. It publishes a
-/// `ValidatorConfig::ValidatorConfig` resource with empty `config`, and
-/// `operator_account` fields. The `human_name` field of the
-/// `ValidatorConfig::ValidatorConfig` is set to the passed in `human_name`.
-/// This script does not add the validator to the validator set or the system,
-/// but only creates the account.
-///
-/// # Parameters
-/// | Name                  | Type         | Description                                                                                     |
-/// | ------                | ------       | -------------                                                                                   |
-/// | `dr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-/// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
-/// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
-/// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
-/// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
-///
-/// # Common Abort Conditions
-/// | Error Category              | Error Reason                            | Description                                                                                |
-/// | ----------------            | --------------                          | -------------                                                                              |
-/// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                             |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-/// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
-/// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
-/// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
-///
-/// # Related Scripts
-/// * `Script::add_validator_and_reconfigure`
-/// * `Script::create_validator_operator_account`
-/// * `Script::register_validator_config`
-/// * `Script::remove_validator_and_reconfigure`
-/// * `Script::set_validator_operator`
-/// * `Script::set_validator_operator_with_nonce_admin`
-/// * `Script::set_validator_config_and_reconfigure`
-pub fn encode_create_validator_account_script(
-    sliding_nonce: u64,
-    new_account_address: AccountAddress,
-    auth_key_prefix: Vec<u8>,
-    human_name: Vec<u8>,
-) -> Script {
+pub fn encode_create_user_account_script(challenge: Vec<u8>, solution: Vec<u8>) -> Script {
     Script::new(
-        CREATE_VALIDATOR_ACCOUNT_CODE.to_vec(),
+        CREATE_USER_ACCOUNT_CODE.to_vec(),
         vec![],
         vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::Address(new_account_address),
-            TransactionArgument::U8Vector(auth_key_prefix),
-            TransactionArgument::U8Vector(human_name),
+            TransactionArgument::U8Vector(challenge),
+            TransactionArgument::U8Vector(solution),
         ],
     )
 }
 
-/// # Summary
-/// Creates a Validator Operator account. This transaction can only be sent by the Diem
-/// Root account.
-///
-/// # Technical Description
-/// Creates an account with a Validator Operator role at `new_account_address`, with authentication key
-/// `auth_key_prefix` | `new_account_address`. It publishes a
-/// `ValidatorOperatorConfig::ValidatorOperatorConfig` resource with the specified `human_name`.
-/// This script does not assign the validator operator to any validator accounts but only creates the account.
-///
-/// # Parameters
-/// | Name                  | Type         | Description                                                                                     |
-/// | ------                | ------       | -------------                                                                                   |
-/// | `dr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-/// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
-/// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
-/// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
-/// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
-///
-/// # Common Abort Conditions
-/// | Error Category              | Error Reason                            | Description                                                                                |
-/// | ----------------            | --------------                          | -------------                                                                              |
-/// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                             |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-/// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
-/// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
-/// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
-///
-/// # Related Scripts
-/// * `Script::create_validator_account`
-/// * `Script::add_validator_and_reconfigure`
-/// * `Script::register_validator_config`
-/// * `Script::remove_validator_and_reconfigure`
-/// * `Script::set_validator_operator`
-/// * `Script::set_validator_operator_with_nonce_admin`
-/// * `Script::set_validator_config_and_reconfigure`
-pub fn encode_create_validator_operator_account_script(
-    sliding_nonce: u64,
-    new_account_address: AccountAddress,
-    auth_key_prefix: Vec<u8>,
-    human_name: Vec<u8>,
-) -> Script {
+pub fn encode_demo_e2e_script(world: u64) -> Script {
     Script::new(
-        CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE.to_vec(),
+        DEMO_E2E_CODE.to_vec(),
         vec![],
-        vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::Address(new_account_address),
-            TransactionArgument::U8Vector(auth_key_prefix),
-            TransactionArgument::U8Vector(human_name),
-        ],
+        vec![TransactionArgument::U64(world)],
     )
 }
 
@@ -2444,6 +2155,80 @@ pub fn encode_freeze_account_script(
         vec![
             TransactionArgument::U64(sliding_nonce),
             TransactionArgument::Address(to_freeze_account),
+        ],
+    )
+}
+
+pub fn encode_minerstate_commit_script(challenge: Vec<u8>, solution: Vec<u8>) -> Script {
+    Script::new(
+        MINERSTATE_COMMIT_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U8Vector(challenge),
+            TransactionArgument::U8Vector(solution),
+        ],
+    )
+}
+
+pub fn encode_minerstate_helper_script() -> Script {
+    Script::new(MINERSTATE_HELPER_CODE.to_vec(), vec![], vec![])
+}
+
+pub fn encode_minerstate_onboarding_script(
+    challenge: Vec<u8>,
+    solution: Vec<u8>,
+    ow_human_name: Vec<u8>,
+    op_address: AccountAddress,
+    op_auth_key_prefix: Vec<u8>,
+    op_consensus_pubkey: Vec<u8>,
+    op_validator_network_addresses: Vec<u8>,
+    op_fullnode_network_addresses: Vec<u8>,
+    op_human_name: Vec<u8>,
+) -> Script {
+    Script::new(
+        MINERSTATE_ONBOARDING_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U8Vector(challenge),
+            TransactionArgument::U8Vector(solution),
+            TransactionArgument::U8Vector(ow_human_name),
+            TransactionArgument::Address(op_address),
+            TransactionArgument::U8Vector(op_auth_key_prefix),
+            TransactionArgument::U8Vector(op_consensus_pubkey),
+            TransactionArgument::U8Vector(op_validator_network_addresses),
+            TransactionArgument::U8Vector(op_fullnode_network_addresses),
+            TransactionArgument::U8Vector(op_human_name),
+        ],
+    )
+}
+
+pub fn encode_ol_oracle_tx_script(id: u64, data: Vec<u8>) -> Script {
+    Script::new(
+        OL_ORACLE_TX_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(id),
+            TransactionArgument::U8Vector(data),
+        ],
+    )
+}
+
+pub fn encode_ol_reconfig_bulk_update_setup_script(
+    alice: AccountAddress,
+    bob: AccountAddress,
+    carol: AccountAddress,
+    sha: AccountAddress,
+    ram: AccountAddress,
+) -> Script {
+    Script::new(
+        OL_RECONFIG_BULK_UPDATE_SETUP_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::Address(alice),
+            TransactionArgument::Address(bob),
+            TransactionArgument::Address(carol),
+            TransactionArgument::Address(sha),
+            TransactionArgument::Address(ram),
         ],
     )
 }
@@ -2653,64 +2438,6 @@ pub fn encode_register_validator_config_script(
             TransactionArgument::U8Vector(consensus_pubkey),
             TransactionArgument::U8Vector(validator_network_addresses),
             TransactionArgument::U8Vector(fullnode_network_addresses),
-        ],
-    )
-}
-
-/// # Summary
-/// This script removes a validator account from the validator set, and triggers a reconfiguration
-/// of the system to remove the validator from the system. This transaction can only be
-/// successfully called by the Diem Root account.
-///
-/// # Technical Description
-/// This script removes the account at `validator_address` from the validator set. This transaction
-/// emits a `DiemConfig::NewEpochEvent` event. Once the reconfiguration triggered by this event
-/// has been performed, the account at `validator_address` is no longer considered to be a
-/// validator in the network. This transaction will fail if the validator at `validator_address`
-/// is not in the validator set.
-///
-/// # Parameters
-/// | Name                | Type         | Description                                                                                                                        |
-/// | ------              | ------       | -------------                                                                                                                      |
-/// | `dr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-/// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
-/// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
-/// | `validator_address` | `address`    | The validator account address to be removed from the validator set.                                                                |
-///
-/// # Common Abort Conditions
-/// | Error Category             | Error Reason                            | Description                                                                                     |
-/// | ----------------           | --------------                          | -------------                                                                                   |
-/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `dr_account`.                                  |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.      |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                                   |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                               |
-/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | The sending account is not the Diem Root account or Treasury Compliance account                |
-/// | 0                          | 0                                       | The provided `validator_name` does not match the already-recorded human name for the validator. |
-/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::ENOT_AN_ACTIVE_VALIDATOR` | The validator to be removed is not in the validator set.                                        |
-/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                              |
-/// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                              |
-/// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
-///
-/// # Related Scripts
-/// * `Script::create_validator_account`
-/// * `Script::create_validator_operator_account`
-/// * `Script::register_validator_config`
-/// * `Script::add_validator_and_reconfigure`
-/// * `Script::set_validator_operator`
-/// * `Script::set_validator_operator_with_nonce_admin`
-/// * `Script::set_validator_config_and_reconfigure`
-pub fn encode_remove_validator_and_reconfigure_script(
-    sliding_nonce: u64,
-    validator_name: Vec<u8>,
-    validator_address: AccountAddress,
-) -> Script {
-    Script::new(
-        REMOVE_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
-        vec![],
-        vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::U8Vector(validator_name),
-            TransactionArgument::Address(validator_address),
         ],
     )
 }
@@ -3207,6 +2934,14 @@ pub fn encode_tiered_mint_script(
     )
 }
 
+pub fn encode_trusted_account_update_tx_script(world: u64) -> Script {
+    Script::new(
+        TRUSTED_ACCOUNT_UPDATE_TX_CODE.to_vec(),
+        vec![],
+        vec![TransactionArgument::U64(world)],
+    )
+}
+
 /// # Summary
 /// Unfreezes the account at `address`. The sending account of this transaction must be the
 /// Treasury Compliance account. After the successful execution of this transaction transactions
@@ -3334,58 +3069,6 @@ pub fn encode_update_dual_attestation_limit_script(
 }
 
 /// # Summary
-/// Update the rough on-chain exchange rate between a specified currency and XDX (as a conversion
-/// to micro-XDX). The transaction can only be sent by the Treasury Compliance account. After this
-/// transaction the updated exchange rate will be used for normalization of gas prices, and for
-/// dual attestation checking.
-///
-/// # Technical Description
-/// Updates the on-chain exchange rate from the given `Currency` to micro-XDX.  The exchange rate
-/// is given by `new_exchange_rate_numerator/new_exchange_rate_denominator`.
-///
-/// # Parameters
-/// | Name                            | Type      | Description                                                                                                                        |
-/// | ------                          | ------    | -------------                                                                                                                      |
-/// | `Currency`                      | Type      | The Move type for the `Currency` whose exchange rate is being updated. `Currency` must be an already-registered currency on-chain. |
-/// | `tc_account`                    | `&signer` | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                          |
-/// | `sliding_nonce`                 | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for the transaction.                                                          |
-/// | `new_exchange_rate_numerator`   | `u64`     | The numerator for the new to micro-XDX exchange rate for `Currency`.                                                               |
-/// | `new_exchange_rate_denominator` | `u64`     | The denominator for the new to micro-XDX exchange rate for `Currency`.                                                             |
-///
-/// # Common Abort Conditions
-/// | Error Category             | Error Reason                            | Description                                                                                |
-/// | ----------------           | --------------                          | -------------                                                                              |
-/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `tc_account`.                             |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
-/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ETREASURY_COMPLIANCE`   | `tc_account` is not the Treasury Compliance account.                                       |
-/// | `Errors::REQUIRES_ROLE`    | `Roles::ETREASURY_COMPLIANCE`           | `tc_account` is not the Treasury Compliance account.                                       |
-/// | `Errors::INVALID_ARGUMENT` | `FixedPoint32::EDENOMINATOR`            | `new_exchange_rate_denominator` is zero.                                                   |
-/// | `Errors::INVALID_ARGUMENT` | `FixedPoint32::ERATIO_OUT_OF_RANGE`     | The quotient is unrepresentable as a `FixedPoint32`.                                       |
-/// | `Errors::LIMIT_EXCEEDED`   | `FixedPoint32::ERATIO_OUT_OF_RANGE`     | The quotient is unrepresentable as a `FixedPoint32`.                                       |
-///
-/// # Related Scripts
-/// * `Script::update_dual_attestation_limit`
-/// * `Script::update_minting_ability`
-pub fn encode_update_exchange_rate_script(
-    currency: TypeTag,
-    sliding_nonce: u64,
-    new_exchange_rate_numerator: u64,
-    new_exchange_rate_denominator: u64,
-) -> Script {
-    Script::new(
-        UPDATE_EXCHANGE_RATE_CODE.to_vec(),
-        vec![currency],
-        vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::U64(new_exchange_rate_numerator),
-            TransactionArgument::U64(new_exchange_rate_denominator),
-        ],
-    )
-}
-
-/// # Summary
 /// Script to allow or disallow minting of new coins in a specified currency.  This transaction can
 /// only be sent by the Treasury Compliance account.  Turning minting off for a currency will have
 /// no effect on coins already in circulation, and coins may still be removed from the system.
@@ -3439,12 +3122,17 @@ fn decode_add_to_script_allow_list_script(script: &Script) -> Option<ScriptCall>
     })
 }
 
-fn decode_add_validator_and_reconfigure_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::AddValidatorAndReconfigure {
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        validator_name: decode_u8vector_argument(script.args().get(1)?.clone())?,
-        validator_address: decode_address_argument(script.args().get(2)?.clone())?,
+fn decode_autopay_create_instruction_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::AutopayCreateInstruction {
+        uid: decode_u64_argument(script.args().get(0)?.clone())?,
+        payee: decode_address_argument(script.args().get(1)?.clone())?,
+        end_epoch: decode_u64_argument(script.args().get(2)?.clone())?,
+        percentage: decode_u64_argument(script.args().get(3)?.clone())?,
     })
+}
+
+fn decode_autopay_enable_script(_script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::AutopayEnable {})
 }
 
 fn decode_burn_script(script: &Script) -> Option<ScriptCall> {
@@ -3504,21 +3192,16 @@ fn decode_create_recovery_address_script(_script: &Script) -> Option<ScriptCall>
     Some(ScriptCall::CreateRecoveryAddress {})
 }
 
-fn decode_create_validator_account_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::CreateValidatorAccount {
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        new_account_address: decode_address_argument(script.args().get(1)?.clone())?,
-        auth_key_prefix: decode_u8vector_argument(script.args().get(2)?.clone())?,
-        human_name: decode_u8vector_argument(script.args().get(3)?.clone())?,
+fn decode_create_user_account_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::CreateUserAccount {
+        challenge: decode_u8vector_argument(script.args().get(0)?.clone())?,
+        solution: decode_u8vector_argument(script.args().get(1)?.clone())?,
     })
 }
 
-fn decode_create_validator_operator_account_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::CreateValidatorOperatorAccount {
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        new_account_address: decode_address_argument(script.args().get(1)?.clone())?,
-        auth_key_prefix: decode_u8vector_argument(script.args().get(2)?.clone())?,
-        human_name: decode_u8vector_argument(script.args().get(3)?.clone())?,
+fn decode_demo_e2e_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::DemoE2e {
+        world: decode_u64_argument(script.args().get(0)?.clone())?,
     })
 }
 
@@ -3526,6 +3209,48 @@ fn decode_freeze_account_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::FreezeAccount {
         sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
         to_freeze_account: decode_address_argument(script.args().get(1)?.clone())?,
+    })
+}
+
+fn decode_minerstate_commit_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::MinerstateCommit {
+        challenge: decode_u8vector_argument(script.args().get(0)?.clone())?,
+        solution: decode_u8vector_argument(script.args().get(1)?.clone())?,
+    })
+}
+
+fn decode_minerstate_helper_script(_script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::MinerstateHelper {})
+}
+
+fn decode_minerstate_onboarding_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::MinerstateOnboarding {
+        challenge: decode_u8vector_argument(script.args().get(0)?.clone())?,
+        solution: decode_u8vector_argument(script.args().get(1)?.clone())?,
+        ow_human_name: decode_u8vector_argument(script.args().get(2)?.clone())?,
+        op_address: decode_address_argument(script.args().get(3)?.clone())?,
+        op_auth_key_prefix: decode_u8vector_argument(script.args().get(4)?.clone())?,
+        op_consensus_pubkey: decode_u8vector_argument(script.args().get(5)?.clone())?,
+        op_validator_network_addresses: decode_u8vector_argument(script.args().get(6)?.clone())?,
+        op_fullnode_network_addresses: decode_u8vector_argument(script.args().get(7)?.clone())?,
+        op_human_name: decode_u8vector_argument(script.args().get(8)?.clone())?,
+    })
+}
+
+fn decode_ol_oracle_tx_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::OlOracleTx {
+        id: decode_u64_argument(script.args().get(0)?.clone())?,
+        data: decode_u8vector_argument(script.args().get(1)?.clone())?,
+    })
+}
+
+fn decode_ol_reconfig_bulk_update_setup_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::OlReconfigBulkUpdateSetup {
+        alice: decode_address_argument(script.args().get(0)?.clone())?,
+        bob: decode_address_argument(script.args().get(1)?.clone())?,
+        carol: decode_address_argument(script.args().get(2)?.clone())?,
+        sha: decode_address_argument(script.args().get(3)?.clone())?,
+        ram: decode_address_argument(script.args().get(4)?.clone())?,
     })
 }
 
@@ -3558,14 +3283,6 @@ fn decode_register_validator_config_script(script: &Script) -> Option<ScriptCall
         consensus_pubkey: decode_u8vector_argument(script.args().get(1)?.clone())?,
         validator_network_addresses: decode_u8vector_argument(script.args().get(2)?.clone())?,
         fullnode_network_addresses: decode_u8vector_argument(script.args().get(3)?.clone())?,
-    })
-}
-
-fn decode_remove_validator_and_reconfigure_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::RemoveValidatorAndReconfigure {
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        validator_name: decode_u8vector_argument(script.args().get(1)?.clone())?,
-        validator_address: decode_address_argument(script.args().get(2)?.clone())?,
     })
 }
 
@@ -3646,6 +3363,12 @@ fn decode_tiered_mint_script(script: &Script) -> Option<ScriptCall> {
     })
 }
 
+fn decode_trusted_account_update_tx_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::TrustedAccountUpdateTx {
+        world: decode_u64_argument(script.args().get(0)?.clone())?,
+    })
+}
+
 fn decode_unfreeze_account_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::UnfreezeAccount {
         sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
@@ -3664,15 +3387,6 @@ fn decode_update_dual_attestation_limit_script(script: &Script) -> Option<Script
     Some(ScriptCall::UpdateDualAttestationLimit {
         sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
         new_micro_xdx_limit: decode_u64_argument(script.args().get(1)?.clone())?,
-    })
-}
-
-fn decode_update_exchange_rate_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::UpdateExchangeRate {
-        currency: script.ty_args().get(0)?.clone(),
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        new_exchange_rate_numerator: decode_u64_argument(script.args().get(1)?.clone())?,
-        new_exchange_rate_denominator: decode_u64_argument(script.args().get(2)?.clone())?,
     })
 }
 
@@ -3703,8 +3417,12 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
         Box::new(decode_add_to_script_allow_list_script),
     );
     map.insert(
-        ADD_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
-        Box::new(decode_add_validator_and_reconfigure_script),
+        AUTOPAY_CREATE_INSTRUCTION_CODE.to_vec(),
+        Box::new(decode_autopay_create_instruction_script),
+    );
+    map.insert(
+        AUTOPAY_ENABLE_CODE.to_vec(),
+        Box::new(decode_autopay_enable_script),
     );
     map.insert(BURN_CODE.to_vec(), Box::new(decode_burn_script));
     map.insert(
@@ -3732,16 +3450,33 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
         Box::new(decode_create_recovery_address_script),
     );
     map.insert(
-        CREATE_VALIDATOR_ACCOUNT_CODE.to_vec(),
-        Box::new(decode_create_validator_account_script),
+        CREATE_USER_ACCOUNT_CODE.to_vec(),
+        Box::new(decode_create_user_account_script),
     );
-    map.insert(
-        CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE.to_vec(),
-        Box::new(decode_create_validator_operator_account_script),
-    );
+    map.insert(DEMO_E2E_CODE.to_vec(), Box::new(decode_demo_e2e_script));
     map.insert(
         FREEZE_ACCOUNT_CODE.to_vec(),
         Box::new(decode_freeze_account_script),
+    );
+    map.insert(
+        MINERSTATE_COMMIT_CODE.to_vec(),
+        Box::new(decode_minerstate_commit_script),
+    );
+    map.insert(
+        MINERSTATE_HELPER_CODE.to_vec(),
+        Box::new(decode_minerstate_helper_script),
+    );
+    map.insert(
+        MINERSTATE_ONBOARDING_CODE.to_vec(),
+        Box::new(decode_minerstate_onboarding_script),
+    );
+    map.insert(
+        OL_ORACLE_TX_CODE.to_vec(),
+        Box::new(decode_ol_oracle_tx_script),
+    );
+    map.insert(
+        OL_RECONFIG_BULK_UPDATE_SETUP_CODE.to_vec(),
+        Box::new(decode_ol_reconfig_bulk_update_setup_script),
     );
     map.insert(
         PEER_TO_PEER_WITH_METADATA_CODE.to_vec(),
@@ -3755,10 +3490,6 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
     map.insert(
         REGISTER_VALIDATOR_CONFIG_CODE.to_vec(),
         Box::new(decode_register_validator_config_script),
-    );
-    map.insert(
-        REMOVE_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
-        Box::new(decode_remove_validator_and_reconfigure_script),
     );
     map.insert(
         ROTATE_AUTHENTICATION_KEY_CODE.to_vec(),
@@ -3801,6 +3532,10 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
         Box::new(decode_tiered_mint_script),
     );
     map.insert(
+        TRUSTED_ACCOUNT_UPDATE_TX_CODE.to_vec(),
+        Box::new(decode_trusted_account_update_tx_script),
+    );
+    map.insert(
         UNFREEZE_ACCOUNT_CODE.to_vec(),
         Box::new(decode_unfreeze_account_script),
     );
@@ -3811,10 +3546,6 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
     map.insert(
         UPDATE_DUAL_ATTESTATION_LIMIT_CODE.to_vec(),
         Box::new(decode_update_dual_attestation_limit_script),
-    );
-    map.insert(
-        UPDATE_EXCHANGE_RATE_CODE.to_vec(),
-        Box::new(decode_update_exchange_rate_script),
     );
     map.insert(
         UPDATE_MINTING_ABILITY_CODE.to_vec(),
@@ -3881,16 +3612,25 @@ const ADD_TO_SCRIPT_ALLOW_LIST_CODE: &[u8] = &[
     0, 3, 1, 7, 10, 0, 10, 2, 17, 1, 11, 0, 11, 1, 17, 0, 2,
 ];
 
-const ADD_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 91, 8, 136, 1, 16, 0, 0,
-    0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
-    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
-    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
-    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
-    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
-    95, 110, 97, 109, 101, 13, 97, 100, 100, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1, 11,
-    2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2, 2,
+const AUTOPAY_CREATE_INSTRUCTION_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 15, 5, 19, 19, 7, 38, 56, 8, 94, 16, 0, 0, 0,
+    1, 1, 2, 0, 1, 0, 0, 3, 2, 3, 0, 0, 4, 1, 4, 0, 1, 6, 12, 1, 5, 5, 6, 12, 3, 5, 3, 3, 0, 1, 1,
+    3, 5, 1, 3, 7, 65, 117, 116, 111, 80, 97, 121, 6, 83, 105, 103, 110, 101, 114, 10, 97, 100,
+    100, 114, 101, 115, 115, 95, 111, 102, 18, 99, 114, 101, 97, 116, 101, 95, 105, 110, 115, 116,
+    114, 117, 99, 116, 105, 111, 110, 10, 105, 115, 95, 101, 110, 97, 98, 108, 101, 100, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 5, 19, 10, 0, 17, 0, 12, 5, 10, 5, 17, 2, 12, 6,
+    11, 6, 3, 12, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 1, 10, 2, 10, 3, 10, 4, 17,
+    1, 2,
+];
+
+const AUTOPAY_ENABLE_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 15, 5, 19, 11, 7, 30, 52, 8, 82, 16, 0, 0, 0,
+    1, 1, 2, 0, 1, 0, 0, 3, 0, 2, 0, 0, 4, 1, 3, 0, 1, 6, 12, 1, 5, 0, 1, 1, 2, 1, 3, 7, 65, 117,
+    116, 111, 80, 97, 121, 6, 83, 105, 103, 110, 101, 114, 10, 97, 100, 100, 114, 101, 115, 115,
+    95, 111, 102, 14, 101, 110, 97, 98, 108, 101, 95, 97, 117, 116, 111, 112, 97, 121, 10, 105,
+    115, 95, 101, 110, 97, 98, 108, 101, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    4, 11, 10, 0, 17, 1, 11, 0, 17, 0, 17, 2, 12, 1, 11, 1, 3, 10, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39,
+    2,
 ];
 
 const BURN_CODE: &[u8] = &[
@@ -3965,25 +3705,23 @@ const CREATE_RECOVERY_ADDRESS_CODE: &[u8] = &[
     3, 5, 10, 0, 11, 0, 17, 0, 17, 1, 2,
 ];
 
-const CREATE_VALIDATOR_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 72, 8, 108, 16, 0, 0, 0,
-    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
-    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
-    110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
-    95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
-    100, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 17, 1, 2,
+const CREATE_USER_ACCOUNT_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 4, 2, 4, 4, 3, 8, 11, 4, 19, 2, 5, 21, 26, 7, 47, 55, 8,
+    102, 16, 0, 0, 0, 1, 1, 1, 2, 0, 0, 2, 0, 1, 1, 1, 0, 3, 2, 0, 0, 0, 6, 1, 5, 1, 3, 2, 6, 10,
+    2, 6, 10, 2, 3, 6, 12, 10, 2, 10, 2, 3, 5, 1, 3, 0, 1, 8, 0, 11, 68, 105, 101, 109, 65, 99, 99,
+    111, 117, 110, 116, 3, 71, 65, 83, 7, 98, 97, 108, 97, 110, 99, 101, 30, 99, 114, 101, 97, 116,
+    101, 95, 117, 115, 101, 114, 95, 97, 99, 99, 111, 117, 110, 116, 95, 119, 105, 116, 104, 95,
+    112, 114, 111, 111, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 4, 14, 14, 1,
+    14, 2, 17, 1, 12, 3, 10, 3, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 4, 11, 4, 3, 13, 6, 1, 0,
+    0, 0, 0, 0, 0, 0, 39, 2,
 ];
 
-const CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 81, 8, 117, 16, 0, 0, 0,
-    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
-    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
-    110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
-    95, 111, 114, 95, 97, 98, 111, 114, 116, 33, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
-    100, 97, 116, 111, 114, 95, 111, 112, 101, 114, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117,
-    110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11,
-    0, 10, 2, 11, 3, 11, 4, 17, 1, 2,
+const DEMO_E2E_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 3, 2, 6, 4, 8, 4, 5, 12, 9, 7, 21, 12, 8, 33, 16, 6,
+    49, 18, 0, 0, 0, 1, 0, 1, 1, 1, 0, 3, 0, 2, 1, 6, 9, 0, 0, 1, 3, 1, 5, 5, 68, 101, 98, 117,
+    103, 5, 112, 114, 105, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 16, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 225, 16, 0, 2, 3, 7, 7, 0, 12, 1, 14, 1, 56, 0, 14, 0, 56,
+    1, 2,
 ];
 
 const FREEZE_ACCOUNT_CODE: &[u8] = &[
@@ -3994,6 +3732,70 @@ const FREEZE_ACCOUNT_CODE: &[u8] = &[
     116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98,
     111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 7, 10, 0, 10, 1, 17, 1,
     11, 0, 10, 2, 17, 0, 2,
+];
+
+const MINERSTATE_COMMIT_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 15, 5, 23, 24, 7, 47, 71, 8, 118, 16,
+    0, 0, 0, 1, 1, 3, 2, 0, 0, 2, 0, 1, 0, 1, 4, 2, 0, 0, 1, 5, 3, 4, 0, 0, 1, 3, 2, 6, 12, 8, 0,
+    3, 10, 2, 3, 10, 2, 1, 8, 0, 3, 6, 12, 10, 2, 10, 2, 7, 71, 108, 111, 98, 97, 108, 115, 10, 77,
+    105, 110, 101, 114, 83, 116, 97, 116, 101, 14, 103, 101, 116, 95, 100, 105, 102, 102, 105, 99,
+    117, 108, 116, 121, 5, 80, 114, 111, 111, 102, 12, 99, 111, 109, 109, 105, 116, 95, 115, 116,
+    97, 116, 101, 17, 99, 114, 101, 97, 116, 101, 95, 112, 114, 111, 111, 102, 95, 98, 108, 111,
+    98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 4, 9, 11, 1, 17, 0, 11, 2, 17, 2, 12,
+    3, 11, 0, 11, 3, 17, 1, 2,
+];
+
+const MINERSTATE_HELPER_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 8, 3, 8, 25, 5, 33, 22, 7, 55, 113, 8, 168, 1, 16, 0, 0,
+    0, 1, 0, 2, 0, 3, 0, 4, 0, 1, 0, 1, 5, 2, 0, 0, 2, 6, 0, 3, 0, 2, 7, 0, 3, 0, 3, 8, 0, 4, 0, 0,
+    1, 3, 4, 6, 12, 3, 10, 2, 10, 2, 1, 10, 2, 1, 1, 1, 6, 12, 2, 1, 3, 7, 71, 108, 111, 98, 97,
+    108, 115, 10, 77, 105, 110, 101, 114, 83, 116, 97, 116, 101, 12, 84, 101, 115, 116, 70, 105,
+    120, 116, 117, 114, 101, 115, 7, 84, 101, 115, 116, 110, 101, 116, 14, 103, 101, 116, 95, 100,
+    105, 102, 102, 105, 99, 117, 108, 116, 121, 11, 116, 101, 115, 116, 95, 104, 101, 108, 112,
+    101, 114, 17, 97, 108, 105, 99, 101, 95, 48, 95, 101, 97, 115, 121, 95, 99, 104, 97, 108, 16,
+    97, 108, 105, 99, 101, 95, 48, 95, 101, 97, 115, 121, 95, 115, 111, 108, 10, 105, 115, 95, 116,
+    101, 115, 116, 110, 101, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 14, 17,
+    4, 12, 1, 11, 1, 3, 8, 11, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 17, 0, 17, 2, 17, 3, 17,
+    1, 2,
+];
+
+const MINERSTATE_ONBOARDING_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 58, 7, 86, 85,
+    8, 171, 1, 16, 0, 0, 0, 1, 0, 2, 1, 1, 2, 0, 0, 3, 0, 1, 1, 1, 0, 4, 2, 0, 0, 2, 5, 0, 3, 0, 0,
+    7, 1, 5, 1, 3, 10, 6, 12, 6, 10, 2, 6, 10, 2, 10, 2, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 1,
+    1, 10, 6, 12, 10, 2, 10, 2, 10, 2, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 5, 5, 1, 3, 1, 3, 0,
+    1, 8, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 3, 71, 65, 83, 15, 86, 97, 108,
+    105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 7, 98, 97, 108, 97, 110, 99, 101, 35,
+    99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 95, 97, 99, 99, 111,
+    117, 110, 116, 95, 119, 105, 116, 104, 95, 112, 114, 111, 111, 102, 8, 105, 115, 95, 118, 97,
+    108, 105, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 5, 29, 11, 0, 14, 1, 14,
+    2, 11, 3, 10, 4, 11, 5, 11, 6, 11, 7, 11, 8, 11, 9, 17, 1, 12, 10, 10, 10, 17, 2, 12, 11, 11,
+    11, 3, 19, 6, 3, 0, 0, 0, 0, 0, 0, 0, 39, 10, 10, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 13,
+    11, 13, 3, 28, 6, 4, 0, 0, 0, 0, 0, 0, 0, 39, 2,
+];
+
+const OL_ORACLE_TX_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 7, 7, 14, 15, 8, 29, 16, 0, 0, 0, 1,
+    0, 1, 0, 3, 6, 12, 3, 10, 2, 0, 6, 79, 114, 97, 99, 108, 101, 7, 104, 97, 110, 100, 108, 101,
+    114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 5, 11, 0, 10, 1, 11, 2, 17, 0, 2,
+];
+
+const OL_RECONFIG_BULK_UPDATE_SETUP_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 33, 4, 37, 6, 5, 43, 47, 7, 90, 96, 8, 186, 1,
+    16, 0, 0, 0, 1, 1, 2, 0, 1, 1, 1, 1, 3, 2, 3, 1, 1, 1, 4, 4, 0, 1, 1, 0, 5, 5, 0, 0, 0, 6, 6,
+    7, 0, 0, 7, 0, 3, 0, 0, 6, 2, 6, 1, 6, 0, 1, 10, 9, 0, 1, 6, 10, 9, 0, 1, 3, 2, 7, 10, 9, 0, 9,
+    0, 2, 6, 12, 10, 5, 1, 5, 1, 1, 6, 6, 12, 5, 5, 5, 5, 5, 9, 1, 3, 1, 3, 1, 3, 1, 3, 10, 5, 10,
+    68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 6, 86, 101, 99, 116, 111, 114, 5, 101, 109,
+    112, 116, 121, 6, 108, 101, 110, 103, 116, 104, 9, 112, 117, 115, 104, 95, 98, 97, 99, 107, 22,
+    98, 117, 108, 107, 95, 117, 112, 100, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111,
+    114, 115, 12, 105, 115, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 18, 118, 97, 108, 105,
+    100, 97, 116, 111, 114, 95, 115, 101, 116, 95, 115, 105, 122, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 0, 8, 9, 58, 56, 0, 12, 14, 13, 14, 10, 1, 56, 1, 13, 14, 10, 2, 56, 1,
+    13, 14, 10, 3, 56, 1, 13, 14, 10, 4, 56, 1, 13, 14, 10, 5, 56, 1, 14, 14, 56, 2, 6, 5, 0, 0, 0,
+    0, 0, 0, 0, 33, 12, 6, 11, 6, 3, 28, 11, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 11, 14,
+    17, 3, 17, 5, 6, 5, 0, 0, 0, 0, 0, 0, 0, 33, 12, 8, 11, 8, 3, 39, 6, 2, 0, 0, 0, 0, 0, 0, 0,
+    39, 10, 4, 17, 4, 8, 33, 12, 10, 11, 10, 3, 48, 6, 3, 0, 0, 0, 0, 0, 0, 0, 39, 10, 1, 17, 4, 8,
+    33, 12, 12, 11, 12, 3, 57, 6, 4, 0, 0, 0, 0, 0, 0, 0, 39, 2,
 ];
 
 const PEER_TO_PEER_WITH_METADATA_CODE: &[u8] = &[
@@ -4033,19 +3835,6 @@ const REGISTER_VALIDATOR_CONFIG_CODE: &[u8] = &[
     0, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67,
     111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 7, 11, 0, 10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 2,
-];
-
-const REMOVE_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 94, 8, 139, 1, 16, 0, 0,
-    0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
-    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
-    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
-    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
-    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
-    95, 110, 97, 109, 101, 16, 114, 101, 109, 111, 118, 101, 95, 118, 97, 108, 105, 100, 97, 116,
-    111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10,
-    3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10,
-    3, 17, 2, 2,
 ];
 
 const ROTATE_AUTHENTICATION_KEY_CODE: &[u8] = &[
@@ -4161,6 +3950,14 @@ const TIERED_MINT_CODE: &[u8] = &[
     0, 11, 0, 10, 2, 10, 3, 10, 4, 56, 0, 2,
 ];
 
+const TRUSTED_ACCOUNT_UPDATE_TX_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 3, 2, 6, 4, 8, 4, 5, 12, 9, 7, 21, 12, 8, 33, 16, 6,
+    49, 18, 0, 0, 0, 1, 0, 1, 1, 1, 0, 3, 0, 2, 1, 6, 9, 0, 0, 1, 3, 1, 5, 5, 68, 101, 98, 117,
+    103, 5, 112, 114, 105, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 16, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 225, 16, 0, 2, 3, 7, 7, 0, 12, 1, 14, 1, 56, 0, 14, 0, 56,
+    1, 2,
+];
+
 const UNFREEZE_ACCOUNT_CODE: &[u8] = &[
     161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 14, 7, 28, 68, 8, 96, 16, 0, 0, 0,
     1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 5, 0, 2, 6, 12, 3, 3, 6, 12, 3, 5, 15, 65, 99, 99,
@@ -4188,19 +3985,6 @@ const UPDATE_DUAL_ATTESTATION_LIMIT_CODE: &[u8] = &[
     105, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97,
     98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10, 1,
     17, 1, 11, 0, 10, 2, 17, 0, 2,
-];
-
-const UPDATE_EXCHANGE_RATE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 25, 7, 53, 99,
-    8, 152, 1, 16, 0, 0, 0, 1, 0, 2, 1, 1, 2, 0, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 3, 1, 1, 2,
-    6, 2, 3, 3, 1, 8, 0, 2, 6, 12, 3, 0, 2, 6, 12, 8, 0, 4, 6, 12, 3, 3, 3, 1, 9, 0, 4, 68, 105,
-    101, 109, 12, 70, 105, 120, 101, 100, 80, 111, 105, 110, 116, 51, 50, 12, 83, 108, 105, 100,
-    105, 110, 103, 78, 111, 110, 99, 101, 20, 99, 114, 101, 97, 116, 101, 95, 102, 114, 111, 109,
-    95, 114, 97, 116, 105, 111, 110, 97, 108, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110,
-    99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 117, 112, 100, 97, 116, 101, 95, 120,
-    100, 120, 95, 101, 120, 99, 104, 97, 110, 103, 101, 95, 114, 97, 116, 101, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 5, 1, 11, 10, 0, 10, 1, 17, 1, 10, 2, 10, 3, 17, 0, 12, 4, 11,
-    0, 11, 4, 56, 0, 2,
 ];
 
 const UPDATE_MINTING_ABILITY_CODE: &[u8] = &[

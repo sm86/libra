@@ -52,11 +52,9 @@
 -  [Transaction Scripts](#@Transaction_Scripts_46)
     -  [Account Creation](#@Account_Creation_47)
         -  [Script `create_child_vasp_account`](#create_child_vasp_account)
-        -  [Script `create_validator_operator_account`](#create_validator_operator_account)
-        -  [Script `create_validator_account`](#create_validator_account)
         -  [Script `create_parent_vasp_account`](#create_parent_vasp_account)
         -  [Script `create_designated_dealer`](#create_designated_dealer)
-    -  [Account Administration](#@Account_Administration_74)
+    -  [Account Administration](#@Account_Administration_64)
         -  [Script `add_currency_to_account`](#add_currency_to_account)
         -  [Script `add_recovery_rotation_capability`](#add_recovery_rotation_capability)
         -  [Script `publish_shared_ed25519_public_key`](#publish_shared_ed25519_public_key)
@@ -67,16 +65,14 @@
         -  [Script `rotate_authentication_key_with_recovery_address`](#rotate_authentication_key_with_recovery_address)
         -  [Script `rotate_dual_attestation_info`](#rotate_dual_attestation_info)
         -  [Script `rotate_shared_ed25519_public_key`](#rotate_shared_ed25519_public_key)
-    -  [Payments](#@Payments_126)
+    -  [Payments](#@Payments_116)
         -  [Script `peer_to_peer_with_metadata`](#peer_to_peer_with_metadata)
-    -  [Validator and Validator Operator Administration](#@Validator_and_Validator_Operator_Administration_133)
-        -  [Script `add_validator_and_reconfigure`](#add_validator_and_reconfigure)
+    -  [Validator and Validator Operator Administration](#@Validator_and_Validator_Operator_Administration_123)
         -  [Script `register_validator_config`](#register_validator_config)
-        -  [Script `remove_validator_and_reconfigure`](#remove_validator_and_reconfigure)
         -  [Script `set_validator_config_and_reconfigure`](#set_validator_config_and_reconfigure)
         -  [Script `set_validator_operator`](#set_validator_operator)
         -  [Script `set_validator_operator_with_nonce_admin`](#set_validator_operator_with_nonce_admin)
-    -  [Treasury and Compliance Operations](#@Treasury_and_Compliance_Operations_164)
+    -  [Treasury and Compliance Operations](#@Treasury_and_Compliance_Operations_144)
         -  [Script `preburn`](#preburn)
         -  [Script `burn`](#burn)
         -  [Script `cancel_burn`](#cancel_burn)
@@ -85,12 +81,11 @@
         -  [Script `freeze_account`](#freeze_account)
         -  [Script `unfreeze_account`](#unfreeze_account)
         -  [Script `update_dual_attestation_limit`](#update_dual_attestation_limit)
-        -  [Script `update_exchange_rate`](#update_exchange_rate)
         -  [Script `update_minting_ability`](#update_minting_ability)
-    -  [System Administration](#@System_Administration_222)
+    -  [System Administration](#@System_Administration_197)
         -  [Script `update_diem_version`](#update_diem_version)
         -  [Script `add_to_script_allow_list`](#add_to_script_allow_list)
-    -  [Index](#@Index_231)
+    -  [Index](#@Index_206)
 
 
 
@@ -245,7 +240,7 @@ Script documentation: <code><a href="transaction_script_documentation.md#create_
 Creates a Validator Operator account. This transaction can only be sent by the Diem
 Root account.
 
-Script documentation: <code><a href="transaction_script_documentation.md#create_validator_operator_account">create_validator_operator_account</a></code>
+Script documentation: <code>create_validator_operator_account</code>
 
 ---
 
@@ -257,7 +252,7 @@ Script documentation: <code><a href="transaction_script_documentation.md#create_
 Creates a Validator account. This transaction can only be sent by the Diem
 Root account.
 
-Script documentation: <code><a href="transaction_script_documentation.md#create_validator_account">create_validator_account</a></code>
+Script documentation: <code>create_validator_account</code>
 
 ---
 
@@ -457,7 +452,7 @@ Adds a validator account to the validator set, and triggers a
 reconfiguration of the system to admit the account to the validator set for the system. This
 transaction can only be successfully called by the Diem Root account.
 
-Script documentation: <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a></code>
+Script documentation: <code>add_validator_and_reconfigure</code>
 
 
 ---
@@ -486,7 +481,7 @@ This script removes a validator account from the validator set, and triggers a r
 of the system to remove the validator from the system. This transaction can only be
 successfully called by the Diem Root account.
 
-Script documentation: <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">remove_validator_and_reconfigure</a></code>
+Script documentation: <code>remove_validator_and_reconfigure</code>
 
 
 ---
@@ -668,7 +663,7 @@ to micro-XDX). The transaction can only be sent by the Treasury Compliance accou
 transaction the updated exchange rate will be used for normalization of gas prices, and for
 dual attestation checking.
 
-Script documentation: <code><a href="transaction_script_documentation.md#update_exchange_rate">update_exchange_rate</a></code>
+Script documentation: <code>update_exchange_rate</code>
 
 
 ---
@@ -914,286 +909,11 @@ Only Parent VASP accounts can create Child VASP accounts [[A7]][ROLE].
 
 ---
 
-
-<a name="create_validator_operator_account"></a>
-
-#### Script `create_validator_operator_account`
-
-
-
-<pre><code><b>use</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
-<b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
-</code></pre>
-
-
-
-<a name="@Summary_54"></a>
-
-##### Summary
-
-Creates a Validator Operator account. This transaction can only be sent by the Diem
-Root account.
-
-
-<a name="@Technical_Description_55"></a>
-
-##### Technical Description
-
-Creates an account with a Validator Operator role at <code>new_account_address</code>, with authentication key
-<code>auth_key_prefix</code> | <code>new_account_address</code>. It publishes a
-<code><a href="../../modules/doc/ValidatorOperatorConfig.md#0x1_ValidatorOperatorConfig_ValidatorOperatorConfig">ValidatorOperatorConfig::ValidatorOperatorConfig</a></code> resource with the specified <code>human_name</code>.
-This script does not assign the validator operator to any validator accounts but only creates the account.
-
-
-<a name="@Parameters_56"></a>
-
-##### Parameters
-
-| Name                  | Type         | Description                                                                                     |
-| ------                | ------       | -------------                                                                                   |
-| <code>dr_account</code>          | <code>&signer</code>    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-| <code>sliding_nonce</code>       | <code>u64</code>        | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for this transaction.                      |
-| <code>new_account_address</code> | <code>address</code>    | Address of the to-be-created Validator account.                                                 |
-| <code>auth_key_prefix</code>     | <code>vector&lt;u8&gt;</code> | The authentication key prefix that will be used initially for the newly created account.        |
-| <code>human_name</code>          | <code>vector&lt;u8&gt;</code> | ASCII-encoded human name for the validator.                                                     |
-
-
-<a name="@Common_Abort_Conditions_57"></a>
-
-##### Common Abort Conditions
-
-| Error Category              | Error Reason                            | Description                                                                                |
-| ----------------            | --------------                          | -------------                                                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>     | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>          | A <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> resource is not published under <code>dr_account</code>.                             |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>          | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not. |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>          | The <code>sliding_nonce</code> is too far in the future.                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code> | The <code>sliding_nonce</code> has been previously recorded.                                          |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code>  | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>            | The sending account is not the Diem Root account.                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>     | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDIEM_ROOT">Roles::EDIEM_ROOT</a></code>                    | The sending account is not the Diem Root account.                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EROLE_ID">Roles::EROLE_ID</a></code>                       | The <code>new_account_address</code> address is already taken.                                        |
-
-
-<a name="@Related_Scripts_58"></a>
-
-##### Related Scripts
-
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#create_validator_operator_account">create_validator_operator_account</a>(dr_account: &signer, sliding_nonce: u64, new_account_address: address, auth_key_prefix: vector&lt;u8&gt;, human_name: vector&lt;u8&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="transaction_script_documentation.md#create_validator_operator_account">create_validator_operator_account</a>(
-    dr_account: &signer,
-    sliding_nonce: u64,
-    new_account_address: address,
-    auth_key_prefix: vector&lt;u8&gt;,
-    human_name: vector&lt;u8&gt;
-) {
-    <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_record_nonce_or_abort">SlidingNonce::record_nonce_or_abort</a>(dr_account, sliding_nonce);
-    <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_create_validator_operator_account">DiemAccount::create_validator_operator_account</a>(
-        dr_account,
-        new_account_address,
-        auth_key_prefix,
-        human_name,
-    );
-}
-</code></pre>
-
-
-
-</details>
-
-<details>
-<summary>Specification</summary>
-
-Only Diem root may create Validator Operator accounts
-Authentication: ValidatorAccountAbortsIf includes AbortsIfNotDiemRoot.
-Checks that above table includes all error categories.
-The verifier finds an abort that is not documented, and cannot occur in practice:
-* REQUIRES_ROLE comes from <code><a href="../../modules/doc/Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a></code>. However, assert_diem_root checks the literal
-Diem root address before checking the role, and the role abort is unreachable in practice, since
-only Diem root has the Diem root role.
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_TransactionChecks">DiemAccount::TransactionChecks</a>{sender: dr_account};
-<b>include</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_RecordNonceAbortsIf">SlidingNonce::RecordNonceAbortsIf</a>{seq_nonce: sliding_nonce, account: dr_account};
-<b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_CreateValidatorOperatorAccountAbortsIf">DiemAccount::CreateValidatorOperatorAccountAbortsIf</a>;
-<b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_CreateValidatorOperatorAccountEnsures">DiemAccount::CreateValidatorOperatorAccountEnsures</a>;
-<b>aborts_with</b> [check]
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
-</code></pre>
-
-
-**Access Control:**
-Only the Diem Root account can create Validator Operator accounts [[A4]][ROLE].
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
-</code></pre>
-
-
-
-</details>
+> undefined move-include `create_validator_operator_account`
 
 ---
 
-
-<a name="create_validator_account"></a>
-
-#### Script `create_validator_account`
-
-
-
-<pre><code><b>use</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
-<b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
-</code></pre>
-
-
-
-<a name="@Summary_59"></a>
-
-##### Summary
-
-Creates a Validator account. This transaction can only be sent by the Diem
-Root account.
-
-
-<a name="@Technical_Description_60"></a>
-
-##### Technical Description
-
-Creates an account with a Validator role at <code>new_account_address</code>, with authentication key
-<code>auth_key_prefix</code> | <code>new_account_address</code>. It publishes a
-<code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> resource with empty <code>config</code>, and
-<code>operator_account</code> fields. The <code>human_name</code> field of the
-<code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> is set to the passed in <code>human_name</code>.
-This script does not add the validator to the validator set or the system,
-but only creates the account.
-
-
-<a name="@Parameters_61"></a>
-
-##### Parameters
-
-| Name                  | Type         | Description                                                                                     |
-| ------                | ------       | -------------                                                                                   |
-| <code>dr_account</code>          | <code>&signer</code>    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-| <code>sliding_nonce</code>       | <code>u64</code>        | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for this transaction.                      |
-| <code>new_account_address</code> | <code>address</code>    | Address of the to-be-created Validator account.                                                 |
-| <code>auth_key_prefix</code>     | <code>vector&lt;u8&gt;</code> | The authentication key prefix that will be used initially for the newly created account.        |
-| <code>human_name</code>          | <code>vector&lt;u8&gt;</code> | ASCII-encoded human name for the validator.                                                     |
-
-
-<a name="@Common_Abort_Conditions_62"></a>
-
-##### Common Abort Conditions
-
-| Error Category              | Error Reason                            | Description                                                                                |
-| ----------------            | --------------                          | -------------                                                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>     | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>          | A <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> resource is not published under <code>dr_account</code>.                             |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>          | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not. |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>          | The <code>sliding_nonce</code> is too far in the future.                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code> | The <code>sliding_nonce</code> has been previously recorded.                                          |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code>  | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>            | The sending account is not the Diem Root account.                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>     | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDIEM_ROOT">Roles::EDIEM_ROOT</a></code>                    | The sending account is not the Diem Root account.                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EROLE_ID">Roles::EROLE_ID</a></code>                       | The <code>new_account_address</code> address is already taken.                                        |
-
-
-<a name="@Related_Scripts_63"></a>
-
-##### Related Scripts
-
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
-* <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#create_validator_account">create_validator_account</a>(dr_account: &signer, sliding_nonce: u64, new_account_address: address, auth_key_prefix: vector&lt;u8&gt;, human_name: vector&lt;u8&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="transaction_script_documentation.md#create_validator_account">create_validator_account</a>(
-    dr_account: &signer,
-    sliding_nonce: u64,
-    new_account_address: address,
-    auth_key_prefix: vector&lt;u8&gt;,
-    human_name: vector&lt;u8&gt;,
-) {
-    <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_record_nonce_or_abort">SlidingNonce::record_nonce_or_abort</a>(dr_account, sliding_nonce);
-    <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_create_validator_account">DiemAccount::create_validator_account</a>(
-        dr_account,
-        new_account_address,
-        auth_key_prefix,
-        human_name,
-    );
-  }
-</code></pre>
-
-
-
-</details>
-
-<details>
-<summary>Specification</summary>
-
-Only Diem root may create Validator accounts
-Authentication: ValidatorAccountAbortsIf includes AbortsIfNotDiemRoot.
-Checks that above table includes all error categories.
-The verifier finds an abort that is not documented, and cannot occur in practice:
-* REQUIRES_ROLE comes from <code><a href="../../modules/doc/Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a></code>. However, assert_diem_root checks the literal
-Diem root address before checking the role, and the role abort is unreachable in practice, since
-only Diem root has the Diem root role.
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_TransactionChecks">DiemAccount::TransactionChecks</a>{sender: dr_account};
-<b>include</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_RecordNonceAbortsIf">SlidingNonce::RecordNonceAbortsIf</a>{seq_nonce: sliding_nonce, account: dr_account};
-<b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_CreateValidatorAccountAbortsIf">DiemAccount::CreateValidatorAccountAbortsIf</a>;
-<b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_CreateValidatorAccountEnsures">DiemAccount::CreateValidatorAccountEnsures</a>;
-<b>aborts_with</b> [check]
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
-</code></pre>
-
-
-**Access Control:**
-Only the Diem Root account can create Validator accounts [[A3]][ROLE].
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
-</code></pre>
-
-
-
-</details>
+> undefined move-include `create_validator_account`
 
 ---
 
@@ -1210,14 +930,14 @@ Only the Diem Root account can create Validator accounts [[A3]][ROLE].
 
 
 
-<a name="@Summary_64"></a>
+<a name="@Summary_54"></a>
 
 ##### Summary
 
 Creates a Parent VASP account with the specified human name. Must be called by the Treasury Compliance account.
 
 
-<a name="@Technical_Description_65"></a>
+<a name="@Technical_Description_55"></a>
 
 ##### Technical Description
 
@@ -1228,7 +948,7 @@ also be added. This can only be invoked by an TreasuryCompliance account.
 <code>sliding_nonce</code> is a unique nonce for operation, see <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> for details.
 
 
-<a name="@Parameters_66"></a>
+<a name="@Parameters_56"></a>
 
 ##### Parameters
 
@@ -1243,7 +963,7 @@ also be added. This can only be invoked by an TreasuryCompliance account.
 | <code>add_all_currencies</code>  | <code>bool</code>       | Whether to publish balance resources for all known currencies when the account is created.                                                                     |
 
 
-<a name="@Common_Abort_Conditions_67"></a>
+<a name="@Common_Abort_Conditions_57"></a>
 
 ##### Common Abort Conditions
 
@@ -1259,7 +979,7 @@ also be added. This can only be invoked by an TreasuryCompliance account.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EROLE_ID">Roles::EROLE_ID</a></code>                       | The <code>new_account_address</code> address is already taken.                                        |
 
 
-<a name="@Related_Scripts_68"></a>
+<a name="@Related_Scripts_58"></a>
 
 ##### Related Scripts
 
@@ -1347,7 +1067,7 @@ Only the Treasury Compliance account can create Parent VASP accounts [[A6]][ROLE
 
 
 
-<a name="@Summary_69"></a>
+<a name="@Summary_59"></a>
 
 ##### Summary
 
@@ -1355,7 +1075,7 @@ Creates a Designated Dealer account with the provided information, and initializ
 default mint tiers. The transaction can only be sent by the Treasury Compliance account.
 
 
-<a name="@Technical_Description_70"></a>
+<a name="@Technical_Description_60"></a>
 
 ##### Technical Description
 
@@ -1369,7 +1089,7 @@ At the time of creation the account is also initialized with default mint tiers 
 account.
 
 
-<a name="@Parameters_71"></a>
+<a name="@Parameters_61"></a>
 
 ##### Parameters
 
@@ -1385,7 +1105,7 @@ account.
 
 
 
-<a name="@Common_Abort_Conditions_72"></a>
+<a name="@Common_Abort_Conditions_62"></a>
 
 ##### Common Abort Conditions
 
@@ -1401,7 +1121,7 @@ account.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EROLE_ID">Roles::EROLE_ID</a></code>                       | The <code>addr</code> address is already taken.                                                       |
 
 
-<a name="@Related_Scripts_73"></a>
+<a name="@Related_Scripts_63"></a>
 
 ##### Related Scripts
 
@@ -1475,7 +1195,7 @@ Only the Treasury Compliance account can create Designated Dealer accounts [[A5]
 
 ---
 
-<a name="@Account_Administration_74"></a>
+<a name="@Account_Administration_64"></a>
 
 ### Account Administration
 
@@ -1492,7 +1212,7 @@ Only the Treasury Compliance account can create Designated Dealer accounts [[A5]
 
 
 
-<a name="@Summary_75"></a>
+<a name="@Summary_65"></a>
 
 ##### Summary
 
@@ -1502,7 +1222,7 @@ successfully sent by any account that is allowed to hold balances
 (e.g., VASP, Designated Dealer).
 
 
-<a name="@Technical_Description_76"></a>
+<a name="@Technical_Description_66"></a>
 
 ##### Technical Description
 
@@ -1512,7 +1232,7 @@ accounts that can hold balances can send this transaction, the sending account c
 already have a <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_Balance">DiemAccount::Balance</a>&lt;Currency&gt;</code> published under it.
 
 
-<a name="@Parameters_77"></a>
+<a name="@Parameters_67"></a>
 
 ##### Parameters
 
@@ -1522,7 +1242,7 @@ already have a <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_B
 | <code>account</code>  | <code>&signer</code> | The signer of the sending account of the transaction.                                                                                               |
 
 
-<a name="@Common_Abort_Conditions_78"></a>
+<a name="@Common_Abort_Conditions_68"></a>
 
 ##### Common Abort Conditions
 
@@ -1533,7 +1253,7 @@ already have a <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_B
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EADD_EXISTING_CURRENCY">DiemAccount::EADD_EXISTING_CURRENCY</a></code>   | A balance for <code>Currency</code> is already published under the sending <code>account</code>. |
 
 
-<a name="@Related_Scripts_79"></a>
+<a name="@Related_Scripts_69"></a>
 
 ##### Related Scripts
 
@@ -1602,7 +1322,7 @@ and Child VASPs can hold balances [[D1]][ROLE][[D2]][ROLE][[D3]][ROLE][[D4]][ROL
 
 
 
-<a name="@Summary_80"></a>
+<a name="@Summary_70"></a>
 
 ##### Summary
 
@@ -1612,7 +1332,7 @@ both be VASP accounts. After this transaction both the sending account and the
 specified recovery account can rotate the sender account's authentication key.
 
 
-<a name="@Technical_Description_81"></a>
+<a name="@Technical_Description_71"></a>
 
 ##### Technical Description
 
@@ -1633,7 +1353,7 @@ removed in this transaction and stored in the <code><a href="../../modules/doc/R
 resource stored under the account at <code>recovery_address</code>.
 
 
-<a name="@Parameters_82"></a>
+<a name="@Parameters_72"></a>
 
 ##### Parameters
 
@@ -1643,7 +1363,7 @@ resource stored under the account at <code>recovery_address</code>.
 | <code>recovery_address</code>   | <code>address</code> | The account address where the <code>to_recover_account</code>'s <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationCapability">DiemAccount::KeyRotationCapability</a></code> will be stored. |
 
 
-<a name="@Common_Abort_Conditions_83"></a>
+<a name="@Common_Abort_Conditions_73"></a>
 
 ##### Common Abort Conditions
 
@@ -1654,7 +1374,7 @@ resource stored under the account at <code>recovery_address</code>.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/RecoveryAddress.md#0x1_RecoveryAddress_EINVALID_KEY_ROTATION_DELEGATION">RecoveryAddress::EINVALID_KEY_ROTATION_DELEGATION</a></code>        | <code>to_recover_account</code> and <code>recovery_address</code> do not belong to the same VASP.                     |
 
 
-<a name="@Related_Scripts_84"></a>
+<a name="@Related_Scripts_74"></a>
 
 ##### Related Scripts
 
@@ -1723,7 +1443,7 @@ resource stored under the account at <code>recovery_address</code>.
 
 
 
-<a name="@Summary_85"></a>
+<a name="@Summary_75"></a>
 
 ##### Summary
 
@@ -1732,7 +1452,7 @@ newly-specified public key and publishes a new shared authentication key
 under the sender's account. Any account can send this transaction.
 
 
-<a name="@Technical_Description_86"></a>
+<a name="@Technical_Description_76"></a>
 
 ##### Technical Description
 
@@ -1742,7 +1462,7 @@ containing the 32-byte ed25519 <code>public_key</code> and the <code><a href="..
 <code>account</code> under <code>account</code>.
 
 
-<a name="@Parameters_87"></a>
+<a name="@Parameters_77"></a>
 
 ##### Parameters
 
@@ -1752,7 +1472,7 @@ containing the 32-byte ed25519 <code>public_key</code> and the <code><a href="..
 | <code>public_key</code> | <code>vector&lt;u8&gt;</code> | 32-byte Ed25519 public key for <code>account</code>' authentication key to be rotated to and stored. |
 
 
-<a name="@Common_Abort_Conditions_88"></a>
+<a name="@Common_Abort_Conditions_78"></a>
 
 ##### Common Abort Conditions
 
@@ -1763,7 +1483,7 @@ containing the 32-byte ed25519 <code>public_key</code> and the <code><a href="..
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code>  | <code><a href="../../modules/doc/SharedEd25519PublicKey.md#0x1_SharedEd25519PublicKey_EMALFORMED_PUBLIC_KEY">SharedEd25519PublicKey::EMALFORMED_PUBLIC_KEY</a></code>            | <code>public_key</code> is an invalid ed25519 public key.                                                      |
 
 
-<a name="@Related_Scripts_89"></a>
+<a name="@Related_Scripts_79"></a>
 
 ##### Related Scripts
 
@@ -1821,7 +1541,7 @@ containing the 32-byte ed25519 <code>public_key</code> and the <code><a href="..
 
 
 
-<a name="@Summary_90"></a>
+<a name="@Summary_80"></a>
 
 ##### Summary
 
@@ -1831,7 +1551,7 @@ Multiple recovery addresses can exist for a single VASP, but accounts in
 each must be disjoint.
 
 
-<a name="@Technical_Description_91"></a>
+<a name="@Technical_Description_81"></a>
 
 ##### Technical Description
 
@@ -1842,7 +1562,7 @@ other accounts may add their key rotation to this resource so that <code>account
 may be used as a recovery account for those accounts.
 
 
-<a name="@Parameters_92"></a>
+<a name="@Parameters_82"></a>
 
 ##### Parameters
 
@@ -1851,7 +1571,7 @@ may be used as a recovery account for those accounts.
 | <code>account</code> | <code>&signer</code> | The signer of the sending account of the transaction. |
 
 
-<a name="@Common_Abort_Conditions_93"></a>
+<a name="@Common_Abort_Conditions_83"></a>
 
 ##### Common Abort Conditions
 
@@ -1863,7 +1583,7 @@ may be used as a recovery account for those accounts.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a></code> | <code><a href="../../modules/doc/RecoveryAddress.md#0x1_RecoveryAddress_ERECOVERY_ADDRESS">RecoveryAddress::ERECOVERY_ADDRESS</a></code>                       | A <code><a href="../../modules/doc/RecoveryAddress.md#0x1_RecoveryAddress_RecoveryAddress">RecoveryAddress::RecoveryAddress</a></code> resource has already been published under <code>account</code>.     |
 
 
-<a name="@Related_Scripts_94"></a>
+<a name="@Related_Scripts_84"></a>
 
 ##### Related Scripts
 
@@ -1932,7 +1652,7 @@ may be used as a recovery account for those accounts.
 
 
 
-<a name="@Summary_95"></a>
+<a name="@Summary_85"></a>
 
 ##### Summary
 
@@ -1940,7 +1660,7 @@ Rotates the transaction sender's authentication key to the supplied new authenti
 be sent by any account.
 
 
-<a name="@Technical_Description_96"></a>
+<a name="@Technical_Description_86"></a>
 
 ##### Technical Description
 
@@ -1949,7 +1669,7 @@ Rotate the <code>account</code>'s <code><a href="../../modules/doc/DiemAccount.m
 its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationCapability">DiemAccount::KeyRotationCapability</a></code>.
 
 
-<a name="@Parameters_97"></a>
+<a name="@Parameters_87"></a>
 
 ##### Parameters
 
@@ -1959,7 +1679,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code>new_key</code> | <code>vector&lt;u8&gt;</code> | New ed25519 public key to be used for <code>account</code>.            |
 
 
-<a name="@Common_Abort_Conditions_98"></a>
+<a name="@Common_Abort_Conditions_88"></a>
 
 ##### Common Abort Conditions
 
@@ -1969,7 +1689,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EMALFORMED_AUTHENTICATION_KEY">DiemAccount::EMALFORMED_AUTHENTICATION_KEY</a></code>              | <code>new_key</code> was an invalid length.                                                         |
 
 
-<a name="@Related_Scripts_99"></a>
+<a name="@Related_Scripts_89"></a>
 
 ##### Related Scripts
 
@@ -2050,7 +1770,7 @@ it has delegrated the capability [[H17]][PERMISSION][[J17]][PERMISSION].
 
 
 
-<a name="@Summary_100"></a>
+<a name="@Summary_90"></a>
 
 ##### Summary
 
@@ -2059,7 +1779,7 @@ any account that has a sliding nonce resource published under it (usually this i
 Compliance or Diem Root accounts).
 
 
-<a name="@Technical_Description_101"></a>
+<a name="@Technical_Description_91"></a>
 
 ##### Technical Description
 
@@ -2068,7 +1788,7 @@ Rotates the <code>account</code>'s <code><a href="../../modules/doc/DiemAccount.
 its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationCapability">DiemAccount::KeyRotationCapability</a></code>.
 
 
-<a name="@Parameters_102"></a>
+<a name="@Parameters_92"></a>
 
 ##### Parameters
 
@@ -2079,7 +1799,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code>new_key</code>       | <code>vector&lt;u8&gt;</code> | New ed25519 public key to be used for <code>account</code>.                           |
 
 
-<a name="@Common_Abort_Conditions_103"></a>
+<a name="@Common_Abort_Conditions_93"></a>
 
 ##### Common Abort Conditions
 
@@ -2093,7 +1813,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EMALFORMED_AUTHENTICATION_KEY">DiemAccount::EMALFORMED_AUTHENTICATION_KEY</a></code>              | <code>new_key</code> was an invalid length.                                                           |
 
 
-<a name="@Related_Scripts_104"></a>
+<a name="@Related_Scripts_94"></a>
 
 ##### Related Scripts
 
@@ -2177,7 +1897,7 @@ it has delegrated the capability [[H17]][PERMISSION][[J17]][PERMISSION].
 
 
 
-<a name="@Summary_105"></a>
+<a name="@Summary_95"></a>
 
 ##### Summary
 
@@ -2185,7 +1905,7 @@ Rotates the specified account's authentication key to the supplied new authentic
 only be sent by the Diem Root account as a write set transaction.
 
 
-<a name="@Technical_Description_106"></a>
+<a name="@Technical_Description_96"></a>
 
 ##### Technical Description
 
@@ -2194,7 +1914,7 @@ Rotate the <code>account</code>'s <code><a href="../../modules/doc/DiemAccount.m
 its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationCapability">DiemAccount::KeyRotationCapability</a></code>.
 
 
-<a name="@Parameters_107"></a>
+<a name="@Parameters_97"></a>
 
 ##### Parameters
 
@@ -2206,7 +1926,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code>new_key</code>       | <code>vector&lt;u8&gt;</code> | New ed25519 public key to be used for <code>account</code>.                                                             |
 
 
-<a name="@Common_Abort_Conditions_108"></a>
+<a name="@Common_Abort_Conditions_98"></a>
 
 ##### Common Abort Conditions
 
@@ -2220,7 +1940,7 @@ its <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationC
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EMALFORMED_AUTHENTICATION_KEY">DiemAccount::EMALFORMED_AUTHENTICATION_KEY</a></code>              | <code>new_key</code> was an invalid length.                                                                           |
 
 
-<a name="@Related_Scripts_109"></a>
+<a name="@Related_Scripts_99"></a>
 
 ##### Related Scripts
 
@@ -2311,7 +2031,7 @@ it has delegrated the capability [[H17]][PERMISSION][[J17]][PERMISSION].
 
 
 
-<a name="@Summary_110"></a>
+<a name="@Summary_100"></a>
 
 ##### Summary
 
@@ -2320,7 +2040,7 @@ new authentication key. Only used for accounts that are part of a recovery addre
 <code><a href="transaction_script_documentation.md#add_recovery_rotation_capability">Script::add_recovery_rotation_capability</a></code> for account restrictions).
 
 
-<a name="@Technical_Description_111"></a>
+<a name="@Technical_Description_101"></a>
 
 ##### Technical Description
 
@@ -2331,7 +2051,7 @@ account, or by the account where the <code><a href="../../modules/doc/RecoveryAd
 that contains <code>to_recover</code>'s <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_KeyRotationCapability">DiemAccount::KeyRotationCapability</a></code>.
 
 
-<a name="@Parameters_112"></a>
+<a name="@Parameters_102"></a>
 
 ##### Parameters
 
@@ -2343,7 +2063,7 @@ that contains <code>to_recover</code>'s <code><a href="../../modules/doc/DiemAcc
 | <code>new_key</code>          | <code>vector&lt;u8&gt;</code> | New ed25519 public key to be used for the account at the <code>to_recover</code> address.                                                 |
 
 
-<a name="@Common_Abort_Conditions_113"></a>
+<a name="@Common_Abort_Conditions_103"></a>
 
 ##### Common Abort Conditions
 
@@ -2355,7 +2075,7 @@ that contains <code>to_recover</code>'s <code><a href="../../modules/doc/DiemAcc
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EMALFORMED_AUTHENTICATION_KEY">DiemAccount::EMALFORMED_AUTHENTICATION_KEY</a></code> | <code>new_key</code> was an invalid length.                                                                                                                     |
 
 
-<a name="@Related_Scripts_114"></a>
+<a name="@Related_Scripts_104"></a>
 
 ##### Related Scripts
 
@@ -2433,7 +2153,7 @@ the delegatee's address or the address to recover [[H17]][PERMISSION][[J17]][PER
 
 
 
-<a name="@Summary_115"></a>
+<a name="@Summary_105"></a>
 
 ##### Summary
 
@@ -2443,7 +2163,7 @@ information published under it. In practice the only such accounts are Designate
 Parent VASPs.
 
 
-<a name="@Technical_Description_116"></a>
+<a name="@Technical_Description_106"></a>
 
 ##### Technical Description
 
@@ -2451,7 +2171,7 @@ Updates the <code>base_url</code> and <code>compliance_public_key</code> fields 
 resource published under <code>account</code>. The <code>new_key</code> must be a valid ed25519 public key.
 
 
-<a name="@Events_117"></a>
+<a name="@Events_107"></a>
 
 ###### Events
 
@@ -2464,7 +2184,7 @@ off-chain communication, and the blockchain time at which the url was updated em
 <code><a href="../../modules/doc/DualAttestation.md#0x1_DualAttestation_Credential">DualAttestation::Credential</a></code> <code>base_url_rotation_events</code> handle published under <code>account</code>.
 
 
-<a name="@Parameters_118"></a>
+<a name="@Parameters_108"></a>
 
 ##### Parameters
 
@@ -2475,7 +2195,7 @@ off-chain communication, and the blockchain time at which the url was updated em
 | <code>new_key</code> | <code>vector&lt;u8&gt;</code> | New ed25519 public key to be used for on-chain dual attestation checking. |
 
 
-<a name="@Common_Abort_Conditions_119"></a>
+<a name="@Common_Abort_Conditions_109"></a>
 
 ##### Common Abort Conditions
 
@@ -2485,7 +2205,7 @@ off-chain communication, and the blockchain time at which the url was updated em
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DualAttestation.md#0x1_DualAttestation_EINVALID_PUBLIC_KEY">DualAttestation::EINVALID_PUBLIC_KEY</a></code> | <code>new_key</code> is not a valid ed25519 public key.                               |
 
 
-<a name="@Related_Scripts_120"></a>
+<a name="@Related_Scripts_110"></a>
 
 ##### Related Scripts
 
@@ -2555,7 +2275,7 @@ Credential is granted to either a Parent VASP or a designated dealer [[H16]][PER
 
 
 
-<a name="@Summary_121"></a>
+<a name="@Summary_111"></a>
 
 ##### Summary
 
@@ -2564,7 +2284,7 @@ any account that has previously published a shared ed25519 public key using
 <code><a href="transaction_script_documentation.md#publish_shared_ed25519_public_key">Script::publish_shared_ed25519_public_key</a></code>.
 
 
-<a name="@Technical_Description_122"></a>
+<a name="@Technical_Description_112"></a>
 
 ##### Technical Description
 
@@ -2574,7 +2294,7 @@ rotates the authentication key using the capability stored in <code>account</cod
 <code><a href="../../modules/doc/SharedEd25519PublicKey.md#0x1_SharedEd25519PublicKey_SharedEd25519PublicKey">SharedEd25519PublicKey::SharedEd25519PublicKey</a></code> to a new value derived from <code>public_key</code>
 
 
-<a name="@Parameters_123"></a>
+<a name="@Parameters_113"></a>
 
 ##### Parameters
 
@@ -2584,7 +2304,7 @@ rotates the authentication key using the capability stored in <code>account</cod
 | <code>public_key</code> | <code>vector&lt;u8&gt;</code> | 32-byte Ed25519 public key.                                     |
 
 
-<a name="@Common_Abort_Conditions_124"></a>
+<a name="@Common_Abort_Conditions_114"></a>
 
 ##### Common Abort Conditions
 
@@ -2594,7 +2314,7 @@ rotates the authentication key using the capability stored in <code>account</cod
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SharedEd25519PublicKey.md#0x1_SharedEd25519PublicKey_EMALFORMED_PUBLIC_KEY">SharedEd25519PublicKey::EMALFORMED_PUBLIC_KEY</a></code> | <code>public_key</code> is an invalid ed25519 public key.                                                |
 
 
-<a name="@Related_Scripts_125"></a>
+<a name="@Related_Scripts_115"></a>
 
 ##### Related Scripts
 
@@ -2639,7 +2359,7 @@ rotates the authentication key using the capability stored in <code>account</cod
 
 ---
 
-<a name="@Payments_126"></a>
+<a name="@Payments_116"></a>
 
 ### Payments
 
@@ -2656,7 +2376,7 @@ rotates the authentication key using the capability stored in <code>account</cod
 
 
 
-<a name="@Summary_127"></a>
+<a name="@Summary_117"></a>
 
 ##### Summary
 
@@ -2668,7 +2388,7 @@ balance, and to any account that can hold a balance. Both accounts must hold bal
 currency being transacted.
 
 
-<a name="@Technical_Description_128"></a>
+<a name="@Technical_Description_118"></a>
 
 ##### Technical Description
 
@@ -2683,7 +2403,7 @@ However, a transaction sender can opt in to dual attestation even when it is not
 Standardized <code>metadata</code> BCS format can be found in <code>diem_types::transaction::metadata::Metadata</code>.
 
 
-<a name="@Events_129"></a>
+<a name="@Events_119"></a>
 
 ###### Events
 
@@ -2692,7 +2412,7 @@ Successful execution of this script emits two events:
 * A <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_ReceivedPaymentEvent">DiemAccount::ReceivedPaymentEvent</a></code> on <code>payee</code>'s <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_DiemAccount">DiemAccount::DiemAccount</a></code> <code>received_events</code> handle.
 
 
-<a name="@Parameters_130"></a>
+<a name="@Parameters_120"></a>
 
 ##### Parameters
 
@@ -2705,7 +2425,7 @@ Successful execution of this script emits two events:
 | <code>metadata_signature</code> | <code>vector&lt;u8&gt;</code> | Optional signature over <code>metadata</code> and payment information. See                                                              |
 
 
-<a name="@Common_Abort_Conditions_131"></a>
+<a name="@Common_Abort_Conditions_121"></a>
 
 ##### Common Abort Conditions
 
@@ -2723,7 +2443,7 @@ Successful execution of this script emits two events:
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_LIMIT_EXCEEDED">Errors::LIMIT_EXCEEDED</a></code>   | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EDEPOSIT_EXCEEDS_LIMITS">DiemAccount::EDEPOSIT_EXCEEDS_LIMITS</a></code>          | <code>payee</code> has exceeded its daily deposit limits for XDX.                                                                              |
 
 
-<a name="@Related_Scripts_132"></a>
+<a name="@Related_Scripts_122"></a>
 
 ##### Related Scripts
 
@@ -2811,157 +2531,12 @@ Parent VASPs, and Child VASPs can hold balances [[D1]][ROLE][[D2]][ROLE][[D3]][R
 
 ---
 
-<a name="@Validator_and_Validator_Operator_Administration_133"></a>
+<a name="@Validator_and_Validator_Operator_Administration_123"></a>
 
 ### Validator and Validator Operator Administration
 
 
-
-<a name="add_validator_and_reconfigure"></a>
-
-#### Script `add_validator_and_reconfigure`
-
-
-
-<pre><code><b>use</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
-<b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
-<b>use</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig">0x1::ValidatorConfig</a>;
-</code></pre>
-
-
-
-<a name="@Summary_134"></a>
-
-##### Summary
-
-Adds a validator account to the validator set, and triggers a
-reconfiguration of the system to admit the account to the validator set for the system. This
-transaction can only be successfully called by the Diem Root account.
-
-
-<a name="@Technical_Description_135"></a>
-
-##### Technical Description
-
-This script adds the account at <code>validator_address</code> to the validator set.
-This transaction emits a <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_NewEpochEvent">DiemConfig::NewEpochEvent</a></code> event and triggers a
-reconfiguration. Once the reconfiguration triggered by this script's
-execution has been performed, the account at the <code>validator_address</code> is
-considered to be a validator in the network.
-
-This transaction script will fail if the <code>validator_address</code> address is already in the validator set
-or does not have a <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> resource already published under it.
-
-
-<a name="@Parameters_136"></a>
-
-##### Parameters
-
-| Name                | Type         | Description                                                                                                                        |
-| ------              | ------       | -------------                                                                                                                      |
-| <code>dr_account</code>        | <code>&signer</code>    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-| <code>sliding_nonce</code>     | <code>u64</code>        | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for this transaction.                                                         |
-| <code>validator_name</code>    | <code>vector&lt;u8&gt;</code> | ASCII-encoded human name for the validator. Must match the human name in the <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> for the validator. |
-| <code>validator_address</code> | <code>address</code>    | The validator account address to be added to the validator set.                                                                    |
-
-
-<a name="@Common_Abort_Conditions_137"></a>
-
-##### Common Abort Conditions
-
-| Error Category             | Error Reason                                  | Description                                                                                                                               |
-| ----------------           | --------------                                | -------------                                                                                                                             |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>                | A <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> resource is not published under <code>dr_account</code>.                                                                            |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>                | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not.                                                |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>                | The <code>sliding_nonce</code> is too far in the future.                                                                                             |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code>       | The <code>sliding_nonce</code> has been previously recorded.                                                                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>                  | The sending account is not the Diem Root account.                                                                                        |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDIEM_ROOT">Roles::EDIEM_ROOT</a></code>                          | The sending account is not the Diem Root account.                                                                                        |
-| 0                          | 0                                             | The provided <code>validator_name</code> does not match the already-recorded human name for the validator.                                           |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_EINVALID_PROSPECTIVE_VALIDATOR">DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR</a></code> | The validator to be added does not have a <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> resource published under it, or its <code>config</code> field is empty. |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_EALREADY_A_VALIDATOR">DiemSystem::EALREADY_A_VALIDATOR</a></code>           | The <code>validator_address</code> account is already a registered validator.                                                                        |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a></code>    | <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_EINVALID_BLOCK_TIME">DiemConfig::EINVALID_BLOCK_TIME</a></code>            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
-
-
-<a name="@Related_Scripts_138"></a>
-
-##### Related Scripts
-
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
-* <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>(dr_account: &signer, sliding_nonce: u64, validator_name: vector&lt;u8&gt;, validator_address: address)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>(
-    dr_account: &signer,
-    sliding_nonce: u64,
-    validator_name: vector&lt;u8&gt;,
-    validator_address: address
-) {
-    <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_record_nonce_or_abort">SlidingNonce::record_nonce_or_abort</a>(dr_account, sliding_nonce);
-    <b>assert</b>(<a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_get_human_name">ValidatorConfig::get_human_name</a>(validator_address) == validator_name, 0);
-    <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_add_validator">DiemSystem::add_validator</a>(dr_account, validator_address);
-}
-</code></pre>
-
-
-
-</details>
-
-<details>
-<summary>Specification</summary>
-
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_TransactionChecks">DiemAccount::TransactionChecks</a>{sender: dr_account};
-<b>include</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_RecordNonceAbortsIf">SlidingNonce::RecordNonceAbortsIf</a>{seq_nonce: sliding_nonce, account: dr_account};
-<b>include</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_AbortsIfNoValidatorConfig">ValidatorConfig::AbortsIfNoValidatorConfig</a>{addr: validator_address};
-<b>aborts_if</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_get_human_name">ValidatorConfig::get_human_name</a>(validator_address) != validator_name <b>with</b> 0;
-<b>include</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_AddValidatorAbortsIf">DiemSystem::AddValidatorAbortsIf</a>{validator_addr: validator_address};
-<b>include</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_AddValidatorEnsures">DiemSystem::AddValidatorEnsures</a>{validator_addr: validator_address};
-</code></pre>
-
-
-Reports INVALID_STATE because of is_operating() and !exists<DiemSystem::CapabilityHolder>.
-is_operating() is always true during transactions, and CapabilityHolder is published
-during initialization (Genesis).
-Reports REQUIRES_ROLE if dr_account is not Diem root, but that can't happen
-in practice because it aborts with NOT_PUBLISHED or REQUIRES_ADDRESS, first.
-
-
-<pre><code><b>aborts_with</b> [check]
-    0, // Odd error code in <b>assert</b> on second statement in <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
-</code></pre>
-
-
-**Access Control:**
-Only the Diem Root account can add Validators [[H13]][PERMISSION].
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
-</code></pre>
-
-
-
-</details>
+> undefined move-include `add_validator_and_reconfigure`
 
 ---
 
@@ -2977,7 +2552,7 @@ Only the Diem Root account can add Validators [[H13]][PERMISSION].
 
 
 
-<a name="@Summary_139"></a>
+<a name="@Summary_124"></a>
 
 ##### Summary
 
@@ -2987,7 +2562,7 @@ only be successfully sent by a Validator Operator account that is already regist
 validator.
 
 
-<a name="@Technical_Description_140"></a>
+<a name="@Technical_Description_125"></a>
 
 ##### Technical Description
 
@@ -2997,7 +2572,7 @@ so the copy of this config held in the validator set will not be updated, and th
 only "locally" under the <code>validator_account</code> account address.
 
 
-<a name="@Parameters_141"></a>
+<a name="@Parameters_126"></a>
 
 ##### Parameters
 
@@ -3010,7 +2585,7 @@ only "locally" under the <code>validator_account</code> account address.
 | <code>fullnode_network_addresses</code>  | <code>vector&lt;u8&gt;</code> | New set of <code>fullnode_network_addresses</code> to be used in the updated <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code>.                        |
 
 
-<a name="@Common_Abort_Conditions_142"></a>
+<a name="@Common_Abort_Conditions_127"></a>
 
 ##### Common Abort Conditions
 
@@ -3021,14 +2596,14 @@ only "locally" under the <code>validator_account</code> account address.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_EINVALID_CONSENSUS_KEY">ValidatorConfig::EINVALID_CONSENSUS_KEY</a></code>      | <code>consensus_pubkey</code> is not a valid ed25519 public key.                                                 |
 
 
-<a name="@Related_Scripts_143"></a>
+<a name="@Related_Scripts_128"></a>
 
 ##### Related Scripts
 
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
+* <code>Script::create_validator_account</code>
+* <code>Script::create_validator_operator_account</code>
+* <code>Script::add_validator_and_reconfigure</code>
+* <code>Script::remove_validator_and_reconfigure</code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
 * <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
@@ -3097,150 +2672,7 @@ update the validator's configuration [[H14]][PERMISSION].
 
 ---
 
-
-<a name="remove_validator_and_reconfigure"></a>
-
-#### Script `remove_validator_and_reconfigure`
-
-
-
-<pre><code><b>use</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
-<b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
-<b>use</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig">0x1::ValidatorConfig</a>;
-</code></pre>
-
-
-
-<a name="@Summary_144"></a>
-
-##### Summary
-
-This script removes a validator account from the validator set, and triggers a reconfiguration
-of the system to remove the validator from the system. This transaction can only be
-successfully called by the Diem Root account.
-
-
-<a name="@Technical_Description_145"></a>
-
-##### Technical Description
-
-This script removes the account at <code>validator_address</code> from the validator set. This transaction
-emits a <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_NewEpochEvent">DiemConfig::NewEpochEvent</a></code> event. Once the reconfiguration triggered by this event
-has been performed, the account at <code>validator_address</code> is no longer considered to be a
-validator in the network. This transaction will fail if the validator at <code>validator_address</code>
-is not in the validator set.
-
-
-<a name="@Parameters_146"></a>
-
-##### Parameters
-
-| Name                | Type         | Description                                                                                                                        |
-| ------              | ------       | -------------                                                                                                                      |
-| <code>dr_account</code>        | <code>&signer</code>    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
-| <code>sliding_nonce</code>     | <code>u64</code>        | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for this transaction.                                                         |
-| <code>validator_name</code>    | <code>vector&lt;u8&gt;</code> | ASCII-encoded human name for the validator. Must match the human name in the <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> for the validator. |
-| <code>validator_address</code> | <code>address</code>    | The validator account address to be removed from the validator set.                                                                |
-
-
-<a name="@Common_Abort_Conditions_147"></a>
-
-##### Common Abort Conditions
-
-| Error Category             | Error Reason                            | Description                                                                                     |
-| ----------------           | --------------                          | -------------                                                                                   |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>          | A <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> resource is not published under <code>dr_account</code>.                                  |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>          | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not.      |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>          | The <code>sliding_nonce</code> is too far in the future.                                                   |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code> | The <code>sliding_nonce</code> has been previously recorded.                                               |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>          | The sending account is not the Diem Root account or Treasury Compliance account                |
-| 0                          | 0                                       | The provided <code>validator_name</code> does not match the already-recorded human name for the validator. |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_ENOT_AN_ACTIVE_VALIDATOR">DiemSystem::ENOT_AN_ACTIVE_VALIDATOR</a></code> | The validator to be removed is not in the validator set.                                        |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>            | The sending account is not the Diem Root account.                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDIEM_ROOT">Roles::EDIEM_ROOT</a></code>                    | The sending account is not the Diem Root account.                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a></code>    | <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_EINVALID_BLOCK_TIME">DiemConfig::EINVALID_BLOCK_TIME</a></code>      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
-
-
-<a name="@Related_Scripts_148"></a>
-
-##### Related Scripts
-
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
-* <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
-* <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#remove_validator_and_reconfigure">remove_validator_and_reconfigure</a>(dr_account: &signer, sliding_nonce: u64, validator_name: vector&lt;u8&gt;, validator_address: address)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="transaction_script_documentation.md#remove_validator_and_reconfigure">remove_validator_and_reconfigure</a>(
-    dr_account: &signer,
-    sliding_nonce: u64,
-    validator_name: vector&lt;u8&gt;,
-    validator_address: address
-) {
-    <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_record_nonce_or_abort">SlidingNonce::record_nonce_or_abort</a>(dr_account, sliding_nonce);
-    // TODO: Use an error code from <a href="../../modules/doc/Errors.md#0x1_Errors">Errors</a>.<b>move</b>
-    <b>assert</b>(<a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_get_human_name">ValidatorConfig::get_human_name</a>(validator_address) == validator_name, 0);
-    <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_remove_validator">DiemSystem::remove_validator</a>(dr_account, validator_address);
-}
-</code></pre>
-
-
-
-</details>
-
-<details>
-<summary>Specification</summary>
-
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_TransactionChecks">DiemAccount::TransactionChecks</a>{sender: dr_account};
-<b>include</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_RecordNonceAbortsIf">SlidingNonce::RecordNonceAbortsIf</a>{seq_nonce: sliding_nonce, account: dr_account};
-<b>include</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_AbortsIfNoValidatorConfig">ValidatorConfig::AbortsIfNoValidatorConfig</a>{addr: validator_address};
-<b>aborts_if</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_get_human_name">ValidatorConfig::get_human_name</a>(validator_address) != validator_name <b>with</b> 0;
-<b>include</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_RemoveValidatorAbortsIf">DiemSystem::RemoveValidatorAbortsIf</a>{validator_addr: validator_address};
-<b>include</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_RemoveValidatorEnsures">DiemSystem::RemoveValidatorEnsures</a>{validator_addr: validator_address};
-</code></pre>
-
-
-Reports INVALID_STATE because of is_operating() and !exists<DiemSystem::CapabilityHolder>.
-is_operating() is always true during transactions, and CapabilityHolder is published
-during initialization (Genesis).
-Reports REQUIRES_ROLE if dr_account is not Diem root, but that can't happen
-in practice because it aborts with NOT_PUBLISHED or REQUIRES_ADDRESS, first.
-
-
-<pre><code><b>aborts_with</b> [check]
-    0, // Odd error code in <b>assert</b> on second statement in <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
-</code></pre>
-
-
-**Access Control:**
-Only the Diem Root account can remove Validators [[H13]][PERMISSION].
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
-</code></pre>
-
-
-
-</details>
+> undefined move-include `remove_validator_and_reconfigure`
 
 ---
 
@@ -3257,7 +2689,7 @@ Only the Diem Root account can remove Validators [[H13]][PERMISSION].
 
 
 
-<a name="@Summary_149"></a>
+<a name="@Summary_129"></a>
 
 ##### Summary
 
@@ -3266,7 +2698,7 @@ validator set with this new validator configuration.  Can only be successfully s
 Validator Operator account that is already registered with a validator.
 
 
-<a name="@Technical_Description_150"></a>
+<a name="@Technical_Description_130"></a>
 
 ##### Technical Description
 
@@ -3276,7 +2708,7 @@ trigger a reconfiguration of the system.  This reconfiguration will update the v
 on-chain with the updated <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code>.
 
 
-<a name="@Parameters_151"></a>
+<a name="@Parameters_131"></a>
 
 ##### Parameters
 
@@ -3289,7 +2721,7 @@ on-chain with the updated <code><a href="../../modules/doc/ValidatorConfig.md#0x
 | <code>fullnode_network_addresses</code>  | <code>vector&lt;u8&gt;</code> | New set of <code>fullnode_network_addresses</code> to be used in the updated <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code>.                        |
 
 
-<a name="@Common_Abort_Conditions_152"></a>
+<a name="@Common_Abort_Conditions_132"></a>
 
 ##### Common Abort Conditions
 
@@ -3302,14 +2734,14 @@ on-chain with the updated <code><a href="../../modules/doc/ValidatorConfig.md#0x
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a></code>    | <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_EINVALID_BLOCK_TIME">DiemConfig::EINVALID_BLOCK_TIME</a></code>             | An invalid time value was encountered in reconfiguration. Unlikely to occur.                          |
 
 
-<a name="@Related_Scripts_153"></a>
+<a name="@Related_Scripts_133"></a>
 
 ##### Related Scripts
 
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
+* <code>Script::create_validator_account</code>
+* <code>Script::create_validator_operator_account</code>
+* <code>Script::add_validator_and_reconfigure</code>
+* <code>Script::remove_validator_and_reconfigure</code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
 * <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
@@ -3417,7 +2849,7 @@ update the validator's configuration [[H14]][PERMISSION].
 
 
 
-<a name="@Summary_154"></a>
+<a name="@Summary_134"></a>
 
 ##### Summary
 
@@ -3427,7 +2859,7 @@ system until a reconfiguration of the system is triggered. May only be sent by a
 Validator role.
 
 
-<a name="@Technical_Description_155"></a>
+<a name="@Technical_Description_135"></a>
 
 ##### Technical Description
 
@@ -3439,7 +2871,7 @@ resource published under it. The sending <code>account</code> must be a Validato
 <code><a href="../../modules/doc/DiemConfig.md#0x1_DiemConfig_NewEpochEvent">DiemConfig::NewEpochEvent</a></code> and no reconfiguration of the system is initiated by this script.
 
 
-<a name="@Parameters_156"></a>
+<a name="@Parameters_136"></a>
 
 ##### Parameters
 
@@ -3450,7 +2882,7 @@ resource published under it. The sending <code>account</code> must be a Validato
 | <code>operator_account</code> | <code>address</code>    | Address of the validator operator account to be added as the <code>account</code> validator's operator. |
 
 
-<a name="@Common_Abort_Conditions_157"></a>
+<a name="@Common_Abort_Conditions_137"></a>
 
 ##### Common Abort Conditions
 
@@ -3463,15 +2895,15 @@ resource published under it. The sending <code>account</code> must be a Validato
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_EVALIDATOR_CONFIG">ValidatorConfig::EVALIDATOR_CONFIG</a></code>                  | A <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> is not published under <code>account</code>.                                                                                       |
 
 
-<a name="@Related_Scripts_158"></a>
+<a name="@Related_Scripts_138"></a>
 
 ##### Related Scripts
 
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
+* <code>Script::create_validator_account</code>
+* <code>Script::create_validator_operator_account</code>
 * <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
+* <code>Script::remove_validator_and_reconfigure</code>
+* <code>Script::add_validator_and_reconfigure</code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator_with_nonce_admin">Script::set_validator_operator_with_nonce_admin</a></code>
 * <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
 
@@ -3521,7 +2953,7 @@ because CapabilityHolder is published during initialization (Genesis).
 
 
 <pre><code><b>aborts_with</b> [check]
-    0, // Odd error code in <b>assert</b> on second statement in <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>
+    0, // Odd error code in <b>assert</b> on second statement in add_validator_and_reconfigure
     <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
     <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
     <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
@@ -3555,7 +2987,7 @@ Only a Validator account can set its Validator Operator [[H15]][PERMISSION].
 
 
 
-<a name="@Summary_159"></a>
+<a name="@Summary_139"></a>
 
 ##### Summary
 
@@ -3565,7 +2997,7 @@ system until a reconfiguration of the system is triggered. May only be sent by t
 account as a write set transaction.
 
 
-<a name="@Technical_Description_160"></a>
+<a name="@Technical_Description_140"></a>
 
 ##### Technical Description
 
@@ -3577,7 +3009,7 @@ have a <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_V
 the system is initiated by this script.
 
 
-<a name="@Parameters_161"></a>
+<a name="@Parameters_141"></a>
 
 ##### Parameters
 
@@ -3590,7 +3022,7 @@ the system is initiated by this script.
 | <code>operator_account</code> | <code>address</code>    | Address of the validator operator account to be added as the <code>account</code> validator's operator.                 |
 
 
-<a name="@Common_Abort_Conditions_162"></a>
+<a name="@Common_Abort_Conditions_142"></a>
 
 ##### Common Abort Conditions
 
@@ -3608,15 +3040,15 @@ the system is initiated by this script.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_EVALIDATOR_CONFIG">ValidatorConfig::EVALIDATOR_CONFIG</a></code>                  | A <code><a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_ValidatorConfig">ValidatorConfig::ValidatorConfig</a></code> is not published under <code>account</code>.                                                                                       |
 
 
-<a name="@Related_Scripts_163"></a>
+<a name="@Related_Scripts_143"></a>
 
 ##### Related Scripts
 
-* <code><a href="transaction_script_documentation.md#create_validator_account">Script::create_validator_account</a></code>
-* <code><a href="transaction_script_documentation.md#create_validator_operator_account">Script::create_validator_operator_account</a></code>
+* <code>Script::create_validator_account</code>
+* <code>Script::create_validator_operator_account</code>
 * <code><a href="transaction_script_documentation.md#register_validator_config">Script::register_validator_config</a></code>
-* <code><a href="transaction_script_documentation.md#remove_validator_and_reconfigure">Script::remove_validator_and_reconfigure</a></code>
-* <code><a href="transaction_script_documentation.md#add_validator_and_reconfigure">Script::add_validator_and_reconfigure</a></code>
+* <code>Script::remove_validator_and_reconfigure</code>
+* <code>Script::add_validator_and_reconfigure</code>
 * <code><a href="transaction_script_documentation.md#set_validator_operator">Script::set_validator_operator</a></code>
 * <code><a href="transaction_script_documentation.md#set_validator_config_and_reconfigure">Script::set_validator_config_and_reconfigure</a></code>
 
@@ -3663,7 +3095,7 @@ the system is initiated by this script.
 <b>include</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_SetOperatorAbortsIf">ValidatorConfig::SetOperatorAbortsIf</a>{validator_account: account, operator_addr: operator_account};
 <b>include</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig_SetOperatorEnsures">ValidatorConfig::SetOperatorEnsures</a>{validator_account: account, operator_addr: operator_account};
 <b>aborts_with</b> [check]
-    0, // Odd error code in <b>assert</b> on second statement in <a href="transaction_script_documentation.md#add_validator_and_reconfigure">add_validator_and_reconfigure</a>
+    0, // Odd error code in <b>assert</b> on second statement in add_validator_and_reconfigure
     <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
     <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>,
     <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>;
@@ -3692,7 +3124,7 @@ Only a Validator account can set its Validator Operator [[H15]][PERMISSION].
 
 ---
 
-<a name="@Treasury_and_Compliance_Operations_164"></a>
+<a name="@Treasury_and_Compliance_Operations_144"></a>
 
 ### Treasury and Compliance Operations
 
@@ -3709,7 +3141,7 @@ Only a Validator account can set its Validator Operator [[H15]][PERMISSION].
 
 
 
-<a name="@Summary_165"></a>
+<a name="@Summary_145"></a>
 
 ##### Summary
 
@@ -3719,7 +3151,7 @@ transaction may be sent by any account that holds a balance and preburn area
 in the specified currency.
 
 
-<a name="@Technical_Description_166"></a>
+<a name="@Technical_Description_146"></a>
 
 ##### Technical Description
 
@@ -3729,7 +3161,7 @@ Moves the specified <code>amount</code> of coins in <code>Token</code> currency 
 transaction in order for it to execute successfully.
 
 
-<a name="@Events_167"></a>
+<a name="@Events_147"></a>
 
 ###### Events
 
@@ -3741,7 +3173,7 @@ handle with the <code>payee</code> and <code>payer</code> fields being <code>acc
 <code>preburn_address</code> set to <code>account</code>'s address.
 
 
-<a name="@Parameters_168"></a>
+<a name="@Parameters_148"></a>
 
 ##### Parameters
 
@@ -3752,7 +3184,7 @@ handle with the <code>payee</code> and <code>payer</code> fields being <code>acc
 | <code>amount</code>  | <code>u64</code>     | The amount in <code>Token</code> to be moved to the preburn area.                                                                           |
 
 
-<a name="@Common_Abort_Conditions_169"></a>
+<a name="@Common_Abort_Conditions_149"></a>
 
 ##### Common Abort Conditions
 
@@ -3768,7 +3200,7 @@ handle with the <code>payee</code> and <code>payer</code> fields being <code>acc
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>  | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDESIGNATED_DEALER">Roles::EDESIGNATED_DEALER</a></code>                              | The <code>account</code> did not have the role of DesignatedDealer.                                |
 
 
-<a name="@Related_Scripts_170"></a>
+<a name="@Related_Scripts_150"></a>
 
 ##### Related Scripts
 
@@ -3844,7 +3276,7 @@ Only the account with a preburn area can preburn [[H4]][PERMISSION].
 
 
 
-<a name="@Summary_171"></a>
+<a name="@Summary_151"></a>
 
 ##### Summary
 
@@ -3855,7 +3287,7 @@ The account that holds the preburn resource will normally be a Designated
 Dealer, but there are no enforced requirements that it be one.
 
 
-<a name="@Technical_Description_172"></a>
+<a name="@Technical_Description_152"></a>
 
 ##### Technical Description
 
@@ -3873,7 +3305,7 @@ under <code>preburn_address</code> immediately before this transaction, and the
 <code>to_burn</code> field of the preburn resource will have a zero value.
 
 
-<a name="@Events_173"></a>
+<a name="@Events_153"></a>
 
 ###### Events
 
@@ -3882,7 +3314,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 <code>0xA550C18</code>.
 
 
-<a name="@Parameters_174"></a>
+<a name="@Parameters_154"></a>
 
 ##### Parameters
 
@@ -3894,7 +3326,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 | <code>preburn_address</code> | <code>address</code> | The address where the coins to-be-burned are currently held.                                                                 |
 
 
-<a name="@Common_Abort_Conditions_175"></a>
+<a name="@Common_Abort_Conditions_155"></a>
 
 ##### Common Abort Conditions
 
@@ -3910,7 +3342,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>       | <code><a href="../../modules/doc/Diem.md#0x1_Diem_ECURRENCY_INFO">Diem::ECURRENCY_INFO</a></code>                 | The specified <code>Token</code> is not a registered currency on-chain.                                          |
 
 
-<a name="@Related_Scripts_176"></a>
+<a name="@Related_Scripts_156"></a>
 
 ##### Related Scripts
 
@@ -3981,7 +3413,7 @@ Only the account with the burn capability can burn coins [[H3]][PERMISSION].
 
 
 
-<a name="@Summary_177"></a>
+<a name="@Summary_157"></a>
 
 ##### Summary
 
@@ -3990,7 +3422,7 @@ Cancels and returns all coins held in the preburn area under
 Can only be successfully sent by an account with Treasury Compliance role.
 
 
-<a name="@Technical_Description_178"></a>
+<a name="@Technical_Description_158"></a>
 
 ##### Technical Description
 
@@ -4005,7 +3437,7 @@ the entire balance held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem
 before this script is called otherwise the transaction will fail.
 
 
-<a name="@Events_179"></a>
+<a name="@Events_159"></a>
 
 ###### Events
 
@@ -4017,7 +3449,7 @@ resource's <code>burn_events</code> published under <code>0xA550C18</code>.
 being <code>preburn_address</code>.
 
 
-<a name="@Parameters_180"></a>
+<a name="@Parameters_160"></a>
 
 ##### Parameters
 
@@ -4028,7 +3460,7 @@ being <code>preburn_address</code>.
 | <code>preburn_address</code> | <code>address</code> | The address where the coins to-be-burned are currently held.                                                                         |
 
 
-<a name="@Common_Abort_Conditions_181"></a>
+<a name="@Common_Abort_Conditions_161"></a>
 
 ##### Common Abort Conditions
 
@@ -4043,7 +3475,7 @@ being <code>preburn_address</code>.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a></code>       | <code><a href="../../modules/doc/DualAttestation.md#0x1_DualAttestation_EPAYEE_COMPLIANCE_KEY_NOT_SET">DualAttestation::EPAYEE_COMPLIANCE_KEY_NOT_SET</a></code> | The <code>account</code> does not have a compliance key set on it but dual attestion checking was performed.     |
 
 
-<a name="@Related_Scripts_182"></a>
+<a name="@Related_Scripts_162"></a>
 
 ##### Related Scripts
 
@@ -4139,7 +3571,7 @@ Only the account with the burn capability can cancel burning [[H3]][PERMISSION].
 
 
 
-<a name="@Summary_183"></a>
+<a name="@Summary_163"></a>
 
 ##### Summary
 
@@ -4148,7 +3580,7 @@ Diem association may reclaim the backing coins off-chain. May only be sent
 by the Treasury Compliance account.
 
 
-<a name="@Technical_Description_184"></a>
+<a name="@Technical_Description_164"></a>
 
 ##### Technical Description
 
@@ -4161,7 +3593,7 @@ currency. Both <code>balance</code> and <code><a href="transaction_script_docume
 account address will have a value of 0 after the successful execution of this script.
 
 
-<a name="@Events_185"></a>
+<a name="@Events_165"></a>
 
 ###### Events
 
@@ -4170,7 +3602,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 <code>0xA550C18</code>.
 
 
-<a name="@Parameters_186"></a>
+<a name="@Parameters_166"></a>
 
 ##### Parameters
 
@@ -4180,7 +3612,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 | <code>tc_account</code> | <code>&signer</code> | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                                           |
 
 
-<a name="@Common_Abort_Conditions_187"></a>
+<a name="@Common_Abort_Conditions_167"></a>
 
 ##### Common Abort Conditions
 
@@ -4191,7 +3623,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/Diem.md#0x1_Diem_ECOIN">Diem::ECOIN</a></code>                        | The collected fees in <code>CoinType</code> are zero.                  |
 
 
-<a name="@Related_Scripts_188"></a>
+<a name="@Related_Scripts_168"></a>
 
 ##### Related Scripts
 
@@ -4232,7 +3664,7 @@ held in the <code><a href="../../modules/doc/Diem.md#0x1_Diem_CurrencyInfo">Diem
 
 
 
-<a name="@Summary_189"></a>
+<a name="@Summary_169"></a>
 
 ##### Summary
 
@@ -4241,7 +3673,7 @@ must be the Treasury Compliance account, and coins can only be minted to a Desig
 account.
 
 
-<a name="@Technical_Description_190"></a>
+<a name="@Technical_Description_170"></a>
 
 ##### Technical Description
 
@@ -4254,7 +3686,7 @@ they support. The sending <code>tc_account</code> must be the Treasury Complianc
 receiver an authorized Designated Dealer account.
 
 
-<a name="@Events_191"></a>
+<a name="@Events_171"></a>
 
 ###### Events
 
@@ -4267,7 +3699,7 @@ Dealer's address is emitted on the <code>mint_event_handle</code> in the stored 
 resource published under the <code>designated_dealer_address</code>.
 
 
-<a name="@Parameters_192"></a>
+<a name="@Parameters_172"></a>
 
 ##### Parameters
 
@@ -4281,7 +3713,7 @@ resource published under the <code>designated_dealer_address</code>.
 | <code>tier_index</code>                | <code>u64</code>     | The mint tier index to use for the Designated Dealer account.                                              |
 
 
-<a name="@Common_Abort_Conditions_193"></a>
+<a name="@Common_Abort_Conditions_173"></a>
 
 ##### Common Abort Conditions
 
@@ -4302,7 +3734,7 @@ resource published under the <code>designated_dealer_address</code>.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_LIMIT_EXCEEDED">Errors::LIMIT_EXCEEDED</a></code>      | <code><a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_EDEPOSIT_EXCEEDS_LIMITS">DiemAccount::EDEPOSIT_EXCEEDS_LIMITS</a></code>      | The depositing of the funds would exceed the <code>account</code>'s account limits.                                                     |
 
 
-<a name="@Related_Scripts_194"></a>
+<a name="@Related_Scripts_174"></a>
 
 ##### Related Scripts
 
@@ -4384,7 +3816,7 @@ Only the Treasury Compliance account can mint [[H1]][PERMISSION].
 
 
 
-<a name="@Summary_195"></a>
+<a name="@Summary_175"></a>
 
 ##### Summary
 
@@ -4395,7 +3827,7 @@ execution of this transaction no transactions may be sent from the frozen
 account, and the frozen account may not send or receive coins.
 
 
-<a name="@Technical_Description_196"></a>
+<a name="@Technical_Description_176"></a>
 
 ##### Technical Description
 
@@ -4409,7 +3841,7 @@ accounts and vice versa.
 
 
 
-<a name="@Events_197"></a>
+<a name="@Events_177"></a>
 
 ###### Events
 
@@ -4418,7 +3850,7 @@ the <code>freeze_event_handle</code> held in the <code><a href="../../modules/do
 under <code>0xA550C18</code> with the <code>frozen_address</code> being the <code>to_freeze_account</code>.
 
 
-<a name="@Parameters_198"></a>
+<a name="@Parameters_178"></a>
 
 ##### Parameters
 
@@ -4429,7 +3861,7 @@ under <code>0xA550C18</code> with the <code>frozen_address</code> being the <cod
 | <code>to_freeze_account</code> | <code>address</code> | The account address to be frozen.                                                                         |
 
 
-<a name="@Common_Abort_Conditions_199"></a>
+<a name="@Common_Abort_Conditions_179"></a>
 
 ##### Common Abort Conditions
 
@@ -4442,10 +3874,10 @@ under <code>0xA550C18</code> with the <code>frozen_address</code> being the <cod
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_ETREASURY_COMPLIANCE">CoreAddresses::ETREASURY_COMPLIANCE</a></code>        | The sending account is not the Treasury Compliance account.                                |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code><a href="../../modules/doc/Roles.md#0x1_Roles_ETREASURY_COMPLIANCE">Roles::ETREASURY_COMPLIANCE</a></code>                | The sending account is not the Treasury Compliance account.                                |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/AccountFreezing.md#0x1_AccountFreezing_ECANNOT_FREEZE_TC">AccountFreezing::ECANNOT_FREEZE_TC</a></code>         | <code>to_freeze_account</code> was the Treasury Compliance account (<code>0xB1E55ED</code>).                     |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/AccountFreezing.md#0x1_AccountFreezing_ECANNOT_FREEZE_DIEM_ROOT">AccountFreezing::ECANNOT_FREEZE_DIEM_ROOT</a></code> | <code>to_freeze_account</code> was the Diem Root account (<code>0xA550C18</code>).                              |
+| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code>AccountFreezing::ECANNOT_FREEZE_DIEM_ROOT</code> | <code>to_freeze_account</code> was the Diem Root account (<code>0xA550C18</code>).                              |
 
 
-<a name="@Related_Scripts_200"></a>
+<a name="@Related_Scripts_180"></a>
 
 ##### Related Scripts
 
@@ -4486,7 +3918,7 @@ under <code>0xA550C18</code> with the <code>frozen_address</code> being the <cod
 
 
 
-<a name="@Summary_201"></a>
+<a name="@Summary_181"></a>
 
 ##### Summary
 
@@ -4495,7 +3927,7 @@ Treasury Compliance account. After the successful execution of this transaction 
 may be sent from the previously frozen account, and coins may be sent and received.
 
 
-<a name="@Technical_Description_202"></a>
+<a name="@Technical_Description_182"></a>
 
 ##### Technical Description
 
@@ -4505,7 +3937,7 @@ account. Note that this is a per-account property so unfreezing a Parent VASP wi
 the status any of its child accounts and vice versa.
 
 
-<a name="@Events_203"></a>
+<a name="@Events_183"></a>
 
 ###### Events
 
@@ -4513,7 +3945,7 @@ Successful execution of this script will emit a <code>AccountFreezing::UnFreezeA
 the <code>unfrozen_address</code> set the <code>to_unfreeze_account</code>'s address.
 
 
-<a name="@Parameters_204"></a>
+<a name="@Parameters_184"></a>
 
 ##### Parameters
 
@@ -4524,7 +3956,7 @@ the <code>unfrozen_address</code> set the <code>to_unfreeze_account</code>'s add
 | <code>to_unfreeze_account</code> | <code>address</code> | The account address to be frozen.                                                                         |
 
 
-<a name="@Common_Abort_Conditions_205"></a>
+<a name="@Common_Abort_Conditions_185"></a>
 
 ##### Common Abort Conditions
 
@@ -4537,7 +3969,7 @@ the <code>unfrozen_address</code> set the <code>to_unfreeze_account</code>'s add
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_ETREASURY_COMPLIANCE">CoreAddresses::ETREASURY_COMPLIANCE</a></code>   | The sending account is not the Treasury Compliance account.                                |
 
 
-<a name="@Related_Scripts_206"></a>
+<a name="@Related_Scripts_186"></a>
 
 ##### Related Scripts
 
@@ -4578,7 +4010,7 @@ the <code>unfrozen_address</code> set the <code>to_unfreeze_account</code>'s add
 
 
 
-<a name="@Summary_207"></a>
+<a name="@Summary_187"></a>
 
 ##### Summary
 
@@ -4587,7 +4019,7 @@ only be sent by the Treasury Compliance account.  After this transaction all int
 payments over this limit must be checked for dual attestation.
 
 
-<a name="@Technical_Description_208"></a>
+<a name="@Technical_Description_188"></a>
 
 ##### Technical Description
 
@@ -4595,7 +4027,7 @@ Updates the <code>micro_xdx_limit</code> field of the <code><a href="../../modul
 <code>0xA550C18</code>. The amount is set in micro-XDX.
 
 
-<a name="@Parameters_209"></a>
+<a name="@Parameters_189"></a>
 
 ##### Parameters
 
@@ -4606,7 +4038,7 @@ Updates the <code>micro_xdx_limit</code> field of the <code><a href="../../modul
 | <code>new_micro_xdx_limit</code> | <code>u64</code>     | The new dual attestation limit to be used on-chain.                                                       |
 
 
-<a name="@Common_Abort_Conditions_210"></a>
+<a name="@Common_Abort_Conditions_190"></a>
 
 ##### Common Abort Conditions
 
@@ -4619,11 +4051,11 @@ Updates the <code>micro_xdx_limit</code> field of the <code><a href="../../modul
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_ETREASURY_COMPLIANCE">CoreAddresses::ETREASURY_COMPLIANCE</a></code>   | <code>tc_account</code> is not the Treasury Compliance account.                                       |
 
 
-<a name="@Related_Scripts_211"></a>
+<a name="@Related_Scripts_191"></a>
 
 ##### Related Scripts
 
-* <code><a href="transaction_script_documentation.md#update_exchange_rate">Script::update_exchange_rate</a></code>
+* <code>Script::update_exchange_rate</code>
 * <code><a href="transaction_script_documentation.md#update_minting_ability">Script::update_minting_ability</a></code>
 
 
@@ -4652,140 +4084,7 @@ Updates the <code>micro_xdx_limit</code> field of the <code><a href="../../modul
 
 ---
 
-
-<a name="update_exchange_rate"></a>
-
-#### Script `update_exchange_rate`
-
-
-
-<pre><code><b>use</b> <a href="../../modules/doc/Diem.md#0x1_Diem">0x1::Diem</a>;
-<b>use</b> <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
-<b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
-</code></pre>
-
-
-
-<a name="@Summary_212"></a>
-
-##### Summary
-
-Update the rough on-chain exchange rate between a specified currency and XDX (as a conversion
-to micro-XDX). The transaction can only be sent by the Treasury Compliance account. After this
-transaction the updated exchange rate will be used for normalization of gas prices, and for
-dual attestation checking.
-
-
-<a name="@Technical_Description_213"></a>
-
-##### Technical Description
-
-Updates the on-chain exchange rate from the given <code>Currency</code> to micro-XDX.  The exchange rate
-is given by <code>new_exchange_rate_numerator/new_exchange_rate_denominator</code>.
-
-
-<a name="@Parameters_214"></a>
-
-##### Parameters
-
-| Name                            | Type      | Description                                                                                                                        |
-| ------                          | ------    | -------------                                                                                                                      |
-| <code>Currency</code>                      | Type      | The Move type for the <code>Currency</code> whose exchange rate is being updated. <code>Currency</code> must be an already-registered currency on-chain. |
-| <code>tc_account</code>                    | <code>&signer</code> | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                          |
-| <code>sliding_nonce</code>                 | <code>u64</code>     | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for the transaction.                                                          |
-| <code>new_exchange_rate_numerator</code>   | <code>u64</code>     | The numerator for the new to micro-XDX exchange rate for <code>Currency</code>.                                                               |
-| <code>new_exchange_rate_denominator</code> | <code>u64</code>     | The denominator for the new to micro-XDX exchange rate for <code>Currency</code>.                                                             |
-
-
-<a name="@Common_Abort_Conditions_215"></a>
-
-##### Common Abort Conditions
-
-| Error Category             | Error Reason                            | Description                                                                                |
-| ----------------           | --------------                          | -------------                                                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ESLIDING_NONCE">SlidingNonce::ESLIDING_NONCE</a></code>          | A <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code> resource is not published under <code>tc_account</code>.                             |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>          | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not. |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>          | The <code>sliding_nonce</code> is too far in the future.                                              |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code> | The <code>sliding_nonce</code> has been previously recorded.                                          |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_ETREASURY_COMPLIANCE">CoreAddresses::ETREASURY_COMPLIANCE</a></code>   | <code>tc_account</code> is not the Treasury Compliance account.                                       |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code><a href="../../modules/doc/Roles.md#0x1_Roles_ETREASURY_COMPLIANCE">Roles::ETREASURY_COMPLIANCE</a></code>           | <code>tc_account</code> is not the Treasury Compliance account.                                       |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_EDENOMINATOR">FixedPoint32::EDENOMINATOR</a></code>            | <code>new_exchange_rate_denominator</code> is zero.                                                   |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_ERATIO_OUT_OF_RANGE">FixedPoint32::ERATIO_OUT_OF_RANGE</a></code>     | The quotient is unrepresentable as a <code><a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32">FixedPoint32</a></code>.                                       |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_LIMIT_EXCEEDED">Errors::LIMIT_EXCEEDED</a></code>   | <code><a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_ERATIO_OUT_OF_RANGE">FixedPoint32::ERATIO_OUT_OF_RANGE</a></code>     | The quotient is unrepresentable as a <code><a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32">FixedPoint32</a></code>.                                       |
-
-
-<a name="@Related_Scripts_216"></a>
-
-##### Related Scripts
-
-* <code><a href="transaction_script_documentation.md#update_dual_attestation_limit">Script::update_dual_attestation_limit</a></code>
-* <code><a href="transaction_script_documentation.md#update_minting_ability">Script::update_minting_ability</a></code>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#update_exchange_rate">update_exchange_rate</a>&lt;Currency&gt;(tc_account: &signer, sliding_nonce: u64, new_exchange_rate_numerator: u64, new_exchange_rate_denominator: u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="transaction_script_documentation.md#update_exchange_rate">update_exchange_rate</a>&lt;Currency&gt;(
-    tc_account: &signer,
-    sliding_nonce: u64,
-    new_exchange_rate_numerator: u64,
-    new_exchange_rate_denominator: u64,
-) {
-    <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_record_nonce_or_abort">SlidingNonce::record_nonce_or_abort</a>(tc_account, sliding_nonce);
-    <b>let</b> rate = <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_create_from_rational">FixedPoint32::create_from_rational</a>(
-        new_exchange_rate_numerator,
-        new_exchange_rate_denominator,
-    );
-    <a href="../../modules/doc/Diem.md#0x1_Diem_update_xdx_exchange_rate">Diem::update_xdx_exchange_rate</a>&lt;Currency&gt;(tc_account, rate);
-}
-</code></pre>
-
-
-
-</details>
-
-<details>
-<summary>Specification</summary>
-
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount_TransactionChecks">DiemAccount::TransactionChecks</a>{sender: tc_account};
-<b>include</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_RecordNonceAbortsIf">SlidingNonce::RecordNonceAbortsIf</a>{ account: tc_account, seq_nonce: sliding_nonce };
-<b>include</b> <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_CreateFromRationalAbortsIf">FixedPoint32::CreateFromRationalAbortsIf</a>{
-    numerator: new_exchange_rate_numerator,
-    denominator: new_exchange_rate_denominator
-};
-<a name="update_exchange_rate_rate$1"></a>
-<b>let</b> rate = <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32_spec_create_from_rational">FixedPoint32::spec_create_from_rational</a>(
-    new_exchange_rate_numerator,
-    new_exchange_rate_denominator
-);
-<b>include</b> <a href="../../modules/doc/Diem.md#0x1_Diem_UpdateXDXExchangeRateAbortsIf">Diem::UpdateXDXExchangeRateAbortsIf</a>&lt;Currency&gt;;
-<b>aborts_with</b> [check]
-    <a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_LIMIT_EXCEEDED">Errors::LIMIT_EXCEEDED</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a>,
-    <a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a>;
-</code></pre>
-
-
-**Access Control:**
-Only the Treasury Compliance account can update the exchange rate [[H5]][PERMISSION].
-
-
-<pre><code><b>include</b> <a href="../../modules/doc/Roles.md#0x1_Roles_AbortsIfNotTreasuryCompliance">Roles::AbortsIfNotTreasuryCompliance</a>{account: tc_account};
-</code></pre>
-
-
-
-</details>
+> undefined move-include `update_exchange_rate`
 
 ---
 
@@ -4801,7 +4100,7 @@ Only the Treasury Compliance account can update the exchange rate [[H5]][PERMISS
 
 
 
-<a name="@Summary_217"></a>
+<a name="@Summary_192"></a>
 
 ##### Summary
 
@@ -4810,7 +4109,7 @@ only be sent by the Treasury Compliance account.  Turning minting off for a curr
 no effect on coins already in circulation, and coins may still be removed from the system.
 
 
-<a name="@Technical_Description_218"></a>
+<a name="@Technical_Description_193"></a>
 
 ##### Technical Description
 
@@ -4820,7 +4119,7 @@ this field is set to <code><b>true</b></code> and minting of new coins in <code>
 This transaction needs to be sent by the Treasury Compliance account.
 
 
-<a name="@Parameters_219"></a>
+<a name="@Parameters_194"></a>
 
 ##### Parameters
 
@@ -4831,7 +4130,7 @@ This transaction needs to be sent by the Treasury Compliance account.
 | <code>allow_minting</code> | <code>bool</code>    | Whether to allow minting of new coins in <code>Currency</code>.                                                                                 |
 
 
-<a name="@Common_Abort_Conditions_220"></a>
+<a name="@Common_Abort_Conditions_195"></a>
 
 ##### Common Abort Conditions
 
@@ -4841,12 +4140,12 @@ This transaction needs to be sent by the Treasury Compliance account.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_NOT_PUBLISHED">Errors::NOT_PUBLISHED</a></code>    | <code><a href="../../modules/doc/Diem.md#0x1_Diem_ECURRENCY_INFO">Diem::ECURRENCY_INFO</a></code>               | <code>Currency</code> is not a registered currency on-chain.    |
 
 
-<a name="@Related_Scripts_221"></a>
+<a name="@Related_Scripts_196"></a>
 
 ##### Related Scripts
 
 * <code><a href="transaction_script_documentation.md#update_dual_attestation_limit">Script::update_dual_attestation_limit</a></code>
-* <code><a href="transaction_script_documentation.md#update_exchange_rate">Script::update_exchange_rate</a></code>
+* <code>Script::update_exchange_rate</code>
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="transaction_script_documentation.md#update_minting_ability">update_minting_ability</a>&lt;Currency&gt;(tc_account: &signer, allow_minting: bool)
@@ -4873,7 +4172,7 @@ This transaction needs to be sent by the Treasury Compliance account.
 
 ---
 
-<a name="@System_Administration_222"></a>
+<a name="@System_Administration_197"></a>
 
 ### System Administration
 
@@ -4891,7 +4190,7 @@ This transaction needs to be sent by the Treasury Compliance account.
 
 
 
-<a name="@Summary_223"></a>
+<a name="@Summary_198"></a>
 
 ##### Summary
 
@@ -4899,7 +4198,7 @@ Updates the Diem major version that is stored on-chain and is used by the VM.  T
 transaction can only be sent from the Diem Root account.
 
 
-<a name="@Technical_Description_224"></a>
+<a name="@Technical_Description_199"></a>
 
 ##### Technical Description
 
@@ -4909,7 +4208,7 @@ than the current major version held on-chain. The VM reads this information and 
 preserve backwards compatibility with previous major versions of the VM.
 
 
-<a name="@Parameters_225"></a>
+<a name="@Parameters_200"></a>
 
 ##### Parameters
 
@@ -4920,7 +4219,7 @@ preserve backwards compatibility with previous major versions of the VM.
 | <code>major</code>         | <code>u64</code>     | The <code>major</code> version of the VM to be used from this transaction on.         |
 
 
-<a name="@Common_Abort_Conditions_226"></a>
+<a name="@Common_Abort_Conditions_201"></a>
 
 ##### Common Abort Conditions
 
@@ -4930,7 +4229,7 @@ preserve backwards compatibility with previous major versions of the VM.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>                | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not. |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>                | The <code>sliding_nonce</code> is too far in the future.                                              |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code>       | The <code>sliding_nonce</code> has been previously recorded.                                          |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>                  | <code>account</code> is not the Diem Root account.                                                   |
+| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code>CoreAddresses::EDIEM_ROOT</code>                  | <code>account</code> is not the Diem Root account.                                                   |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemVersion.md#0x1_DiemVersion_EINVALID_MAJOR_VERSION_NUMBER">DiemVersion::EINVALID_MAJOR_VERSION_NUMBER</a></code> | <code>major</code> is less-than or equal to the current major version stored on-chain.                |
 
 
@@ -4968,7 +4267,7 @@ preserve backwards compatibility with previous major versions of the VM.
 
 
 
-<a name="@Summary_227"></a>
+<a name="@Summary_202"></a>
 
 ##### Summary
 
@@ -4977,7 +4276,7 @@ can only be sent by the Diem Root account. Scripts with this hash can be
 sent afterward the successful execution of this script.
 
 
-<a name="@Technical_Description_228"></a>
+<a name="@Technical_Description_203"></a>
 
 ##### Technical Description
 
@@ -4991,7 +4290,7 @@ successfully a reconfiguration will be initiated, and the on-chain config
 with this <code>hash</code> can be successfully sent to the network.
 
 
-<a name="@Parameters_229"></a>
+<a name="@Parameters_204"></a>
 
 ##### Parameters
 
@@ -5002,7 +4301,7 @@ with this <code>hash</code> can be successfully sent to the network.
 | <code>sliding_nonce</code> | <code>u64</code>        | The <code>sliding_nonce</code> (see: <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>) to be used for this transaction.                      |
 
 
-<a name="@Common_Abort_Conditions_230"></a>
+<a name="@Common_Abort_Conditions_205"></a>
 
 ##### Common Abort Conditions
 
@@ -5012,8 +4311,8 @@ with this <code>hash</code> can be successfully sent to the network.
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_OLD">SlidingNonce::ENONCE_TOO_OLD</a></code>                                         | The <code>sliding_nonce</code> is too old and it's impossible to determine if it's duplicated or not. |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_TOO_NEW">SlidingNonce::ENONCE_TOO_NEW</a></code>                                         | The <code>sliding_nonce</code> is too far in the future.                                              |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce_ENONCE_ALREADY_RECORDED">SlidingNonce::ENONCE_ALREADY_RECORDED</a></code>                                | The <code>sliding_nonce</code> has been previously recorded.                                          |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code><a href="../../modules/doc/CoreAddresses.md#0x1_CoreAddresses_EDIEM_ROOT">CoreAddresses::EDIEM_ROOT</a></code>                                           | The sending account is not the Diem Root account.                                         |
-| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code><a href="../../modules/doc/Roles.md#0x1_Roles_EDIEM_ROOT">Roles::EDIEM_ROOT</a></code>                                                   | The sending account is not the Diem Root account.                                         |
+| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ADDRESS">Errors::REQUIRES_ADDRESS</a></code> | <code>CoreAddresses::EDIEM_ROOT</code>                                           | The sending account is not the Diem Root account.                                         |
+| <code><a href="../../modules/doc/Errors.md#0x1_Errors_REQUIRES_ROLE">Errors::REQUIRES_ROLE</a></code>    | <code>Roles::EDIEM_ROOT</code>                                                   | The sending account is not the Diem Root account.                                         |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_EINVALID_SCRIPT_HASH">DiemTransactionPublishingOption::EINVALID_SCRIPT_HASH</a></code>               | The script <code>hash</code> is an invalid length.                                                    |
 | <code><a href="../../modules/doc/Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a></code> | <code><a href="../../modules/doc/DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_EALLOWLIST_ALREADY_CONTAINS_SCRIPT">DiemTransactionPublishingOption::EALLOWLIST_ALREADY_CONTAINS_SCRIPT</a></code> | The on-chain allowlist already contains the script <code>hash</code>.                                 |
 
@@ -5039,7 +4338,7 @@ with this <code>hash</code> can be successfully sent to the network.
 
 
 
-<a name="@Index_231"></a>
+<a name="@Index_206"></a>
 
 ### Index
 
@@ -5047,23 +4346,37 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::AccountFreezing`](../../modules/doc/AccountFreezing.md#0x1_AccountFreezing)
 -  [`0x1::AccountLimits`](../../modules/doc/AccountLimits.md#0x1_AccountLimits)
 -  [`0x1::Authenticator`](../../modules/doc/Authenticator.md#0x1_Authenticator)
+-  [`0x1::AutoPay`](../../modules/doc/AutoPay.md#0x1_AutoPay)
 -  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_BCS)
+-  [`0x1::Cases`](../../modules/doc/Cases.md#0x1_Cases)
 -  [`0x1::ChainId`](../../modules/doc/ChainId.md#0x1_ChainId)
+-  [`0x1::Coin1`](../../modules/doc/Coin1.md#0x1_Coin1)
 -  [`0x1::CoreAddresses`](../../modules/doc/CoreAddresses.md#0x1_CoreAddresses)
+-  [`0x1::Debug`](../../modules/doc/Debug.md#0x1_Debug)
 -  [`0x1::DesignatedDealer`](../../modules/doc/DesignatedDealer.md#0x1_DesignatedDealer)
 -  [`0x1::Diem`](../../modules/doc/Diem.md#0x1_Diem)
 -  [`0x1::DiemAccount`](../../modules/doc/DiemAccount.md#0x1_DiemAccount)
+-  [`0x1::DiemBlock`](../../modules/doc/DiemBlock.md#0x1_DiemBlock)
 -  [`0x1::DiemConfig`](../../modules/doc/DiemConfig.md#0x1_DiemConfig)
 -  [`0x1::DiemSystem`](../../modules/doc/DiemSystem.md#0x1_DiemSystem)
 -  [`0x1::DiemTimestamp`](../../modules/doc/DiemTimestamp.md#0x1_DiemTimestamp)
 -  [`0x1::DiemTransactionPublishingOption`](../../modules/doc/DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption)
 -  [`0x1::DiemVersion`](../../modules/doc/DiemVersion.md#0x1_DiemVersion)
 -  [`0x1::DualAttestation`](../../modules/doc/DualAttestation.md#0x1_DualAttestation)
+-  [`0x1::Epoch`](../../modules/doc/Epoch.md#0x1_Epoch)
 -  [`0x1::Errors`](../../modules/doc/Errors.md#0x1_Errors)
 -  [`0x1::Event`](../../modules/doc/Event.md#0x1_Event)
 -  [`0x1::FixedPoint32`](../../modules/doc/FixedPoint32.md#0x1_FixedPoint32)
+-  [`0x1::FullnodeState`](../../modules/doc/FullnodeState.md#0x1_FullnodeState)
+-  [`0x1::GAS`](../../modules/doc/GAS.md#0x1_GAS)
+-  [`0x1::Globals`](../../modules/doc/Globals.md#0x1_Globals)
 -  [`0x1::Hash`](../../modules/doc/Hash.md#0x1_Hash)
+-  [`0x1::LBR`](../../modules/doc/LBR.md#0x1_LBR)
+-  [`0x1::MinerState`](../../modules/doc/MinerState.md#0x1_MinerState)
+-  [`0x1::NodeWeight`](../../modules/doc/NodeWeight.md#0x1_NodeWeight)
 -  [`0x1::Option`](../../modules/doc/Option.md#0x1_Option)
+-  [`0x1::Oracle`](../../modules/doc/Oracle.md#0x1_Oracle)
+-  [`0x1::Reconfigure`](../../modules/doc/Reconfigure.md#0x1_Reconfigure)
 -  [`0x1::RecoveryAddress`](../../modules/doc/RecoveryAddress.md#0x1_RecoveryAddress)
 -  [`0x1::RegisteredCurrencies`](../../modules/doc/RegisteredCurrencies.md#0x1_RegisteredCurrencies)
 -  [`0x1::Roles`](../../modules/doc/Roles.md#0x1_Roles)
@@ -5071,17 +4384,25 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::Signature`](../../modules/doc/Signature.md#0x1_Signature)
 -  [`0x1::Signer`](../../modules/doc/Signer.md#0x1_Signer)
 -  [`0x1::SlidingNonce`](../../modules/doc/SlidingNonce.md#0x1_SlidingNonce)
+-  [`0x1::StagingNet`](../../modules/doc/Testnet.md#0x1_StagingNet)
+-  [`0x1::Stats`](../../modules/doc/Stats.md#0x1_Stats)
+-  [`0x1::Subsidy`](../../modules/doc/Subsidy.md#0x1_Subsidy)
+-  [`0x1::TestFixtures`](../../modules/doc/TestFixtures.md#0x1_TestFixtures)
+-  [`0x1::Testnet`](../../modules/doc/Testnet.md#0x1_Testnet)
 -  [`0x1::TransactionFee`](../../modules/doc/TransactionFee.md#0x1_TransactionFee)
+-  [`0x1::TrustedAccounts`](../../modules/doc/TrustedAccounts.md#0x1_TrustedAccounts)
+-  [`0x1::Upgrade`](../../modules/doc/Upgrade.md#0x1_Upgrade)
 -  [`0x1::VASP`](../../modules/doc/VASP.md#0x1_VASP)
+-  [`0x1::VDF`](../../modules/doc/VDF.md#0x1_VDF)
 -  [`0x1::ValidatorConfig`](../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig)
 -  [`0x1::ValidatorOperatorConfig`](../../modules/doc/ValidatorOperatorConfig.md#0x1_ValidatorOperatorConfig)
+-  [`0x1::ValidatorUniverse`](../../modules/doc/ValidatorUniverse.md#0x1_ValidatorUniverse)
 -  [`0x1::Vector`](../../modules/doc/Vector.md#0x1_Vector)
--  [`0x1::XDX`](../../modules/doc/XDX.md#0x1_XDX)
--  [`0x1::XUS`](../../modules/doc/XUS.md#0x1_XUS)
 -  [`add_currency_to_account`](transaction_script_documentation.md#add_currency_to_account)
 -  [`add_recovery_rotation_capability`](transaction_script_documentation.md#add_recovery_rotation_capability)
 -  [`add_to_script_allow_list`](transaction_script_documentation.md#add_to_script_allow_list)
--  [`add_validator_and_reconfigure`](transaction_script_documentation.md#add_validator_and_reconfigure)
+-  [`autopay_create_instruction`](ol_autopay_create.md#autopay_create_instruction)
+-  [`autopay_enable`](ol_autopay_enable.md#autopay_enable)
 -  [`burn`](transaction_script_documentation.md#burn)
 -  [`burn_txn_fees`](transaction_script_documentation.md#burn_txn_fees)
 -  [`cancel_burn`](transaction_script_documentation.md#cancel_burn)
@@ -5089,14 +4410,18 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`create_designated_dealer`](transaction_script_documentation.md#create_designated_dealer)
 -  [`create_parent_vasp_account`](transaction_script_documentation.md#create_parent_vasp_account)
 -  [`create_recovery_address`](transaction_script_documentation.md#create_recovery_address)
--  [`create_validator_account`](transaction_script_documentation.md#create_validator_account)
--  [`create_validator_operator_account`](transaction_script_documentation.md#create_validator_operator_account)
+-  [`create_user_account`](ol_create_user_account.md#create_user_account)
+-  [`demo_e2e`](ol_demo_e2e.md#demo_e2e)
 -  [`freeze_account`](transaction_script_documentation.md#freeze_account)
+-  [`minerstate_commit`](ol_miner_state_commit.md#minerstate_commit)
+-  [`minerstate_helper`](ol_miner_state_helper.md#minerstate_helper)
+-  [`minerstate_onboarding`](ol_miner_state_onboarding.md#minerstate_onboarding)
+-  [`ol_oracle_tx`](ol_oracle_tx.md#ol_oracle_tx)
+-  [`ol_reconfig_bulk_update_setup`](ol_reconfig_bulk_update_setup.md#ol_reconfig_bulk_update_setup)
 -  [`peer_to_peer_with_metadata`](transaction_script_documentation.md#peer_to_peer_with_metadata)
 -  [`preburn`](transaction_script_documentation.md#preburn)
 -  [`publish_shared_ed25519_public_key`](transaction_script_documentation.md#publish_shared_ed25519_public_key)
 -  [`register_validator_config`](transaction_script_documentation.md#register_validator_config)
--  [`remove_validator_and_reconfigure`](transaction_script_documentation.md#remove_validator_and_reconfigure)
 -  [`rotate_authentication_key`](transaction_script_documentation.md#rotate_authentication_key)
 -  [`rotate_authentication_key_with_nonce`](transaction_script_documentation.md#rotate_authentication_key_with_nonce)
 -  [`rotate_authentication_key_with_nonce_admin`](transaction_script_documentation.md#rotate_authentication_key_with_nonce_admin)
@@ -5107,14 +4432,14 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`set_validator_operator`](transaction_script_documentation.md#set_validator_operator)
 -  [`set_validator_operator_with_nonce_admin`](transaction_script_documentation.md#set_validator_operator_with_nonce_admin)
 -  [`tiered_mint`](transaction_script_documentation.md#tiered_mint)
+-  [`trusted_account_update_tx`](trusted_account_update.md#trusted_account_update_tx)
 -  [`unfreeze_account`](transaction_script_documentation.md#unfreeze_account)
 -  [`update_diem_version`](transaction_script_documentation.md#update_diem_version)
 -  [`update_dual_attestation_limit`](transaction_script_documentation.md#update_dual_attestation_limit)
--  [`update_exchange_rate`](transaction_script_documentation.md#update_exchange_rate)
 -  [`update_minting_ability`](transaction_script_documentation.md#update_minting_ability)
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
-[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
-[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
+[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
+[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions

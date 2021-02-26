@@ -18,11 +18,11 @@ module ValidatorOperatorConfig {
 
     public fun publish(
         validator_operator_account: &signer,
-        dr_account: &signer,
+        lr_account: &signer,
         human_name: vector<u8>,
     ) {
         DiemTimestamp::assert_operating();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         Roles::assert_validator_operator(validator_operator_account);
         assert(
             !has_validator_operator_config(Signer::address_of(validator_operator_account)),
@@ -33,8 +33,25 @@ module ValidatorOperatorConfig {
             human_name,
         });
     }
+
+    public fun publish_with_proof(
+        validator_operator_account: &signer,
+        human_name: vector<u8>,
+    ) {
+        DiemTimestamp::assert_operating();
+        Roles::assert_validator_operator(validator_operator_account);
+        assert(
+            !has_validator_operator_config(Signer::address_of(validator_operator_account)),
+            Errors::already_published(EVALIDATOR_OPERATOR_CONFIG)
+        );
+
+        move_to(validator_operator_account, ValidatorOperatorConfig {
+            human_name,
+        });
+    }
+
     spec fun publish {
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         include Roles::AbortsIfNotValidatorOperator{validator_operator_addr: Signer::address_of(validator_operator_account)};
         include PublishAbortsIf {validator_operator_addr: Signer::spec_address_of(validator_operator_account)};
         ensures has_validator_operator_config(Signer::spec_address_of(validator_operator_account));
@@ -42,9 +59,9 @@ module ValidatorOperatorConfig {
 
     spec schema PublishAbortsIf {
         validator_operator_addr: address;
-        dr_account: signer;
+        lr_account: signer;
         include DiemTimestamp::AbortsIfNotOperating;
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         include Roles::AbortsIfNotValidatorOperator;
         aborts_if has_validator_operator_config(validator_operator_addr)
             with Errors::ALREADY_PUBLISHED;
@@ -76,12 +93,6 @@ module ValidatorOperatorConfig {
     spec module {
         invariant [global] forall addr: address where has_validator_operator_config(addr):
             Roles::spec_has_validator_operator_role_addr(addr);
-    }
-
-    /// # Persistence
-    spec module {
-        invariant update [global] forall addr: address where old(exists<ValidatorOperatorConfig>(addr)):
-            exists<ValidatorOperatorConfig>(addr);
     }
 
 }

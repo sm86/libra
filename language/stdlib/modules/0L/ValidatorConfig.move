@@ -48,11 +48,11 @@ module ValidatorConfig {
     /// and the address of the validator operator.
     public fun publish(
         validator_account: &signer,
-        dr_account: &signer,
+        lr_account: &signer,
         human_name: vector<u8>,
     ) {
         DiemTimestamp::assert_operating();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         Roles::assert_validator(validator_account);
         assert(
             !exists<ValidatorConfig>(Signer::address_of(validator_account)),
@@ -72,9 +72,9 @@ module ValidatorConfig {
 
     spec schema PublishAbortsIf {
         validator_addr: address;
-        dr_account: signer;
+        lr_account: signer;
         include DiemTimestamp::AbortsIfNotOperating;
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
         include Roles::AbortsIfNotValidator{validator_addr: validator_addr};
         aborts_if exists_config(validator_addr)
             with Errors::ALREADY_PUBLISHED;

@@ -40,7 +40,7 @@ module VASP {
     ///////////////////////////////////////////////////////////////////////////
 
     /// Create a new `ParentVASP` resource under `vasp`
-    /// Aborts if `dr_account` is not the diem root account,
+    /// Aborts if `lr_account` is not the diem root account,
     /// or if there is already a VASP (child or parent) at this account.
     public fun publish_parent_vasp_credential(vasp: &signer, tc_account: &signer) {
         DiemTimestamp::assert_operating();

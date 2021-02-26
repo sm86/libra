@@ -19,18 +19,18 @@ module DiemVersion {
 
     /// Publishes the DiemVersion config. Must be called during Genesis.
     public fun initialize(
-        dr_account: &signer,
+        lr_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
         DiemConfig::publish_new_config<DiemVersion>(
-            dr_account,
+            lr_account,
             DiemVersion { major: 1 },
         );
     }
     spec fun initialize {
         /// Must abort if the signer does not have the DiemRoot role [[H10]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         include DiemTimestamp::AbortsIfNotGenesis;
         include DiemConfig::PublishNewConfigAbortsIf<DiemVersion>;
@@ -38,10 +38,10 @@ module DiemVersion {
     }
 
     /// Allows Diem root to update the major version to a larger version.
-    public fun set(dr_account: &signer, major: u64) {
+    public fun set(lr_account: &signer, major: u64) {
         DiemTimestamp::assert_operating();
 
-        Roles::assert_diem_root(dr_account);
+        Roles::assert_diem_root(lr_account);
 
         let old_config = DiemConfig::get<DiemVersion>();
 
@@ -51,17 +51,17 @@ module DiemVersion {
         );
 
         DiemConfig::set<DiemVersion>(
-            dr_account,
+            lr_account,
             DiemVersion { major }
         );
     }
     spec fun set {
         /// Must abort if the signer does not have the DiemRoot role [[H10]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        include Roles::AbortsIfNotDiemRoot{account: lr_account};
 
         include DiemTimestamp::AbortsIfNotOperating;
         aborts_if DiemConfig::get<DiemVersion>().major >= major with Errors::INVALID_ARGUMENT;
-        include DiemConfig::SetAbortsIf<DiemVersion>{account: dr_account};
+        include DiemConfig::SetAbortsIf<DiemVersion>{account: lr_account};
         include DiemConfig::SetEnsures<DiemVersion>{payload: DiemVersion { major }};
     }
 
@@ -81,8 +81,8 @@ module DiemVersion {
     /// Only "set" can modify the DiemVersion config [[H10]][PERMISSION]
     spec schema DiemVersionRemainsSame {
         ensures old(DiemConfig::spec_is_published<DiemVersion>()) ==>
-            global<DiemConfig<DiemVersion>>(CoreAddresses::DIEM_ROOT_ADDRESS()) ==
-                old(global<DiemConfig<DiemVersion>>(CoreAddresses::DIEM_ROOT_ADDRESS()));
+            global<DiemConfig<DiemVersion>>(CoreAddresses::LIBRA_ROOT_ADDRESS()) ==
+                old(global<DiemConfig<DiemVersion>>(CoreAddresses::LIBRA_ROOT_ADDRESS()));
     }
     spec module {
         apply DiemVersionRemainsSame to * except set;
@@ -91,7 +91,7 @@ module DiemVersion {
     spec module {
         /// The permission "UpdateDiemProtocolVersion" is granted to DiemRoot [[H10]][PERMISSION].
         invariant [global, isolated] forall addr: address where exists<DiemConfig<DiemVersion>>(addr):
-            addr == CoreAddresses::DIEM_ROOT_ADDRESS();
+            addr == CoreAddresses::LIBRA_ROOT_ADDRESS();
     }
 
     /// # Other Invariants
