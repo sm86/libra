@@ -5,7 +5,7 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use diem_canonical_serialization::to_bytes;
 use std::collections::{BTreeMap, HashMap};
 
-pub fn lcs_benchmark(c: &mut Criterion) {
+pub fn bcs_benchmark(c: &mut Criterion) {
     let mut btree_map = BTreeMap::new();
     let mut hash_map = HashMap::new();
     for i in 0u32..2000u32 {
@@ -24,5 +24,5 @@ pub fn lcs_benchmark(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, lcs_benchmark);
+criterion_group!(benches, bcs_benchmark);
 criterion_main!(benches);

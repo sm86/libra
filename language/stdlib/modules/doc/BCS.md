@@ -1,5 +1,5 @@
 
-<a name="0x1_LCS"></a>
+<a name="0x1_BCS"></a>
 
 # Module `0x1::BCS`
 
@@ -9,7 +9,7 @@ published on-chain. See https://github.com/diem/diem/tree/master/common/bcs for 
 details on BCS.
 
 
--  [Function `to_bytes`](#0x1_LCS_to_bytes)
+-  [Function `to_bytes`](#0x1_BCS_to_bytes)
 -  [Module Specification](#@Module_Specification_0)
 
 
@@ -17,14 +17,14 @@ details on BCS.
 
 
 
-<a name="0x1_LCS_to_bytes"></a>
+<a name="0x1_BCS_to_bytes"></a>
 
 ## Function `to_bytes`
 
 Return the binary representation of <code>v</code> in BCS (Diem Canonical Serialization) format
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="BCS.md#0x1_LCS_to_bytes">to_bytes</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="BCS.md#0x1_BCS_to_bytes">to_bytes</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;
 </code></pre>
 
 
@@ -33,7 +33,7 @@ Return the binary representation of <code>v</code> in BCS (Diem Canonical Serial
 <summary>Implementation</summary>
 
 
-<pre><code><b>native</b> <b>public</b> <b>fun</b> <a href="BCS.md#0x1_LCS_to_bytes">to_bytes</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;;
+<pre><code><b>native</b> <b>public</b> <b>fun</b> <a href="BCS.md#0x1_BCS_to_bytes">to_bytes</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;;
 </code></pre>
 
 
@@ -49,10 +49,10 @@ Return the binary representation of <code>v</code> in BCS (Diem Canonical Serial
 Native function which is defined in the prover's prelude.
 
 
-<a name="0x1_LCS_serialize"></a>
+<a name="0x1_BCS_serialize"></a>
 
 
-<pre><code><b>native</b> <b>define</b> <a href="BCS.md#0x1_LCS_serialize">serialize</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;;
+<pre><code><b>native</b> <b>define</b> <a href="BCS.md#0x1_BCS_serialize">serialize</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;;
 </code></pre>
 
 

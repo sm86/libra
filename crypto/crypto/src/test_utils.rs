@@ -104,7 +104,7 @@ where
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestDiemCrypto(pub String);
 
-// the following block is macro expanded from derive(CryptoHasher, LCSCryptoHash)
+// the following block is macro expanded from derive(CryptoHasher, BCSCryptoHash)
 
 /// Cryptographic hasher for an BCS-serializable #item
 #[cfg(any(test, feature = "fuzzing"))]

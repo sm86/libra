@@ -35,7 +35,7 @@ func main() {
 		panic("wrong script content")
 	}
 
-	bytes, err := script.LcsSerialize()
+	bytes, err := script.bcsSerialize()
 	if err != nil {
 		panic("failed to serialize")
 	}

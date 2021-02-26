@@ -634,7 +634,7 @@ mod test {
 
     /// Generate a Signed Transaction and deserialize
     #[test]
-    fn test_lcs_signed_transaction() {
+    fn test_bcs_signed_transaction() {
         // generate key pair
         let private_key = Ed25519PrivateKey::generate_for_testing();
         let public_key = private_key.public_key();
@@ -833,7 +833,7 @@ mod test {
 
     /// Generate a P2P Transaction Script and deserialize
     #[test]
-    fn test_lcs_p2p_transaction_script() {
+    fn test_bcs_p2p_transaction_script() {
         // create transfer parameters
         let receiver_address = AccountAddress::random();
         let amount = 100_000_000;
@@ -893,7 +893,7 @@ mod test {
 
     /// Generate a add currency to account script and deserialize
     #[test]
-    fn test_lcs_add_currency_to_account_transaction_script() {
+    fn test_bcs_add_currency_to_account_transaction_script() {
         let coin_ident = std::ffi::CString::new(COIN1_NAME).expect("Invalid ident");
 
         let mut script_buf: *mut u8 = std::ptr::null_mut();
@@ -935,7 +935,7 @@ mod test {
 
     /// Generate a RotateDualAttestationInfo Script and deserialize
     #[test]
-    fn test_lcs_rotate_dual_attestationInfo_transaction_script() {
+    fn test_bcs_rotate_dual_attestationInfo_transaction_script() {
         let new_url = b"new_name".to_vec();
         let private_key = Ed25519PrivateKey::generate_for_testing();
         let new_compliance_public_key = private_key.public_key();

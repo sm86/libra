@@ -23,12 +23,12 @@ use core::{
 use ed25519_dalek::ed25519::signature::{Signature as _, Verifier as _};
 
 use digest::Digest;
-use diem_crypto_derive::{CryptoHasher, LCSCryptoHash};
+use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
 use proptest::{collection::vec, prelude::*};
 use serde::{Deserialize, Serialize};
 use sha2::Sha512;
 
-#[derive(CryptoHasher, LCSCryptoHash, Serialize, Deserialize)]
+#[derive(CryptoHasher, BCSCryptoHash, Serialize, Deserialize)]
 struct CryptoHashable(pub usize);
 
 // Takes a point in eight_torsion and finds its order

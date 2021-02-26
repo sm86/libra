@@ -231,12 +231,12 @@ mod tests {
         }
 
         #[test]
-        fn account_state_blob_lcs_roundtrip(account_state_blob in any::<AccountStateBlob>()) {
+        fn account_state_blob_bcs_roundtrip(account_state_blob in any::<AccountStateBlob>()) {
             assert_canonical_encode_decode(account_state_blob);
         }
 
         #[test]
-        fn account_state_with_proof_lcs_roundtrip(account_state_with_proof in any::<AccountStateWithProof>()) {
+        fn account_state_with_proof_bcs_roundtrip(account_state_with_proof in any::<AccountStateWithProof>()) {
             assert_canonical_encode_decode(account_state_with_proof);
         }
     }

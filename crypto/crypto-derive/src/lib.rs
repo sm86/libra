@@ -409,8 +409,8 @@ pub fn hasher_dispatch(input: TokenStream) -> TokenStream {
     out.into()
 }
 
-#[proc_macro_derive(LCSCryptoHash)]
-pub fn lcs_crypto_hash_dispatch(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(BCSCryptoHash)]
+pub fn bcs_crypto_hash_dispatch(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let name = &ast.ident;
     let hasher_name = Ident::new(&format!("{}Hasher", &name.to_string()), Span::call_site());

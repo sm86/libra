@@ -35,7 +35,7 @@ pub enum PeerManagerError {
     MpscSendError(mpsc::SendError),
 
     #[error("Serialization error {0}")]
-    LcsError(bcs::Error),
+    bcsError(bcs::Error),
 }
 
 impl PeerManagerError {
@@ -52,7 +52,7 @@ impl From<oneshot::Canceled> for PeerManagerError {
 
 impl From<bcs::Error> for PeerManagerError {
     fn from(e: bcs::Error) -> Self {
-        PeerManagerError::LcsError(e)
+        PeerManagerError::bcsError(e)
     }
 }
 

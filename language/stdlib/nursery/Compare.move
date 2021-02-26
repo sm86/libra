@@ -17,30 +17,30 @@ module Compare {
     ///
     /// This function is designed to compare BCS (Diem Canonical Serialization)-encoded values
     /// (i.e., vectors produced by `BCS::to_bytes`). A typical client will call
-    /// `Compare::cmp_lcs_bytes(BCS::to_bytes(&t1), BCS::to_bytes(&t2))`. The comparison provides the
+    /// `Compare::cmp_bcs_bytes(BCS::to_bytes(&t1), BCS::to_bytes(&t2))`. The comparison provides the
     /// following guarantees w.r.t the original values t1 and t2:
-    /// - `cmp_lcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `cmp_lcs_bytes(t2, t1) == GREATER_THAN`
+    /// - `cmp_bcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `cmp_bcs_bytes(t2, t1) == GREATER_THAN`
     /// - `Compare::cmp<T>(t1, t2) == EQUAL` iff `t1 == t2` and (similarly)
     ///   `Compare::cmp<T>(t1, t2) != EQUAL` iff `t1 != t2`, where `==` and `!=` denote the Move
     ///    bytecode operations for polymorphic equality.
     /// - for all primitive types `T` with `<` and `>` comparison operators exposed in Move bytecode
     ///   (`u8`, `u64`, `u128`), we have
-    ///   `compare_lcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `t1 < t2` and (similarly)
-    ///   `compare_lcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `t1 > t2`.
+    ///   `compare_bcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `t1 < t2` and (similarly)
+    ///   `compare_bcs_bytes(bcs(t1), bcs(t2)) == LESS_THAN` iff `t1 > t2`.
     ///
     /// For all other types, the order is whatever the BCS encoding of the type and the comparison
     /// strategy above gives you. One case where the order might be surprising is the `address`
     /// type.
     /// CoreAddresses are 16 byte hex values that BCS encodes with the identity function. The right
     /// to left, byte-by-byte comparison means that (for example)
-    /// `compare_lcs_bytes(bcs(0x01), bcs(0x10)) == LESS_THAN` (as you'd expect), but
-    /// `compare_lcs_bytes(bcs(0x100), bcs(0x001)) == LESS_THAN` (as you probably wouldn't expect).
+    /// `compare_bcs_bytes(bcs(0x01), bcs(0x10)) == LESS_THAN` (as you'd expect), but
+    /// `compare_bcs_bytes(bcs(0x100), bcs(0x001)) == LESS_THAN` (as you probably wouldn't expect).
     /// Keep this in mind when using this function to compare addresses.
     ///
     /// > TODO: there is currently no specification for this function, which causes no problem because it is not yet
     /// > used in the Diem framework. However, should this functionality be needed in specification, a customized
     /// > native abstraction is needed in the prover framework.
-    public fun cmp_lcs_bytes(v1: &vector<u8>, v2: &vector<u8>): u8 {
+    public fun cmp_bcs_bytes(v1: &vector<u8>, v2: &vector<u8>): u8 {
         let i1 = Vector::length(v1);
         let i2 = Vector::length(v2);
         let len_cmp = cmp_u64(i1, i2);

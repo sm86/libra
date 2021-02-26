@@ -25,7 +25,7 @@ pub enum Error {
     #[error("Unable to decrypt address for account {0}: {1}")]
     DecryptionError(AccountAddress, String),
     #[error("Failed (de)serializing validator_network_address_keys")]
-    LCSError(#[from] bcs::Error),
+    BCSError(#[from] bcs::Error),
     #[error("NetworkAddress parse error {0}")]
     ParseError(#[from] diem_network_address::ParseError),
     #[error("Failed reading validator_network_address_keys from storage")]

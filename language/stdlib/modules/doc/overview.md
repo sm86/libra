@@ -77,7 +77,7 @@ The Move modules in the Diem Framework can be bucketed in to a couple categories
 * <code><a href="Event.md#0x1_Event">Event</a></code>
 * <code><a href="FixedPoint32.md#0x1_FixedPoint32">FixedPoint32</a></code>
 * <code><a href="Hash.md#0x1_Hash">Hash</a></code>
-* <code><a href="BCS.md#0x1_LCS">BCS</a></code>
+* <code><a href="BCS.md#0x1_BCS">BCS</a></code>
 * <code><a href="Offer.md#0x1_Offer">Offer</a></code>
 * <code><a href="Option.md#0x1_Option">Option</a></code>
 * <code><a href="SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>
@@ -111,7 +111,7 @@ The Move modules in the Diem Framework can be bucketed in to a couple categories
 -  [`0x1::Globals`](Globals.md#0x1_Globals)
 -  [`0x1::Hash`](Hash.md#0x1_Hash)
 -  [`0x1::LBR`](LBR.md#0x1_LBR)
--  [`0x1::BCS`](BCS.md#0x1_LCS)
+-  [`0x1::BCS`](BCS.md#0x1_BCS)
 -  [`0x1::Diem`](Diem.md#0x1_Diem)
 -  [`0x1::DiemAccount`](DiemAccount.md#0x1_DiemAccount)
 -  [`0x1::DiemBlock`](DiemBlock.md#0x1_DiemBlock)

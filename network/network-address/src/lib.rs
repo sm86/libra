@@ -175,7 +175,7 @@ pub enum ParseError {
     DecryptError,
 
     #[error("bcs error: {0}")]
-    LCSError(#[from] bcs::Error),
+    BCSError(#[from] bcs::Error),
 }
 
 #[derive(Error, Debug)]

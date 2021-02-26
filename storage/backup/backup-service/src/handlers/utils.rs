@@ -32,7 +32,7 @@ pub(super) static THROUGHPUT_COUNTER: Lazy<IntCounterVec> = Lazy::new(|| {
     .unwrap()
 });
 
-pub(super) fn reply_with_lcs_bytes<R: Serialize>(
+pub(super) fn reply_with_bcs_bytes<R: Serialize>(
     endpoint: &str,
     record: &R,
 ) -> Result<Box<dyn Reply>> {
@@ -84,12 +84,12 @@ where
     Ok(Box::new(Response::new(body)))
 }
 
-pub(super) async fn send_size_prefixed_lcs_bytes<I, R>(iter_res: Result<I>, mut sender: BytesSender)
+pub(super) async fn send_size_prefixed_bcs_bytes<I, R>(iter_res: Result<I>, mut sender: BytesSender)
 where
     I: Iterator<Item = Result<R>>,
     R: Serialize,
 {
-    send_size_prefixed_lcs_bytes_impl(iter_res, &mut sender)
+    send_size_prefixed_bcs_bytes_impl(iter_res, &mut sender)
         .await
         .unwrap_or_else(|e| {
             warn!("Failed writing to output http body: {:?}", e);
@@ -97,7 +97,7 @@ where
         });
 }
 
-async fn send_size_prefixed_lcs_bytes_impl<I, R>(
+async fn send_size_prefixed_bcs_bytes_impl<I, R>(
     iter_res: Result<I>,
     sender: &mut BytesSender,
 ) -> Result<()>

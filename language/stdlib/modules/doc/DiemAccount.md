@@ -96,7 +96,7 @@ before and after every transaction.
 <b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
-<b>use</b> <a href="BCS.md#0x1_LCS">0x1::BCS</a>;
+<b>use</b> <a href="BCS.md#0x1_BCS">0x1::BCS</a>;
 <b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
 <b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
@@ -2549,7 +2549,7 @@ Construct an authentication key, aborting if the prefix is not valid.
 <pre><code><b>fun</b> <a href="DiemAccount.md#0x1_DiemAccount_create_authentication_key">create_authentication_key</a>(account: &signer, auth_key_prefix: vector&lt;u8&gt;): vector&lt;u8&gt; {
     <b>let</b> authentication_key = auth_key_prefix;
     <a href="Vector.md#0x1_Vector_append">Vector::append</a>(
-        &<b>mut</b> authentication_key, <a href="BCS.md#0x1_LCS_to_bytes">BCS::to_bytes</a>(<a href="Signer.md#0x1_Signer_borrow_address">Signer::borrow_address</a>(account))
+        &<b>mut</b> authentication_key, <a href="BCS.md#0x1_BCS_to_bytes">BCS::to_bytes</a>(<a href="Signer.md#0x1_Signer_borrow_address">Signer::borrow_address</a>(account))
     );
     <b>assert</b>(
         <a href="Vector.md#0x1_Vector_length">Vector::length</a>(&authentication_key) == 32,

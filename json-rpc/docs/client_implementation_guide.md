@@ -142,7 +142,7 @@ RawTransaction rt = new RawTransaction(
         testNetChainID
 );
 
-byte[] rawTxnBytes = toLCS(rt);
+byte[] rawTxnBytes = toBCS(rt);
 
 ```
 
@@ -166,7 +166,7 @@ SignedTransaction st = new SignedTransaction(rt, new TransactionAuthenticator.Ed
         new Ed25519PublicKey(new Bytes(hexToBytes(account1_public_key))),
         new Ed25519Signature(new Bytes(sign))
 ));
-String signedTxnData = bytesToHex(toLCS(st));
+String signedTxnData = bytesToHex(toBCS(st));
 
 ```
 
@@ -186,7 +186,7 @@ When you implement above logic, you may extract `createRawTransaction` and `crea
 
 ```Java
 
-import com.novi.bcs.LcsSerializer;
+import com.novi.bcs.bcsSerializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.Serializer;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
@@ -228,14 +228,14 @@ public static String bytesToHex(Bytes bytes) {
     return bytesToHex(bytes.content());
 }
 
-public static byte[] toLCS(RawTransaction rt) throws Exception {
-    Serializer serializer = new LcsSerializer();
+public static byte[] toBCS(RawTransaction rt) throws Exception {
+    Serializer serializer = new bcsSerializer();
     rt.serialize(serializer);
     return serializer.get_bytes();
 }
 
-public static byte[] toLCS(SignedTransaction rt) throws Exception {
-    Serializer serializer = new LcsSerializer();
+public static byte[] toBCS(SignedTransaction rt) throws Exception {
+    Serializer serializer = new bcsSerializer();
     rt.serialize(serializer);
     return serializer.get_bytes();
 }

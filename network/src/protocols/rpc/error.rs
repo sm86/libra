@@ -18,8 +18,8 @@ pub enum RpcError {
     #[error("IO error: {0}")]
     IoError(#[from] io::Error),
 
-    #[error("Lcs error: {0:?}")]
-    LcsError(#[from] bcs::Error),
+    #[error("bcs error: {0:?}")]
+    bcsError(#[from] bcs::Error),
 
     #[error("Failed to open substream, not connected with peer: {0}")]
     NotConnected(PeerId),

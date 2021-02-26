@@ -35,11 +35,11 @@ fn test_that_python_code_parses_and_passes_pyre_check() {
     let installer =
         serdegen::python3::Installer::new(src_dir_path.clone(), /* package */ None);
     let config = serdegen::CodeGeneratorConfig::new("diem_types".to_string())
-        .with_encodings(vec![serdegen::Encoding::Lcs])
+        .with_encodings(vec![serdegen::Encoding::bcs])
         .with_custom_code(buildgen::python3::get_custom_diem_code("diem_types"));
     installer.install_module(&config, &registry).unwrap();
     installer.install_serde_runtime().unwrap();
-    installer.install_lcs_runtime().unwrap();
+    installer.install_bcs_runtime().unwrap();
 
     let stdlib_dir_path = src_dir_path.join("diem_stdlib");
     std::fs::create_dir_all(stdlib_dir_path.clone()).unwrap();
@@ -192,11 +192,11 @@ fn test_that_cpp_code_compiles_and_demo_runs() {
     let dir = tempdir().unwrap();
 
     let config = serdegen::CodeGeneratorConfig::new("diem_types".to_string())
-        .with_encodings(vec![serdegen::Encoding::Lcs]);
-    let lcs_installer = serdegen::cpp::Installer::new(dir.path().to_path_buf());
-    lcs_installer.install_module(&config, &registry).unwrap();
-    lcs_installer.install_serde_runtime().unwrap();
-    lcs_installer.install_lcs_runtime().unwrap();
+        .with_encodings(vec![serdegen::Encoding::bcs]);
+    let bcs_installer = serdegen::cpp::Installer::new(dir.path().to_path_buf());
+    bcs_installer.install_module(&config, &registry).unwrap();
+    bcs_installer.install_serde_runtime().unwrap();
+    bcs_installer.install_bcs_runtime().unwrap();
 
     let abi_installer = buildgen::cpp::Installer::new(dir.path().to_path_buf());
     abi_installer
@@ -238,17 +238,17 @@ fn test_that_java_code_compiles_and_demo_runs() {
     let dir = tempdir().unwrap();
 
     let config = serdegen::CodeGeneratorConfig::new("org.diem.types".to_string())
-        .with_encodings(vec![serdegen::Encoding::Lcs])
+        .with_encodings(vec![serdegen::Encoding::bcs])
         .with_custom_code(buildgen::java::get_custom_diem_code(
             &"org.diem.types"
                 .split('.')
                 .map(String::from)
                 .collect::<Vec<_>>(),
         ));
-    let lcs_installer = serdegen::java::Installer::new(dir.path().to_path_buf());
-    lcs_installer.install_module(&config, &registry).unwrap();
-    lcs_installer.install_serde_runtime().unwrap();
-    lcs_installer.install_lcs_runtime().unwrap();
+    let bcs_installer = serdegen::java::Installer::new(dir.path().to_path_buf());
+    bcs_installer.install_module(&config, &registry).unwrap();
+    bcs_installer.install_serde_runtime().unwrap();
+    bcs_installer.install_bcs_runtime().unwrap();
 
     let abi_installer = buildgen::java::Installer::new(dir.path().to_path_buf());
     abi_installer
@@ -314,12 +314,12 @@ fn test_that_golang_code_compiles_and_demo_runs() {
     let dir = tempdir().unwrap();
 
     let config = serdegen::CodeGeneratorConfig::new("diemtypes".to_string())
-        .with_encodings(vec![serdegen::Encoding::Lcs]);
-    let lcs_installer = serdegen::golang::Installer::new(
+        .with_encodings(vec![serdegen::Encoding::bcs]);
+    let bcs_installer = serdegen::golang::Installer::new(
         dir.path().to_path_buf(),
         /* default Serde module */ None,
     );
-    lcs_installer.install_module(&config, &registry).unwrap();
+    bcs_installer.install_module(&config, &registry).unwrap();
 
     let abi_installer = buildgen::golang::Installer::new(
         dir.path().to_path_buf(),

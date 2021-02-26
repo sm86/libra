@@ -42,7 +42,7 @@ pub const MOVE_SRC: &str = "move_src";
 pub use move_lang::command_line::DEFAULT_OUTPUT_DIR as DEFAULT_BUILD_OUTPUT_DIR;
 
 /// Extension for resource and event files, which are in BCS format
-const LCS_EXTENSION: &str = "bcs";
+const BCS_EXTENSION: &str = "bcs";
 
 /// subdirectory of `MOVE_DATA`/<addr> where resources are stored
 const RESOURCES_DIR: &str = "resources";
@@ -117,7 +117,7 @@ impl OnDiskStateView {
         let mut path = self.get_addr_path(&addr);
         path.push(RESOURCES_DIR);
         path.push(StructID(tag).to_string());
-        path.with_extension(LCS_EXTENSION)
+        path.with_extension(BCS_EXTENSION)
     }
 
     // Events are stored under address/handle creation number
@@ -125,7 +125,7 @@ impl OnDiskStateView {
         let mut path = self.get_addr_path(&key.get_creator_address());
         path.push(EVENTS_DIR);
         path.push(key.get_creation_number().to_string());
-        path.with_extension(LCS_EXTENSION)
+        path.with_extension(BCS_EXTENSION)
     }
 
     fn get_module_path(&self, module_id: &ModuleId) -> PathBuf {

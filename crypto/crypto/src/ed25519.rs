@@ -9,7 +9,7 @@
 //! # Examples
 //!
 //! ```
-//! use diem_crypto_derive::{CryptoHasher, LCSCryptoHash};
+//! use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
 //! use diem_crypto::{
 //!     ed25519::*,
 //!     traits::{Signature, SigningKey, Uniform},
@@ -17,7 +17,7 @@
 //! use rand::{rngs::StdRng, SeedableRng};
 //! use serde::{Serialize, Deserialize};
 //!
-//! #[derive(Serialize, Deserialize, CryptoHasher, LCSCryptoHash)]
+//! #[derive(Serialize, Deserialize, CryptoHasher, BCSCryptoHash)]
 //! pub struct TestCryptoDocTest(String);
 //! let message = TestCryptoDocTest("Test message".to_string());
 //!

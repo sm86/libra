@@ -131,7 +131,7 @@ fn main() {
             Language::Rust | Language::Go => (),
             _ => {
                 installer.install_serde_runtime().unwrap();
-                installer.install_lcs_runtime().unwrap();
+                installer.install_bcs_runtime().unwrap();
             }
         }
         let content =
@@ -150,7 +150,7 @@ fn main() {
             _ => "diem_types".to_string(),
         };
         let mut config = serdegen::CodeGeneratorConfig::new(diem_package_name.clone())
-            .with_encodings(vec![serdegen::Encoding::Lcs]);
+            .with_encodings(vec![serdegen::Encoding::bcs]);
         match options.language {
             Language::Python3 => {
                 config = config.with_custom_code(buildgen::python3::get_custom_diem_code(

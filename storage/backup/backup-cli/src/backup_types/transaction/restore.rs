@@ -101,7 +101,7 @@ impl LoadedChunk {
         );
 
         let (range_proof, ledger_info) = storage
-            .load_lcs_file::<(TransactionAccumulatorRangeProof, LedgerInfoWithSignatures)>(
+            .load_bcs_file::<(TransactionAccumulatorRangeProof, LedgerInfoWithSignatures)>(
                 &manifest.proof,
             )
             .await?;

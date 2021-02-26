@@ -5072,7 +5072,7 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::Globals`](../../modules/doc/Globals.md#0x1_Globals)
 -  [`0x1::Hash`](../../modules/doc/Hash.md#0x1_Hash)
 -  [`0x1::LBR`](../../modules/doc/LBR.md#0x1_LBR)
--  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_LCS)
+-  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_BCS)
 -  [`0x1::Diem`](../../modules/doc/Diem.md#0x1_Diem)
 -  [`0x1::DiemAccount`](../../modules/doc/DiemAccount.md#0x1_DiemAccount)
 -  [`0x1::DiemBlock`](../../modules/doc/DiemBlock.md#0x1_DiemBlock)

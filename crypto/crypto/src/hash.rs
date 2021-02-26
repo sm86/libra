@@ -40,9 +40,9 @@
 //! use the derive macros of `serde` and `diem_crypto_derive` as follows:
 //! ```
 //! use diem_crypto::hash::CryptoHash;
-//! use diem_crypto_derive::{CryptoHasher, LCSCryptoHash};
+//! use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
 //! use serde::{Deserialize, Serialize};
-//! #[derive(Serialize, Deserialize, CryptoHasher, LCSCryptoHash)]
+//! #[derive(Serialize, Deserialize, CryptoHasher, BCSCryptoHash)]
 //! struct MyNewStruct { /*...*/ }
 //!
 //! let value = MyNewStruct { /*...*/ };
@@ -437,7 +437,7 @@ impl<'a> std::iter::ExactSizeIterator for HashValueBitIterator<'a> {}
 /// A type that can be cryptographically hashed to produce a `HashValue`.
 ///
 /// In most cases, this trait should not be implemented manually but rather derived using
-/// the macros `serde::Serialize`, `CryptoHasher`, and `LCSCryptoHash`.
+/// the macros `serde::Serialize`, `CryptoHasher`, and `BCSCryptoHash`.
 pub trait CryptoHash {
     /// The associated `Hasher` type which comes with a unique salt for this type.
     type Hasher: CryptoHasher;

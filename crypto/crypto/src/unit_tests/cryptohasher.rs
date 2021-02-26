@@ -1,19 +1,19 @@
 // Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-//! Test file for the procedural macros CryptoHasher and LCSCryptoHash.
+//! Test file for the procedural macros CryptoHasher and BCSCryptoHash.
 
 use crate as diem_crypto;
 use crate::{
     hash::{CryptoHash, CryptoHasher, LIBRA_HASH_PREFIX},
     HashValue,
 };
-use diem_crypto_derive::{CryptoHasher, LCSCryptoHash};
+use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
 use serde::{Deserialize, Serialize};
 use tiny_keccak::{Hasher, Sha3};
 
 // The expected use case.
-#[derive(Serialize, Deserialize, CryptoHasher, LCSCryptoHash)]
+#[derive(Serialize, Deserialize, CryptoHasher, BCSCryptoHash)]
 pub struct Foo {
     a: u64,
     b: u32,
@@ -23,7 +23,7 @@ pub struct Foo {
 pub struct Bar {}
 
 // Complex example with generics and serde-rename.
-#[derive(Serialize, Deserialize, CryptoHasher, LCSCryptoHash)]
+#[derive(Serialize, Deserialize, CryptoHasher, BCSCryptoHash)]
 #[serde(rename = "Foo")]
 pub struct Baz<T> {
     a: T,
@@ -57,7 +57,7 @@ fn test_cryptohasher_name() {
 }
 
 #[test]
-fn test_lcs_cryptohash() {
+fn test_bcs_cryptohash() {
     let mut salt = LIBRA_HASH_PREFIX.to_vec();
     salt.extend_from_slice(b"Foo");
 
@@ -75,7 +75,7 @@ fn test_lcs_cryptohash() {
 }
 
 #[test]
-fn test_lcs_cryptohash_with_generics() {
+fn test_bcs_cryptohash_with_generics() {
     let value = Baz { a: 5u64, b: 1025 };
     let expected = CryptoHash::hash(&Foo { a: 5, b: 1025 });
     let actual = CryptoHash::hash(&value);
