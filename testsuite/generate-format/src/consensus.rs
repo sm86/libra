@@ -18,7 +18,7 @@ pub fn output_file() -> Option<&'static str> {
     Some("tests/staged/consensus.yaml")
 }
 
-/// This aims at signing canonically serializable LCS data
+/// This aims at signing canonically serializable BCS data
 #[derive(CryptoHasher, LCSCryptoHash, Serialize, Deserialize)]
 struct TestDiemCrypto(String);
 
@@ -41,7 +41,7 @@ fn trace_crypto_values(tracer: &mut Tracer, samples: &mut Samples) -> Result<()>
 /// Create a registry for consensus types.
 pub fn get_registry() -> Result<Registry> {
     let mut tracer =
-        Tracer::new(TracerConfig::default().is_human_readable(lcs::is_human_readable()));
+        Tracer::new(TracerConfig::default().is_human_readable(bcs::is_human_readable()));
     let mut samples = Samples::new();
     // 1. Record samples for types with custom deserializers.
     trace_crypto_values(&mut tracer, &mut samples)?;

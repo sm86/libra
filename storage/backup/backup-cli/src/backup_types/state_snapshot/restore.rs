@@ -150,7 +150,7 @@ impl StateSnapshotRestoreController {
         let mut chunk = vec![];
 
         while let Some(record_bytes) = file.read_record_bytes().await? {
-            chunk.push(lcs::from_bytes(&record_bytes)?);
+            chunk.push(bcs::from_bytes(&record_bytes)?);
         }
 
         Ok(chunk)

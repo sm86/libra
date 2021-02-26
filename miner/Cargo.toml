@@ -27,7 +27,7 @@ diemdb = { path = "../storage/diemdb", version="0.1.0"}
 diem-logger = { path = "../common/logger", version = "0.1.0" }
 storage-interface= {path = "../storage/storage-interface", version="0.1.0"}
 vm-genesis={path="../language/tools/vm-genesis", version="0.1.0"}
-lcs = { path = "../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 move-core-types={path="../language/move-core/types", version="0.1.0"}
 regex = "1"
 rpassword = "5.0"

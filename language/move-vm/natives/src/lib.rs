@@ -8,7 +8,7 @@ pub mod account;
 pub mod debug;
 pub mod event;
 pub mod hash;
-pub mod lcs;
+pub mod bcs;
 pub mod signature;
 pub mod signer;
 pub mod vector;

@@ -15,7 +15,7 @@ members = [
     "common/debug-interface",
     "common/futures-semaphore",
     "common/infallible",
-    "common/lcs",
+    "common/bcs",
     "common/diemdoc",
     "common/logger",
     "common/logger/derive",

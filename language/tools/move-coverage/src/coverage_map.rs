@@ -71,7 +71,7 @@ impl CoverageMap {
             .and_then(|mut file| file.read_to_end(&mut bytes).ok())
             .ok_or_else(|| format_err!("Error while reading in coverage map binary"))
             .unwrap();
-        lcs::from_bytes(&bytes)
+        bcs::from_bytes(&bytes)
             .map_err(|_| format_err!("Error deserializing into coverage map"))
             .unwrap()
     }
@@ -101,7 +101,7 @@ impl ModuleCoverageMap {
 }
 
 pub fn output_map_to_file<M: Serialize, P: AsRef<Path>>(file_name: P, data: &M) -> Result<()> {
-    let bytes = lcs::to_bytes(data)?;
+    let bytes = bcs::to_bytes(data)?;
     let mut file = File::create(file_name)?;
     file.write_all(&bytes)?;
     Ok(())

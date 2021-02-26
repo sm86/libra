@@ -96,7 +96,7 @@ fn create_test_cases() -> Vec<Test> {
                 let sp_resp = env.send("get_state_proof", json!([resp.diem_ledger_version]));
                 let state_proof = sp_resp.result.unwrap();
                 let info_hex = state_proof["ledger_info_with_signatures"].as_str().unwrap();
-                let info:LedgerInfoWithSignatures = lcs::from_bytes(&hex::decode(&info_hex).unwrap()).unwrap();
+                let info:LedgerInfoWithSignatures = bcs::from_bytes(&hex::decode(&info_hex).unwrap()).unwrap();
                 let expected_hash = info.deref().ledger_info().transaction_accumulator_hash().to_hex();
                 assert_eq!(expected_hash, metadata["accumulator_root_hash"].as_str().unwrap());
             },
@@ -266,7 +266,7 @@ fn create_test_cases() -> Vec<Test> {
 
                 let txn = env.transfer_coins((0, 0), (1, 0), 200000);
                 env.wait_for_txn(&txn);
-                let txn_hex = hex::encode(lcs::to_bytes(&txn).expect("lcs txn failed"));
+                let txn_hex = hex::encode(bcs::to_bytes(&txn).expect("bcs txn failed"));
 
                 let sender = &env.vasps[0].children[0];
                 let receiver = &env.vasps[1].children[0];
@@ -290,7 +290,7 @@ fn create_test_cases() -> Vec<Test> {
                     _ => unreachable!(),
                 };
                 let script_hash = diem_crypto::HashValue::sha3_256_of(script.code()).to_hex();
-                let script_bytes = hex::encode(lcs::to_bytes(script).unwrap());
+                let script_bytes = hex::encode(bcs::to_bytes(script).unwrap());
 
                 assert_eq!(
                     result,

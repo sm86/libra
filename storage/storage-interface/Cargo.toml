@@ -15,7 +15,7 @@ itertools = "0.9.0"
 serde = { version = "1.0.116", default-features = false }
 thiserror = "1.0.21"
 
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-crypto = { path = "../../crypto/crypto", version = "0.1.0" }
 diem-secure-net = { path = "../../secure/net", version = "0.1.0" }
 diem-state-view = { path = "../../storage/state-view", version = "0.1.0" }

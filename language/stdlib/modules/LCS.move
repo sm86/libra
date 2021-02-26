@@ -1,10 +1,10 @@
 address 0x1 {
-/// Utility for converting a Move value to its binary representation in LCS (Diem Canonical
-/// Serialization). LCS is the binary encoding for Move resources and other non-module values
-/// published on-chain. See https://github.com/diem/diem/tree/master/common/lcs for more
-/// details on LCS.
-module LCS {
-    /// Return the binary representation of `v` in LCS (Diem Canonical Serialization) format
+/// Utility for converting a Move value to its binary representation in BCS (Diem Canonical
+/// Serialization). BCS is the binary encoding for Move resources and other non-module values
+/// published on-chain. See https://github.com/diem/diem/tree/master/common/bcs for more
+/// details on BCS.
+module BCS {
+    /// Return the binary representation of `v` in BCS (Diem Canonical Serialization) format
     native public fun to_bytes<MoveValue>(v: &MoveValue): vector<u8>;
 
     // ==============================

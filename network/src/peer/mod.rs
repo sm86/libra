@@ -303,7 +303,7 @@ where
                     (message, ack_ch) = write_reqs_rx.select_next_some() => {
                         if let Err(e) = writer
                             .send(
-                                lcs::to_bytes(&message)
+                                bcs::to_bytes(&message)
                                     .expect("Outbound message failed to serialize")
                                     .into(),
                             )
@@ -391,7 +391,7 @@ where
         );
         // Read inbound message from stream.
         let message = message.freeze();
-        let message = match lcs::from_bytes(&message) {
+        let message = match bcs::from_bytes(&message) {
             Ok(message) => message,
             Err(err) => {
                 // Don't bother returning errors for tiny messages

@@ -1344,7 +1344,7 @@ procedure {:inline 1} $Signature_ed25519_verify(
 }
 
 // ==================================================================================
-// Native LCS::serialize
+// Native BCS::serialize
 
 // native define serialize<MoveValue>(v: &MoveValue): vector<u8>;
 

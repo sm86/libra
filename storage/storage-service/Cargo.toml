@@ -15,7 +15,7 @@ async-trait = "0.1.41"
 tokio = { version = "0.2.22", features = ["full"] }
 futures = "0.3.6"
 
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-config = { path = "../../config", version = "0.1.0" }
 diem-crypto = { path = "../../crypto/crypto", version = "0.1.0" }
 diemdb = { path = "../diemdb", version = "0.1.0" }

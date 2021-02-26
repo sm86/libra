@@ -19,7 +19,7 @@ serde_yaml = "0.8.13"
 thiserror = "1.0.21"
 
 
-lcs = { path = "../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-crypto = { path = "../crypto/crypto", version = "0.1.0" }
 diem-crypto-derive = { path = "../crypto/crypto-derive", version = "0.1.0" }
 diem-global-constants = { path = "../config/global-constants", version = "0.1.0"}

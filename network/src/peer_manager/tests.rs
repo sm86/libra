@@ -121,7 +121,7 @@ async fn ping_pong(connection: &mut MemorySocket) -> Result<(), PeerManagerError
     let raw_error = connection.next().await.ok_or_else(|| {
         PeerManagerError::TransportError(anyhow::anyhow!("Failed to read pong msg"))
     })??;
-    let error: NetworkMessage = lcs::from_bytes(&raw_error)?;
+    let error: NetworkMessage = bcs::from_bytes(&raw_error)?;
     assert_eq!(
         error,
         NetworkMessage::Error(ErrorCode::parsing_error(255, 111))

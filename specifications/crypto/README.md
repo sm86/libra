@@ -157,7 +157,7 @@ We will look at how the domain separator defined in this section is used
 ## Serialization
 
 Serialization of a payload is done using
-[LCS](https://developers.diem.org/docs/rustdocs/diem_canonical_serialization/). This
+[BCS](https://developers.diem.org/docs/rustdocs/diem_canonical_serialization/). This
 serialization diemry guarantees deterministic serialization for any Libra data
 structure.
 

@@ -313,9 +313,9 @@ mod tests {
             LedgerInfoWithV0::new(ledger_info, author_to_signature_map);
 
         let ledger_info_with_signatures_bytes =
-            lcs::to_bytes(&ledger_info_with_signatures).expect("block serialization failed");
+            bcs::to_bytes(&ledger_info_with_signatures).expect("block serialization failed");
         let ledger_info_with_signatures_reversed_bytes =
-            lcs::to_bytes(&ledger_info_with_signatures_reversed)
+            bcs::to_bytes(&ledger_info_with_signatures_reversed)
                 .expect("block serialization failed");
 
         assert_eq!(

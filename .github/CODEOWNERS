@@ -11,7 +11,7 @@
 # /json-rpc/src/methods.rs @thefallentree @xli
 # /client/ @thefallentree @xli
 
-# Subscribe to LCS format changes
+# Subscribe to BCS format changes
 # /testsuite/generate-format/tests/staged/diem.yaml @thefallentree @matbd @xli
 
 # Code freeze

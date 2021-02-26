@@ -464,7 +464,7 @@ impl SignedTransaction {
     }
 
     pub fn raw_txn_bytes_len(&self) -> usize {
-        lcs::to_bytes(&self.raw_txn)
+        bcs::to_bytes(&self.raw_txn)
             .expect("Unable to serialize RawTransaction")
             .len()
     }

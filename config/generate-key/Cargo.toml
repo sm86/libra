@@ -12,7 +12,7 @@ edition = "2018"
 [dependencies]
 rand = "0.7.3"
 
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-crypto = { path = "../../crypto/crypto/", version = "0.1.0"}
 diem-temppath = { path = "../../common/temppath", version = "0.1.0" }
 diem-workspace-hack = { path = "../../common/workspace-hack", version = "0.1.0" }

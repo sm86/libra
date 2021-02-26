@@ -29,7 +29,7 @@ impl BackupStorageExt for Arc<dyn BackupStorage> {
     }
 
     async fn load_lcs_file<T: DeserializeOwned>(&self, file_handle: &FileHandleRef) -> Result<T> {
-        Ok(lcs::from_bytes(&self.read_all(&file_handle).await?)?)
+        Ok(bcs::from_bytes(&self.read_all(&file_handle).await?)?)
     }
 
     async fn load_json_file<T: DeserializeOwned>(&self, file_handle: &FileHandleRef) -> Result<T> {

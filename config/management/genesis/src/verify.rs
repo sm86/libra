@@ -211,7 +211,7 @@ pub fn compute_genesis(
     let mut buffer = vec![];
     file.read_to_end(&mut buffer)
         .map_err(|e| Error::UnexpectedError(format!("Unable to read genesis: {}", e)))?;
-    let genesis = lcs::from_bytes(&buffer)
+    let genesis = bcs::from_bytes(&buffer)
         .map_err(|e| Error::UnexpectedError(format!("Unable to parse genesis: {}", e)))?;
 
     let waypoint = db_bootstrapper::generate_waypoint::<DiemVM>(&db_rw, &genesis)

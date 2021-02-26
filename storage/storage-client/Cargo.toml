@@ -13,7 +13,7 @@ edition = "2018"
 anyhow = "1.0.33"
 serde = "1.0.116"
 
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-crypto = { path = "../../crypto/crypto", version = "0.1.0" }
 diem-logger = { path = "../../common/logger", version = "0.1.0" }
 diem-infallible = { path = "../../common/infallible", version = "0.1.0" }

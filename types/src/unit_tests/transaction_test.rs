@@ -10,7 +10,7 @@ use crate::{
         TransactionListWithProof, TransactionPayload, TransactionWithProof,
     },
 };
-use lcs::test_helpers::assert_canonical_encode_decode;
+use bcs::test_helpers::assert_canonical_encode_decode;
 use diem_crypto::{
     ed25519::{self, Ed25519PrivateKey, Ed25519Signature},
     PrivateKey, Uniform,

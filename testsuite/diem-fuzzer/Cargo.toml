@@ -23,7 +23,7 @@ structopt = "0.3.18"
 rand = "0.7.3"
 ureq = { version = "1.5.1", features = ["json", "native-tls"], default-features = false }
 
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 diem-proptest-helpers = { path = "../../common/proptest-helpers", version = "0.1.0" }
 diem-workspace-hack = { path = "../../common/workspace-hack", version = "0.1.0" }
 

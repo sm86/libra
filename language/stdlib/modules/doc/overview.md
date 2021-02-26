@@ -77,7 +77,7 @@ The Move modules in the Libra Framework can be bucketed in to a couple categorie
 * <code><a href="Event.md#0x1_Event">Event</a></code>
 * <code><a href="FixedPoint32.md#0x1_FixedPoint32">FixedPoint32</a></code>
 * <code><a href="Hash.md#0x1_Hash">Hash</a></code>
-* <code><a href="LCS.md#0x1_LCS">LCS</a></code>
+* <code><a href="BCS.md#0x1_LCS">BCS</a></code>
 * <code><a href="Offer.md#0x1_Offer">Offer</a></code>
 * <code><a href="Option.md#0x1_Option">Option</a></code>
 * <code><a href="SlidingNonce.md#0x1_SlidingNonce">SlidingNonce</a></code>
@@ -111,7 +111,7 @@ The Move modules in the Libra Framework can be bucketed in to a couple categorie
 -  [`0x1::Globals`](Globals.md#0x1_Globals)
 -  [`0x1::Hash`](Hash.md#0x1_Hash)
 -  [`0x1::LBR`](LBR.md#0x1_LBR)
--  [`0x1::LCS`](LCS.md#0x1_LCS)
+-  [`0x1::BCS`](BCS.md#0x1_LCS)
 -  [`0x1::Libra`](Libra.md#0x1_Libra)
 -  [`0x1::LibraAccount`](LibraAccount.md#0x1_LibraAccount)
 -  [`0x1::LibraBlock`](LibraBlock.md#0x1_LibraBlock)

@@ -18,7 +18,7 @@ diem-crypto = { path = "../../crypto/crypto", version = "0.1.0" }
 diem-types = { path = "../../types", version = "0.1.0" }
 diem-workspace-hack = { path = "../../common/workspace-hack", version = "0.1.0" }
 datatest-stable = { path = "../../common/datatest-stable", version = "0.1.0" }
-lcs = { path = "../../common/lcs", version = "0.1.0", package = "diem-canonical-serialization" }
+bcs = { path = "../../common/bcs", version = "0.1.0", package = "diem-canonical-serialization" }
 vm = { path = "../vm", version = "0.1.0" }
 transaction-builder-generator = { path = "../transaction-builder/generator", version = "0.1.0" }
 

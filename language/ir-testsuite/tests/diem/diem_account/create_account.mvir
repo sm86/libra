@@ -1,6 +1,6 @@
 import 0x1.DiemAccount;
 import 0x1.Coin1;
-import 0x1.LCS;
+import 0x1.BCS;
 import 0x1.Roles;
 
 //! sender: blessed
@@ -9,14 +9,14 @@ main(account: &signer) {
 
     addr = 0x111101;
     assert(!DiemAccount.exists_at(copy(addr)), 83);
-    DiemAccount.create_parent_vasp_account<Coin1.Coin1>(copy(account), copy(addr), LCS.to_bytes<address>(&addr), h"aa", false);
+    DiemAccount.create_parent_vasp_account<Coin1.Coin1>(copy(account), copy(addr), BCS.to_bytes<address>(&addr), h"aa", false);
     return;
 }
 
 //! new-transaction
 import 0x1.DiemAccount;
 import 0x1.Coin1;
-import 0x1.LCS;
+import 0x1.BCS;
 import 0x1.Diem;
 
 main(account: &signer) {

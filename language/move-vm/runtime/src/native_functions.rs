@@ -7,7 +7,7 @@ use move_core_types::{
     account_address::AccountAddress, gas_schedule::CostTable, value::MoveTypeLayout,
     vm_status::StatusType,
 };
-use move_vm_natives::{account, debug, event, hash, lcs, signature, signer, vector, vdf};
+use move_vm_natives::{account, debug, event, hash, bcs, signature, signer, vector, vdf};
 use move_vm_types::{
     data_store::DataStore,
     gas_schedule::CostStrategy,
@@ -62,7 +62,7 @@ impl NativeFunction {
         Some(match case {
             (&CORE_CODE_ADDRESS, "Hash", "sha2_256") => HashSha2_256,
             (&CORE_CODE_ADDRESS, "Hash", "sha3_256") => HashSha3_256,
-            (&CORE_CODE_ADDRESS, "LCS", "to_bytes") => LCSToBytes,
+            (&CORE_CODE_ADDRESS, "BCS", "to_bytes") => LCSToBytes,
             (&CORE_CODE_ADDRESS, "Signature", "ed25519_validate_pubkey") => PubED25519Validate,
             (&CORE_CODE_ADDRESS, "Signature", "ed25519_verify") => SigED25519Verify,
             (&CORE_CODE_ADDRESS, "Vector", "length") => VectorLength,
@@ -109,7 +109,7 @@ impl NativeFunction {
             Self::VectorSwap => vector::native_swap(ctx, t, v),
             // natives that need the full API of `NativeContext`
             Self::AccountWriteEvent => event::native_emit_event(ctx, t, v),
-            Self::LCSToBytes => lcs::native_to_bytes(ctx, t, v),
+            Self::LCSToBytes => bcs::native_to_bytes(ctx, t, v),
             Self::DebugPrint => debug::native_print(ctx, t, v),
             Self::DebugPrintStackTrace => debug::native_print_stack_trace(ctx, t, v),
             Self::SignerBorrowAddress => signer::native_borrow_address(ctx, t, v),

@@ -148,7 +148,7 @@ test = false
 "#,
         std::env::current_dir()
             .unwrap()
-            .join("../../../common/lcs")
+            .join("../../../common/bcs")
             .to_string_lossy()
     )
     .unwrap();
@@ -264,7 +264,7 @@ fn test_that_java_code_compiles_and_demo_runs() {
     let paths = || {
         std::iter::empty()
             .chain(std::fs::read_dir(dir.path().join("com/novi/serde")).unwrap())
-            .chain(std::fs::read_dir(dir.path().join("com/novi/lcs")).unwrap())
+            .chain(std::fs::read_dir(dir.path().join("com/novi/bcs")).unwrap())
             .chain(std::fs::read_dir(dir.path().join("org/diem/types")).unwrap())
             .chain(std::fs::read_dir(dir.path().join("org/diem/stdlib")).unwrap())
             .map(|e| e.unwrap().path())

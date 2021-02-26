@@ -177,7 +177,7 @@ fn main() {
                     ser
                 })
                 .collect();
-            let bytes = lcs::to_bytes(&modules).unwrap();
+            let bytes = bcs::to_bytes(&modules).unwrap();
             let mut module_file = File::create(module_path).unwrap();
             module_file.write_all(&bytes).unwrap();
         });

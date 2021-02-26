@@ -8,7 +8,7 @@ The messaging protocol is versioned using the [`MessagingProtocolVersion`](hands
 
 ## Messages
 
-LibraNet messages are defined below in the form of Rust structs. On the wire, they are encoded using [lcs]. All LibraNet endpoints must be able to handle receiving all of these messages.
+LibraNet messages are defined below in the form of Rust structs. On the wire, they are encoded using [bcs]. All LibraNet endpoints must be able to handle receiving all of these messages.
 
 ```rust
 /// Most primitive message type set on the network. Note this can only support up to 127 message

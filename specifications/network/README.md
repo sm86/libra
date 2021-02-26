@@ -148,8 +148,8 @@ Sending a single `NetworkMsg` over a negotiated Libra Transport, in simplified p
 const MAX_MSG_CHUNK_LEN: u16 = 65519; /* u16::MAX - AES_GCM_TAG_LEN */
 
 fn send_one_msg_and_flush(socket: TcpStream, msg: NetworkMsg) {
-    // Serialize the message using LCS
-    let msg_bytes = lcs::to_bytes(msg);
+    // Serialize the message using BCS
+    let msg_bytes = bcs::to_bytes(msg);
     let msg_len: [u8; 4] = msg_bytes.len().to_big_endian_bytes();
     // Concatenate the msg length and serialized msg bytes into a msg frame
     let msg_frame = msg_len || msg_bytes;

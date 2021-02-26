@@ -130,7 +130,7 @@ result of executing any transaction script is given by the following table:
 | ----                     | ---                                                                                                      |
 | <code>Executed</code>               | The transaction was executed successfully.                                                               |
 | <code>OutOfGas</code>               | The transaction ran out of gas during execution.                                                         |
-| <code>MiscellaneousError</code>     | The transaction was malformed, e.g., an argument was not in LCS format. Possible, but unlikely to occur. |
+| <code>MiscellaneousError</code>     | The transaction was malformed, e.g., an argument was not in BCS format. Possible, but unlikely to occur. |
 | <code>ExecutionFailure{ ...}</code> | The transaction encountered an uncaught error. Possible, but unlikely to occur.                          |
 
 **This set of statuses is considered stable**, and they should not be expected to
@@ -2721,7 +2721,7 @@ The <code>metadata</code> and <code>metadata_signature</code> parameters are onl
 <code><a href="../../modules/doc/DualAttestation.md#0x1_DualAttestation_get_cur_microdiem_limit">DualAttestation::get_cur_microdiem_limit</a></code> LBR and <code>payer</code> and <code>payee</code> are distinct VASPs.
 However, a transaction sender can opt in to dual attestation even when it is not required
 (e.g., a DesignatedDealer -> VASP payment) by providing a non-empty <code>metadata_signature</code>.
-Standardized <code>metadata</code> LCS format can be found in <code>diem_types::transaction::metadata::Metadata</code>.
+Standardized <code>metadata</code> BCS format can be found in <code>diem_types::transaction::metadata::Metadata</code>.
 
 
 <a name="@Events_131"></a>
@@ -5072,7 +5072,7 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::Globals`](../../modules/doc/Globals.md#0x1_Globals)
 -  [`0x1::Hash`](../../modules/doc/Hash.md#0x1_Hash)
 -  [`0x1::LBR`](../../modules/doc/LBR.md#0x1_LBR)
--  [`0x1::LCS`](../../modules/doc/LCS.md#0x1_LCS)
+-  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_LCS)
 -  [`0x1::Libra`](../../modules/doc/Libra.md#0x1_Libra)
 -  [`0x1::LibraAccount`](../../modules/doc/LibraAccount.md#0x1_LibraAccount)
 -  [`0x1::LibraBlock`](../../modules/doc/LibraBlock.md#0x1_LibraBlock)

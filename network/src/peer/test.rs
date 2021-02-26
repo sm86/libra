@@ -184,7 +184,7 @@ fn peer_send_message() {
         // The client should then send the network message.
         let mut connection = Framed::new(IoCompat::new(connection), LengthDelimitedCodec::new());
         let msg = connection.next().await.unwrap();
-        let msg: NetworkMessage = lcs::from_bytes(&msg.unwrap().freeze()).unwrap();
+        let msg: NetworkMessage = bcs::from_bytes(&msg.unwrap().freeze()).unwrap();
         assert_eq!(msg, recv_msg);
         connection.close().await.unwrap();
     };
@@ -222,7 +222,7 @@ fn peer_recv_message() {
         for _ in 0..30 {
             // The client should then send the network message.
             connection
-                .send(lcs::to_bytes(&send_msg).unwrap().into())
+                .send(bcs::to_bytes(&send_msg).unwrap().into())
                 .await
                 .unwrap();
         }

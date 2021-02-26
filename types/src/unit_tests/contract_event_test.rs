@@ -5,7 +5,7 @@ use crate::{
     contract_event::{ContractEvent, EventWithProof},
     event::EventKey,
 };
-use lcs::test_helpers::assert_canonical_encode_decode;
+use bcs::test_helpers::assert_canonical_encode_decode;
 use move_core_types::language_storage::TypeTag;
 use proptest::prelude::*;
 

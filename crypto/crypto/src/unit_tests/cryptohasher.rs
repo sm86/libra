@@ -65,7 +65,7 @@ fn test_lcs_cryptohash() {
     let expected = {
         let mut digest = Sha3::v256();
         digest.update(HashValue::sha3_256_of(&salt[..]).as_ref());
-        digest.update(&lcs::to_bytes(&value).unwrap());
+        digest.update(&bcs::to_bytes(&value).unwrap());
         let mut hasher_bytes = [0u8; 32];
         digest.finalize(&mut hasher_bytes);
         hasher_bytes

@@ -6,7 +6,7 @@ use crate::proof::{
     SparseMerkleRangeProof, TestAccumulatorProof, TestAccumulatorRangeProof,
     TransactionInfoWithProof, TransactionListProof,
 };
-use lcs::test_helpers::assert_canonical_encode_decode;
+use bcs::test_helpers::assert_canonical_encode_decode;
 use proptest::prelude::*;
 
 proptest! {

@@ -30,7 +30,7 @@ pub struct AccountStateBlob {
 
 impl fmt::Debug for AccountStateBlob {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let decoded = lcs::from_bytes(&self.blob)
+        let decoded = bcs::from_bytes(&self.blob)
             .map(|account_state: AccountState| format!("{:#?}", account_state))
             .unwrap_or_else(|_| String::from("[fail]"));
 
@@ -75,7 +75,7 @@ impl TryFrom<&AccountState> for AccountStateBlob {
 
     fn try_from(account_state: &AccountState) -> Result<Self> {
         Ok(Self {
-            blob: lcs::to_bytes(account_state)?,
+            blob: bcs::to_bytes(account_state)?,
         })
     }
 }
@@ -84,7 +84,7 @@ impl TryFrom<&AccountStateBlob> for AccountState {
     type Error = Error;
 
     fn try_from(account_state_blob: &AccountStateBlob) -> Result<Self> {
-        lcs::from_bytes(&account_state_blob.blob).map_err(Into::into)
+        bcs::from_bytes(&account_state_blob.blob).map_err(Into::into)
     }
 }
 
@@ -215,7 +215,7 @@ impl AccountStateWithProof {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lcs::test_helpers::assert_canonical_encode_decode;
+    use bcs::test_helpers::assert_canonical_encode_decode;
     use proptest::collection::vec;
 
     fn hash_blob(blob: &[u8]) -> HashValue {

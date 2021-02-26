@@ -82,7 +82,7 @@ As in any open source project, a CLA qualifies contributions for review, but sub
 
 You can check the technical progress we're making toward the Diem Core mainnet launch on our [Roadmap](https://github.com/orgs/diem/projects/1). Completed work includes:
 
-- Diem Canonical Serialization (LCS)
+- Diem Canonical Serialization (BCS)
 - MVP for full nodes
 - MVP for vectors in Move
 - Events

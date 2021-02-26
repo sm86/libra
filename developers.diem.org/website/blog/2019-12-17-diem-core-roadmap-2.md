@@ -65,7 +65,7 @@ Below is a summary of our progress. Some new items have been added for visibilit
 | Developer Infrastructure | Diem Community | We are in the process of finalizing the release process, but recently have: <ul><li>Now run continuous build and cluster test every 3 hours</li><li>Initiated notifications when nightly integration fails for Docker, config, or fuzzing tests</li>|
 | Pub/Sub | Diem Community | **Prototype done!** <br/> We have a working prototype that we are productionizing now. We went with an adaptor layer that lets any pub/sub system integrate on top of Diem Core (e.g., RabbitMQ) |
 | TCB | Security / Crypto | **Amazing progress here!**<ul><li>Isolated the core logic for consensus safety along with the consensus private key. Next steps are to construct an independent process for full process separation of trusted and untrusted code.</li><li>Circulating an initial proposal on the Executor/VM safety. The main focus here is to establish a trusted path between consensus safety logic and this work and establishing trust on storage.</li><li>Shared proposal for automated, online key rotation with the experts at BisonTrails. They provided feedback that this proposal is more secure than typical approaches but very appropriate considering what is at stake.</li></ul>|
-| Serialization | Security / Crypto | **Done!**<br/>Diem Canonical Serialization (LCS) has been finished and is in use throughout the system. |
+| Serialization | Security / Crypto | **Done!**<br/>Diem Canonical Serialization (BCS) has been finished and is in use throughout the system. |
 | Diem Pre-Mainnet | Production Ops |  (see Diem pre-mainnet section below) |
 | Diem Testnet | Production Ops | (see Diem pre-mainnet section below) |
 

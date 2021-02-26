@@ -5,24 +5,24 @@ use super::*;
 
 // Ensure serialization of ProtocolId enum takes 1 byte.
 #[test]
-fn protocol_id_serialization() -> lcs::Result<()> {
+fn protocol_id_serialization() -> bcs::Result<()> {
     let protocol = ProtocolId::ConsensusRpc;
-    assert_eq!(lcs::to_bytes(&protocol)?, vec![0x00]);
+    assert_eq!(bcs::to_bytes(&protocol)?, vec![0x00]);
     Ok(())
 }
 
 #[test]
-fn error_code() -> lcs::Result<()> {
+fn error_code() -> bcs::Result<()> {
     let error_code = ErrorCode::ParsingError(ParsingErrorType {
         message: 9,
         protocol: 5,
     });
-    assert_eq!(lcs::to_bytes(&error_code)?, vec![0, 9, 5]);
+    assert_eq!(bcs::to_bytes(&error_code)?, vec![0, 9, 5]);
     Ok(())
 }
 
 #[test]
-fn rpc_request() -> lcs::Result<()> {
+fn rpc_request() -> bcs::Result<()> {
     let rpc_request = RpcRequest {
         request_id: 25,
         protocol_id: ProtocolId::ConsensusRpc,
@@ -30,7 +30,7 @@ fn rpc_request() -> lcs::Result<()> {
         raw_request: [0, 1, 2, 3].to_vec(),
     };
     assert_eq!(
-        lcs::to_bytes(&rpc_request)?,
+        bcs::to_bytes(&rpc_request)?,
         // [0] -> protocol_idx
         // [25, 0, 0, 0] -> request_id
         // [0] -> priority

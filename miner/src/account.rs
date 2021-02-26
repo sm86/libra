@@ -88,7 +88,7 @@ impl ValConfigs {
                 0
             ).expect("unable to encrypt network address")
         ];
-        // let serialized_addr = lcs::to_bytes(&encrypted_addr).unwrap();
+        // let serialized_addr = bcs::to_bytes(&encrypted_addr).unwrap();
 
         let fullnode_network_string = format!("/ip4/{}/tcp/6179", ip_address);
         let fn_addr_obj: NetworkAddress = fullnode_network_string.parse().expect("could not parse fullnode network address");
@@ -107,8 +107,8 @@ impl ValConfigs {
             op_address: keys.child_1_operator.get_address().to_string(),
             op_auth_key_prefix: keys.child_1_operator.get_authentication_key().prefix().to_vec(),
             op_consensus_pubkey: keys.child_4_consensus.get_public().to_bytes().to_vec(),
-            op_validator_network_addresses: lcs::to_bytes(&encrypted_addr).unwrap(),
-            op_fullnode_network_addresses: lcs::to_bytes(&fn_addr_obj).unwrap(),
+            op_validator_network_addresses: bcs::to_bytes(&encrypted_addr).unwrap(),
+            op_fullnode_network_addresses: bcs::to_bytes(&fn_addr_obj).unwrap(),
             op_fullnode_network_addresses_string: fn_addr_obj.to_owned(),
             op_human_name: format!("{}-oper", owner_address),
         }
@@ -214,7 +214,7 @@ fn val_config_ip_address() {
         correct_hex
     );
 
-    let mut enc_addr: Vec<EncNetworkAddress> = lcs::from_bytes(&val.op_validator_network_addresses)
+    let mut enc_addr: Vec<EncNetworkAddress> = bcs::from_bytes(&val.op_validator_network_addresses)
     .expect("couldn't deserialize encrypted network address");
 
     let dec_addrs = enc_addr.pop().unwrap().decrypt(

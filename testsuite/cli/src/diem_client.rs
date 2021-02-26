@@ -200,7 +200,7 @@ impl DiemClient {
                     AccountStateWithProofView::from_response(result.clone())?;
                 if let Some(bytes) = account_state_with_proof.blob {
                     Ok((
-                        Some(lcs::from_bytes(&bytes.into_bytes()?)?),
+                        Some(bcs::from_bytes(&bytes.into_bytes()?)?),
                         account_state_with_proof.version,
                     ))
                 } else {
@@ -281,9 +281,9 @@ impl DiemClient {
     fn verify_state_proof(&mut self, state_proof: StateProofView) -> Result<()> {
         let client_version = self.trusted_state.latest_version();
         let li: LedgerInfoWithSignatures =
-            lcs::from_bytes(&state_proof.ledger_info_with_signatures.into_bytes()?)?;
+            bcs::from_bytes(&state_proof.ledger_info_with_signatures.into_bytes()?)?;
         let epoch_change_proof: EpochChangeProof =
-            lcs::from_bytes(&state_proof.epoch_change_proof.into_bytes()?)?;
+            bcs::from_bytes(&state_proof.epoch_change_proof.into_bytes()?)?;
 
         // check ledger info version
         ensure!(

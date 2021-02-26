@@ -2,7 +2,7 @@
 name = "diem-canonical-serialization"
 version = "0.1.0"
 authors = ["Diem Association <opensource@diem.org>"]
-description = "Diem Canonical Serialization (LCS)"
+description = "Diem Canonical Serialization (BCS)"
 repository = "https://github.com/diem/diem"
 homepage = "https://diem.org"
 license = "Apache-2.0"

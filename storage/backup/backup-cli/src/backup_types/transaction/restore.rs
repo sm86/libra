@@ -87,7 +87,7 @@ impl LoadedChunk {
         let mut txn_infos = Vec::new();
 
         while let Some(record_bytes) = file.read_record_bytes().await? {
-            let (txn, txn_info) = lcs::from_bytes(&record_bytes)?;
+            let (txn, txn_info) = bcs::from_bytes(&record_bytes)?;
             txns.push(txn);
             txn_infos.push(txn_info);
         }

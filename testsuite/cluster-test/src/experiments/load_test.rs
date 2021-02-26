@@ -259,7 +259,7 @@ async fn mempool_load_test(
     let task_start = Instant::now();
     while Instant::now().duration_since(task_start) < duration {
         let msg = diem_mempool::network::MempoolSyncMsg::BroadcastTransactionsRequest {
-            request_id: lcs::to_bytes("request_id")?,
+            request_id: bcs::to_bytes("request_id")?,
             transactions: vec![], // TODO submit actual txns
         };
         // TODO log stats for bandwidth sent to remote peer to MempoolResult

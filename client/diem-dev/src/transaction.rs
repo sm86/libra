@@ -9,7 +9,7 @@ use crate::{
         LIBRA_SIGNATURE_SIZE,
     },
 };
-use lcs::{from_bytes, to_bytes};
+use bcs::{from_bytes, to_bytes};
 use diem_crypto::{
     ed25519::{Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, ED25519_PUBLIC_KEY_LENGTH},
     test_utils::KeyPair,
@@ -419,7 +419,7 @@ pub unsafe extern "C" fn diem_RawTransaction_sign(
         return DiemStatus::InvalidArgument;
     }
     let raw_txn_bytes: &[u8] = slice::from_raw_parts(buf_raw_txn, len_raw_txn);
-    let raw_txn: RawTransaction = match lcs::from_bytes(&raw_txn_bytes) {
+    let raw_txn: RawTransaction = match bcs::from_bytes(&raw_txn_bytes) {
         Ok(result) => result,
         Err(e) => {
             update_last_error(format!(
@@ -489,7 +489,7 @@ pub unsafe extern "C" fn diem_DiemSignedTransaction_from(
         return DiemStatus::InvalidArgument;
     }
     let buffer = slice::from_raw_parts(buf, len);
-    let signed_txn: SignedTransaction = match lcs::from_bytes(buffer) {
+    let signed_txn: SignedTransaction = match bcs::from_bytes(buffer) {
         Ok(result) => result,
         Err(e) => {
             update_last_error(format!("Error deserializing signed transaction, invalid signed transaction bytes or length: {}", e.to_string()));
@@ -623,7 +623,7 @@ pub unsafe extern "C" fn diem_DiemSignedTransaction_from(
 #[cfg(test)]
 mod test {
     use super::*;
-    use lcs::from_bytes;
+    use bcs::from_bytes;
     use diem_crypto::{PrivateKey, SigningKey, Uniform};
     use diem_types::{
         account_config::COIN1_NAME,
@@ -673,7 +673,7 @@ mod test {
 
         let script_bytes: &[u8] = unsafe { slice::from_raw_parts(script_buf, script_len) };
         let _deserialized_script: Script =
-            from_bytes(script_bytes).expect("LCS deserialization failed for Script");
+            from_bytes(script_bytes).expect("BCS deserialization failed for Script");
 
         let mut buf: *mut u8 = std::ptr::null_mut();
         let buf_ptr = &mut buf;
@@ -699,7 +699,7 @@ mod test {
 
         let signed_txn_bytes_buf: &[u8] = unsafe { slice::from_raw_parts(buf, len) };
         let deserialized_signed_txn: SignedTransaction =
-            from_bytes(signed_txn_bytes_buf).expect("LCS deserialization failed");
+            from_bytes(signed_txn_bytes_buf).expect("BCS deserialization failed");
 
         if let TransactionPayload::Script(program) = deserialized_signed_txn.payload() {
             match program.args()[1] {
@@ -772,7 +772,7 @@ mod test {
 
         let script_bytes: &[u8] = unsafe { slice::from_raw_parts(script_buf, script_len) };
         let _deserialized_script: Script =
-            from_bytes(script_bytes).expect("LCS deserialization failed for Script");
+            from_bytes(script_bytes).expect("BCS deserialization failed for Script");
 
         let mut buf: *mut u8 = std::ptr::null_mut();
         let buf_ptr = &mut buf;
@@ -798,7 +798,7 @@ mod test {
 
         let signed_txn_bytes_buf: &[u8] = unsafe { slice::from_raw_parts(buf, len) };
         let deserialized_signed_txn: SignedTransaction =
-            from_bytes(signed_txn_bytes_buf).expect("LCS deserialization failed");
+            from_bytes(signed_txn_bytes_buf).expect("BCS deserialization failed");
 
         let identifier = from_currency_code_string(
             coin_ident_2
@@ -863,7 +863,7 @@ mod test {
 
         let script_bytes: &[u8] = unsafe { slice::from_raw_parts(script_buf, script_len) };
         let deserialized_script: Script =
-            from_bytes(script_bytes).expect("LCS deserialization failed for Script");
+            from_bytes(script_bytes).expect("BCS deserialization failed for Script");
 
         if let TransactionArgument::Address(val) = deserialized_script.args()[0] {
             assert_eq!(val, receiver_address);
@@ -912,7 +912,7 @@ mod test {
 
         let script_bytes: &[u8] = unsafe { slice::from_raw_parts(script_buf, script_len) };
         let deserialized_script: Script =
-            from_bytes(script_bytes).expect("LCS deserialization failed for Script");
+            from_bytes(script_bytes).expect("BCS deserialization failed for Script");
         let identifier = from_currency_code_string(
             coin_ident
                 .as_c_str()
@@ -958,7 +958,7 @@ mod test {
 
         let script_bytes: &[u8] = unsafe { slice::from_raw_parts(script_buf, script_len) };
         let deserialized_script: Script = from_bytes(script_bytes)
-            .expect("LCS deserialization failed for rotate base URL Script");
+            .expect("BCS deserialization failed for rotate base URL Script");
 
         if let TransactionArgument::U8Vector(val) = deserialized_script.args()[0].clone() {
             assert_eq!(val, new_url);
@@ -1017,7 +1017,7 @@ mod test {
         // deserialize raw txn and sign
         let raw_txn_bytes: &[u8] = unsafe { slice::from_raw_parts(buf_ptr, len) };
         let deserialized_raw_txn: RawTransaction =
-            from_bytes(raw_txn_bytes).expect("LCS deserialization failed for raw transaction");
+            from_bytes(raw_txn_bytes).expect("BCS deserialization failed for raw transaction");
         let signature = private_key.sign(&deserialized_raw_txn);
 
         // get signed transaction by signing raw transaction
@@ -1040,7 +1040,7 @@ mod test {
         let signed_txn_bytes: &[u8] =
             unsafe { slice::from_raw_parts(signed_txn_buf_ptr, signed_txn_len) };
         let deserialized_signed_txn: SignedTransaction = from_bytes(signed_txn_bytes)
-            .expect("LCS deserialization failed for signed transaction");
+            .expect("BCS deserialization failed for signed transaction");
 
         // test values equal
         if let TransactionPayload::Script(program) = deserialized_signed_txn.payload() {
@@ -1100,7 +1100,7 @@ mod test {
             public_key.clone(),
             signature.clone(),
         );
-        let txn_bytes = lcs::to_bytes(&signed_txn).expect("Unable to serialize SignedTransaction");
+        let txn_bytes = bcs::to_bytes(&signed_txn).expect("Unable to serialize SignedTransaction");
 
         let mut diem_signed_txn = DiemSignedTransaction::default();
         let result = unsafe {

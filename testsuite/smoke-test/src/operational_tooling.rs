@@ -371,7 +371,7 @@ fn test_extract_private_key() {
 
     // Verify the operator private key has been written correctly
     let file_contents = fs::read(key_file_path).unwrap();
-    let key_from_file = lcs::from_bytes(&file_contents).unwrap();
+    let key_from_file = bcs::from_bytes(&file_contents).unwrap();
     let key_from_storage = storage.export_private_key(OPERATOR_KEY).unwrap();
     assert_eq!(key_from_storage, key_from_file);
 }
@@ -389,7 +389,7 @@ fn test_extract_public_key() {
 
     // Verify the operator key has been written correctly
     let file_contents = fs::read(key_file_path).unwrap();
-    let key_from_file = lcs::from_bytes(&file_contents).unwrap();
+    let key_from_file = bcs::from_bytes(&file_contents).unwrap();
     let key_from_storage = storage.get_public_key(OPERATOR_KEY).unwrap().public_key;
     assert_eq!(key_from_storage, key_from_file);
 }
