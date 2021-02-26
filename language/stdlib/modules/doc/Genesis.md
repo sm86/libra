@@ -16,10 +16,6 @@ when executing from a fresh state.
 <pre><code><b>use</b> <a href="AccountFreezing.md#0x1_AccountFreezing">0x1::AccountFreezing</a>;
 <b>use</b> <a href="AutoPay.md#0x1_AutoPay">0x1::AutoPay</a>;
 <b>use</b> <a href="ChainId.md#0x1_ChainId">0x1::ChainId</a>;
-<b>use</b> <a href="DualAttestation.md#0x1_DualAttestation">0x1::DualAttestation</a>;
-<b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
-<b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
-<b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
 <b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
 <b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
 <b>use</b> <a href="DiemBlock.md#0x1_DiemBlock">0x1::DiemBlock</a>;
@@ -29,6 +25,10 @@ when executing from a fresh state.
 <b>use</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">0x1::DiemTransactionPublishingOption</a>;
 <b>use</b> <a href="DiemVMConfig.md#0x1_DiemVMConfig">0x1::DiemVMConfig</a>;
 <b>use</b> <a href="DiemVersion.md#0x1_DiemVersion">0x1::DiemVersion</a>;
+<b>use</b> <a href="DualAttestation.md#0x1_DualAttestation">0x1::DualAttestation</a>;
+<b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
+<b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
+<b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
 <b>use</b> <a href="Oracle.md#0x1_Oracle">0x1::Oracle</a>;
 <b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;
 <b>use</b> <a href="Subsidy.md#0x1_Subsidy">0x1::Subsidy</a>;

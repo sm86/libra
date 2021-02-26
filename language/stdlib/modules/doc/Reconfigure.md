@@ -10,11 +10,11 @@
 
 <pre><code><b>use</b> <a href="AutoPay.md#0x1_AutoPay">0x1::AutoPay</a>;
 <b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
 <b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
 <b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="FullnodeState.md#0x1_FullnodeState">0x1::FullnodeState</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
-<b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
 <b>use</b> <a href="MinerState.md#0x1_MinerState">0x1::MinerState</a>;
 <b>use</b> <a href="NodeWeight.md#0x1_NodeWeight">0x1::NodeWeight</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
@@ -100,7 +100,9 @@
     <b>let</b> i = 0;
     <b>while</b> (i &lt; <a href="Vector.md#0x1_Vector_length">Vector::length</a>(&top_accounts)) {
         <b>let</b> addr = *<a href="Vector.md#0x1_Vector_borrow">Vector::borrow</a>(&top_accounts, i);
-        <b>if</b> (!<a href="Vector.md#0x1_Vector_contains">Vector::contains</a>(&jailed_set, &addr)){
+        <b>let</b> mined_last_epoch = <a href="MinerState.md#0x1_MinerState_node_above_thresh">MinerState::node_above_thresh</a>(vm, addr);
+        // TODO: temporary until jail-refactor merge.
+        <b>if</b> ((!<a href="Vector.md#0x1_Vector_contains">Vector::contains</a>(&jailed_set, &addr)) && mined_last_epoch) {
             <a href="Vector.md#0x1_Vector_push_back">Vector::push_back</a>(&<b>mut</b> proposed_set, addr);
         };
         i = i+ 1;

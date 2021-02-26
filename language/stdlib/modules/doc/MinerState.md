@@ -33,10 +33,10 @@
 
 
 <pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="FullnodeState.md#0x1_FullnodeState">0x1::FullnodeState</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
-<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Testnet.md#0x1_StagingNet">0x1::StagingNet</a>;
 <b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;

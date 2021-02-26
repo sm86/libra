@@ -19,11 +19,11 @@ This module defines a struct storing the metadata of the block and new block eve
 
 <pre><code><b>use</b> <a href="AutoPay.md#0x1_AutoPay">0x1::AutoPay</a>;
 <b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
+<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
 <b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
-<b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
-<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Reconfigure.md#0x1_Reconfigure">0x1::Reconfigure</a>;
 <b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;
 </code></pre>

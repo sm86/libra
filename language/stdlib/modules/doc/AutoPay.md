@@ -24,14 +24,14 @@
 
 
 <pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
+<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
 <b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
-<b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
-<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
-<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Option.md#0x1_Option">0x1::Option</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;

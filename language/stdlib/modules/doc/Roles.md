@@ -53,8 +53,8 @@ For a conceptual discussion of roles, see the [LIP-2 document][ACCESS_CONTROL].
 
 
 <pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
-<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 </code></pre>
 

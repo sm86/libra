@@ -16,9 +16,9 @@ string (vector<u8>) for the currency name to vector of names in DiemConfig.
     -  [Helper Functions](#@Helper_Functions_3)
 
 
-<pre><code><b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
-<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
+<pre><code><b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;
 </code></pre>

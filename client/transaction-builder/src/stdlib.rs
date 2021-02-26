@@ -1404,6 +1404,37 @@ pub enum ScriptCall {
     },
 
     /// # Summary
+    /// Updates the Diem major version that is stored on-chain and is used by the VM.  This
+    /// transaction can only be sent from the Diem Root account.
+    ///
+    /// # Technical Description
+    /// Updates the `DiemVersion` on-chain config and emits a `DiemConfig::NewEpochEvent` to trigger
+    /// a reconfiguration of the system. The `major` version that is passed in must be strictly greater
+    /// than the current major version held on-chain. The VM reads this information and can use it to
+    /// preserve backwards compatibility with previous major versions of the VM.
+    ///
+    /// # Parameters
+    /// | Name            | Type      | Description                                                                |
+    /// | ------          | ------    | -------------                                                              |
+    /// | `account`       | `&signer` | Signer reference of the sending account. Must be the Diem Root account.   |
+    /// | `sliding_nonce` | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction. |
+    /// | `major`         | `u64`     | The `major` version of the VM to be used from this transaction on.         |
+    ///
+    /// # Common Abort Conditions
+    /// | Error Category             | Error Reason                                  | Description                                                                                |
+    /// | ----------------           | --------------                                | -------------                                                                              |
+    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `account`.                                |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                              |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                          |
+    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ELIBRA_ROOT`                  | `account` is not the Diem Root account.                                                   |
+    /// | `Errors::INVALID_ARGUMENT` | `DiemVersion::EINVALID_MAJOR_VERSION_NUMBER` | `major` is less-than or equal to the current major version stored on-chain.                |
+    UpdateDiemVersion {
+        sliding_nonce: u64,
+        major: u64,
+    },
+
+    /// # Summary
     /// Update the dual attestation limit on-chain. Defined in terms of micro-LBR.  The transaction can
     /// only be sent by the Treasury Compliance account.  After this transaction all inter-VASP
     /// payments over this limit must be checked for dual attestation.
@@ -1476,37 +1507,6 @@ pub enum ScriptCall {
         sliding_nonce: u64,
         new_exchange_rate_numerator: u64,
         new_exchange_rate_denominator: u64,
-    },
-
-    /// # Summary
-    /// Updates the Diem major version that is stored on-chain and is used by the VM.  This
-    /// transaction can only be sent from the Diem Root account.
-    ///
-    /// # Technical Description
-    /// Updates the `DiemVersion` on-chain config and emits a `DiemConfig::NewEpochEvent` to trigger
-    /// a reconfiguration of the system. The `major` version that is passed in must be strictly greater
-    /// than the current major version held on-chain. The VM reads this information and can use it to
-    /// preserve backwards compatibility with previous major versions of the VM.
-    ///
-    /// # Parameters
-    /// | Name            | Type      | Description                                                                |
-    /// | ------          | ------    | -------------                                                              |
-    /// | `account`       | `&signer` | Signer reference of the sending account. Must be the Diem Root account.   |
-    /// | `sliding_nonce` | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction. |
-    /// | `major`         | `u64`     | The `major` version of the VM to be used from this transaction on.         |
-    ///
-    /// # Common Abort Conditions
-    /// | Error Category             | Error Reason                                  | Description                                                                                |
-    /// | ----------------           | --------------                                | -------------                                                                              |
-    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `account`.                                |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                              |
-    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                          |
-    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ELIBRA_ROOT`                  | `account` is not the Diem Root account.                                                   |
-    /// | `Errors::INVALID_ARGUMENT` | `DiemVersion::EINVALID_MAJOR_VERSION_NUMBER` | `major` is less-than or equal to the current major version stored on-chain.                |
-    UpdateDiemVersion {
-        sliding_nonce: u64,
-        major: u64,
     },
 
     /// # Summary
@@ -1793,6 +1793,10 @@ impl ScriptCall {
                 sliding_nonce,
                 to_unfreeze_account,
             } => encode_unfreeze_account_script(sliding_nonce, to_unfreeze_account),
+            UpdateDiemVersion {
+                sliding_nonce,
+                major,
+            } => encode_update_diem_version_script(sliding_nonce, major),
             UpdateDualAttestationLimit {
                 sliding_nonce,
                 new_micro_lbr_limit,
@@ -1808,10 +1812,6 @@ impl ScriptCall {
                 new_exchange_rate_numerator,
                 new_exchange_rate_denominator,
             ),
-            UpdateDiemVersion {
-                sliding_nonce,
-                major,
-            } => encode_update_diem_version_script(sliding_nonce, major),
             UpdateMintingAbility {
                 currency,
                 allow_minting,
@@ -3505,6 +3505,43 @@ pub fn encode_unfreeze_account_script(
 }
 
 /// # Summary
+/// Updates the Diem major version that is stored on-chain and is used by the VM.  This
+/// transaction can only be sent from the Diem Root account.
+///
+/// # Technical Description
+/// Updates the `DiemVersion` on-chain config and emits a `DiemConfig::NewEpochEvent` to trigger
+/// a reconfiguration of the system. The `major` version that is passed in must be strictly greater
+/// than the current major version held on-chain. The VM reads this information and can use it to
+/// preserve backwards compatibility with previous major versions of the VM.
+///
+/// # Parameters
+/// | Name            | Type      | Description                                                                |
+/// | ------          | ------    | -------------                                                              |
+/// | `account`       | `&signer` | Signer reference of the sending account. Must be the Diem Root account.   |
+/// | `sliding_nonce` | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction. |
+/// | `major`         | `u64`     | The `major` version of the VM to be used from this transaction on.         |
+///
+/// # Common Abort Conditions
+/// | Error Category             | Error Reason                                  | Description                                                                                |
+/// | ----------------           | --------------                                | -------------                                                                              |
+/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `account`.                                |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                              |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                          |
+/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ELIBRA_ROOT`                  | `account` is not the Diem Root account.                                                   |
+/// | `Errors::INVALID_ARGUMENT` | `DiemVersion::EINVALID_MAJOR_VERSION_NUMBER` | `major` is less-than or equal to the current major version stored on-chain.                |
+pub fn encode_update_diem_version_script(sliding_nonce: u64, major: u64) -> Script {
+    Script::new(
+        UPDATE_DIEM_VERSION_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(sliding_nonce),
+            TransactionArgument::U64(major),
+        ],
+    )
+}
+
+/// # Summary
 /// Update the dual attestation limit on-chain. Defined in terms of micro-LBR.  The transaction can
 /// only be sent by the Treasury Compliance account.  After this transaction all inter-VASP
 /// payments over this limit must be checked for dual attestation.
@@ -3594,43 +3631,6 @@ pub fn encode_update_exchange_rate_script(
             TransactionArgument::U64(sliding_nonce),
             TransactionArgument::U64(new_exchange_rate_numerator),
             TransactionArgument::U64(new_exchange_rate_denominator),
-        ],
-    )
-}
-
-/// # Summary
-/// Updates the Diem major version that is stored on-chain and is used by the VM.  This
-/// transaction can only be sent from the Diem Root account.
-///
-/// # Technical Description
-/// Updates the `DiemVersion` on-chain config and emits a `DiemConfig::NewEpochEvent` to trigger
-/// a reconfiguration of the system. The `major` version that is passed in must be strictly greater
-/// than the current major version held on-chain. The VM reads this information and can use it to
-/// preserve backwards compatibility with previous major versions of the VM.
-///
-/// # Parameters
-/// | Name            | Type      | Description                                                                |
-/// | ------          | ------    | -------------                                                              |
-/// | `account`       | `&signer` | Signer reference of the sending account. Must be the Diem Root account.   |
-/// | `sliding_nonce` | `u64`     | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction. |
-/// | `major`         | `u64`     | The `major` version of the VM to be used from this transaction on.         |
-///
-/// # Common Abort Conditions
-/// | Error Category             | Error Reason                                  | Description                                                                                |
-/// | ----------------           | --------------                                | -------------                                                                              |
-/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `account`.                                |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                              |
-/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                          |
-/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::ELIBRA_ROOT`                  | `account` is not the Diem Root account.                                                   |
-/// | `Errors::INVALID_ARGUMENT` | `DiemVersion::EINVALID_MAJOR_VERSION_NUMBER` | `major` is less-than or equal to the current major version stored on-chain.                |
-pub fn encode_update_diem_version_script(sliding_nonce: u64, major: u64) -> Script {
-    Script::new(
-        UPDATE_LIBRA_VERSION_CODE.to_vec(),
-        vec![],
-        vec![
-            TransactionArgument::U64(sliding_nonce),
-            TransactionArgument::U64(major),
         ],
     )
 }
@@ -3977,6 +3977,13 @@ fn decode_unfreeze_account_script(script: &Script) -> Option<ScriptCall> {
     })
 }
 
+fn decode_update_diem_version_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::UpdateDiemVersion {
+        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
+        major: decode_u64_argument(script.args().get(1)?.clone())?,
+    })
+}
+
 fn decode_update_dual_attestation_limit_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::UpdateDualAttestationLimit {
         sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
@@ -3990,13 +3997,6 @@ fn decode_update_exchange_rate_script(script: &Script) -> Option<ScriptCall> {
         sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
         new_exchange_rate_numerator: decode_u64_argument(script.args().get(1)?.clone())?,
         new_exchange_rate_denominator: decode_u64_argument(script.args().get(2)?.clone())?,
-    })
-}
-
-fn decode_update_diem_version_script(script: &Script) -> Option<ScriptCall> {
-    Some(ScriptCall::UpdateDiemVersion {
-        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
-        major: decode_u64_argument(script.args().get(1)?.clone())?,
     })
 }
 
@@ -4166,16 +4166,16 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
         Box::new(decode_unfreeze_account_script),
     );
     map.insert(
+        UPDATE_DIEM_VERSION_CODE.to_vec(),
+        Box::new(decode_update_diem_version_script),
+    );
+    map.insert(
         UPDATE_DUAL_ATTESTATION_LIMIT_CODE.to_vec(),
         Box::new(decode_update_dual_attestation_limit_script),
     );
     map.insert(
         UPDATE_EXCHANGE_RATE_CODE.to_vec(),
         Box::new(decode_update_exchange_rate_script),
-    );
-    map.insert(
-        UPDATE_LIBRA_VERSION_CODE.to_vec(),
-        Box::new(decode_update_diem_version_script),
     );
     map.insert(
         UPDATE_MINTING_ABILITY_CODE.to_vec(),
@@ -4213,16 +4213,16 @@ fn decode_u8vector_argument(arg: TransactionArgument) -> Option<Vec<u8>> {
 }
 
 const ADD_CURRENCY_TO_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 7, 7, 17, 26, 8, 43, 16, 0,
-    0, 0, 1, 0, 1, 1, 1, 0, 2, 1, 6, 12, 0, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111,
-    117, 110, 116, 12, 97, 100, 100, 95, 99, 117, 114, 114, 101, 110, 99, 121, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 3, 11, 0, 56, 0, 2,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 7, 7, 17, 25, 8, 42, 16, 0,
+    0, 0, 1, 0, 1, 1, 1, 0, 2, 1, 6, 12, 0, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117,
+    110, 116, 12, 97, 100, 100, 95, 99, 117, 114, 114, 101, 110, 99, 121, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 3, 11, 0, 56, 0, 2,
 ];
 
 const ADD_RECOVERY_ROTATION_CAPABILITY_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 15, 7, 33, 107, 8, 140, 1,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 15, 7, 33, 106, 8, 139, 1,
     16, 0, 0, 0, 1, 0, 2, 1, 0, 0, 3, 0, 1, 0, 1, 4, 2, 3, 0, 1, 6, 12, 1, 8, 0, 2, 8, 0, 5, 0, 2,
-    6, 12, 5, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118,
+    6, 12, 5, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118,
     101, 114, 121, 65, 100, 100, 114, 101, 115, 115, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105,
     111, 110, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116,
     95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105,
@@ -4232,27 +4232,26 @@ const ADD_RECOVERY_ROTATION_CAPABILITY_CODE: &[u8] = &[
 ];
 
 const ADD_TO_SCRIPT_ALLOW_LIST_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 16, 7, 30, 93, 8, 123, 16, 0, 0, 0,
-    1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 10, 2, 0, 2, 6, 12, 3, 3, 6, 12, 10, 2, 3, 32, 76,
-    105, 98, 114, 97, 84, 114, 97, 110, 115, 97, 99, 116, 105, 111, 110, 80, 117, 98, 108, 105,
-    115, 104, 105, 110, 103, 79, 112, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78,
-    111, 110, 99, 101, 24, 97, 100, 100, 95, 116, 111, 95, 115, 99, 114, 105, 112, 116, 95, 97,
-    108, 108, 111, 119, 95, 108, 105, 115, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110,
-    99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 0, 3, 1, 7, 10, 0, 10, 2, 17, 1, 11, 0, 11, 1, 17, 0, 2,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 16, 7, 30, 92, 8, 122, 16, 0, 0, 0,
+    1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 10, 2, 0, 2, 6, 12, 3, 3, 6, 12, 10, 2, 3, 31, 68,
+    105, 101, 109, 84, 114, 97, 110, 115, 97, 99, 116, 105, 111, 110, 80, 117, 98, 108, 105, 115,
+    104, 105, 110, 103, 79, 112, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111,
+    110, 99, 101, 24, 97, 100, 100, 95, 116, 111, 95, 115, 99, 114, 105, 112, 116, 95, 97, 108,
+    108, 111, 119, 95, 108, 105, 115, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
+    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    0, 3, 1, 7, 10, 0, 10, 2, 17, 1, 11, 0, 11, 1, 17, 0, 2,
 ];
 
 const ADD_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 92, 8, 137, 1, 16, 0, 0,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 91, 8, 136, 1, 16, 0, 0,
     0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
-    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109,
-    12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97,
-    116, 111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110,
-    99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97,
-    110, 95, 110, 97, 109, 101, 13, 97, 100, 100, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1,
-    11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2,
-    2,
+    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
+    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
+    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
+    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
+    95, 110, 97, 109, 101, 13, 97, 100, 100, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1, 11,
+    2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2, 2,
 ];
 
 const AUTOPAY_CREATE_INSTRUCTION_CODE: &[u8] = &[
@@ -4277,12 +4276,12 @@ const AUTOPAY_ENABLE_CODE: &[u8] = &[
 ];
 
 const BURN_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 17, 7, 34, 46, 8, 80, 16,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 17, 7, 34, 45, 8, 79, 16,
     0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 2, 6, 12, 5, 3, 6, 12, 3, 5,
-    1, 9, 0, 5, 76, 105, 98, 114, 97, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101,
-    21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111,
-    114, 116, 4, 98, 117, 114, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 7,
-    10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 56, 0, 2,
+    1, 9, 0, 4, 68, 105, 101, 109, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21,
+    114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114,
+    116, 4, 98, 117, 114, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 7, 10,
+    0, 10, 1, 17, 0, 11, 0, 10, 2, 56, 0, 2,
 ];
 
 const BURN_TXN_FEES_CODE: &[u8] = &[
@@ -4293,54 +4292,54 @@ const BURN_TXN_FEES_CODE: &[u8] = &[
 ];
 
 const CANCEL_BURN_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 8, 7, 18, 25, 8, 43, 16, 0,
-    0, 0, 1, 0, 1, 1, 1, 0, 2, 2, 6, 12, 5, 0, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 8, 7, 18, 24, 8, 42, 16, 0,
+    0, 0, 1, 0, 1, 1, 1, 0, 2, 2, 6, 12, 5, 0, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111,
     117, 110, 116, 11, 99, 97, 110, 99, 101, 108, 95, 98, 117, 114, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 4, 11, 0, 10, 1, 56, 0, 2,
 ];
 
 const CREATE_CHILD_VASP_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 8, 1, 0, 2, 2, 2, 4, 3, 6, 22, 4, 28, 4, 5, 32, 35, 7, 67, 123,
-    8, 190, 1, 16, 6, 206, 1, 4, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 1, 1, 0, 3, 2, 3, 0, 0, 4, 4, 1, 1,
+    161, 28, 235, 11, 1, 0, 0, 0, 8, 1, 0, 2, 2, 2, 4, 3, 6, 22, 4, 28, 4, 5, 32, 35, 7, 67, 122,
+    8, 189, 1, 16, 6, 205, 1, 4, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 1, 1, 0, 3, 2, 3, 0, 0, 4, 4, 1, 1,
     1, 0, 5, 3, 1, 0, 0, 6, 2, 6, 4, 6, 12, 5, 10, 2, 1, 0, 1, 6, 12, 1, 8, 0, 5, 6, 8, 0, 5, 3,
-    10, 2, 10, 2, 5, 6, 12, 5, 10, 2, 1, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111,
-    117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105,
-    116, 121, 25, 99, 114, 101, 97, 116, 101, 95, 99, 104, 105, 108, 100, 95, 118, 97, 115, 112,
-    95, 97, 99, 99, 111, 117, 110, 116, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116,
-    104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95,
-    102, 114, 111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114,
-    97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 10, 2, 1, 0, 1, 1, 5, 3, 25, 10, 0, 10, 1, 11, 2, 10, 3, 56, 0, 10, 4, 6, 0, 0, 0,
-    0, 0, 0, 0, 0, 36, 3, 10, 5, 22, 11, 0, 17, 1, 12, 5, 14, 5, 10, 1, 10, 4, 7, 0, 7, 0, 56, 1,
-    11, 5, 17, 3, 5, 24, 11, 0, 1, 2,
+    10, 2, 10, 2, 5, 6, 12, 5, 10, 2, 1, 3, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117,
+    110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116,
+    121, 25, 99, 114, 101, 97, 116, 101, 95, 99, 104, 105, 108, 100, 95, 118, 97, 115, 112, 95, 97,
+    99, 99, 111, 117, 110, 116, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100,
+    114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95, 102, 114,
+    111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95,
+    99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    10, 2, 1, 0, 1, 1, 5, 3, 25, 10, 0, 10, 1, 11, 2, 10, 3, 56, 0, 10, 4, 6, 0, 0, 0, 0, 0, 0, 0,
+    0, 36, 3, 10, 5, 22, 11, 0, 17, 1, 12, 5, 14, 5, 10, 1, 10, 4, 7, 0, 7, 0, 56, 1, 11, 5, 17, 3,
+    5, 24, 11, 0, 1, 2,
 ];
 
 const CREATE_DESIGNATED_DEALER_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 73, 8, 117, 16,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 72, 8, 116, 16,
     0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 5, 6, 12, 5, 10, 2, 10, 2,
-    1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117,
-    110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111,
-    114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114,
-    101, 97, 116, 101, 95, 100, 101, 115, 105, 103, 110, 97, 116, 101, 100, 95, 100, 101, 97, 108,
-    101, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1, 17, 0,
-    11, 0, 10, 2, 11, 3, 11, 4, 10, 5, 56, 0, 2,
+    1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110,
+    116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114,
+    100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97,
+    116, 101, 95, 100, 101, 115, 105, 103, 110, 97, 116, 101, 100, 95, 100, 101, 97, 108, 101, 114,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1, 17, 0, 11, 0, 10,
+    2, 11, 3, 11, 4, 10, 5, 56, 0, 2,
 ];
 
 const CREATE_PARENT_VASP_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 75, 8, 119, 16,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 74, 8, 118, 16,
     0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 5, 6, 12, 5, 10, 2, 10, 2,
-    1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117,
-    110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111,
-    114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 26, 99, 114,
-    101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111,
-    117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1,
-    17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 10, 5, 56, 0, 2,
+    1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110,
+    116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114,
+    100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 26, 99, 114, 101, 97,
+    116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117,
+    110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1, 17, 0,
+    11, 0, 10, 2, 11, 3, 11, 4, 10, 5, 56, 0, 2,
 ];
 
 const CREATE_RECOVERY_ADDRESS_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 12, 7, 30, 91, 8, 121, 16,
-    0, 0, 0, 1, 0, 2, 1, 0, 0, 3, 0, 1, 0, 1, 4, 2, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 12, 8, 0, 0, 12,
-    76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118, 101, 114, 121,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 12, 7, 30, 90, 8, 120, 16,
+    0, 0, 0, 1, 0, 2, 1, 0, 0, 3, 0, 1, 0, 1, 4, 2, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 12, 8, 0, 0, 11,
+    68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118, 101, 114, 121,
     65, 100, 100, 114, 101, 115, 115, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67,
     97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101,
     121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116,
@@ -4349,20 +4348,20 @@ const CREATE_RECOVERY_ADDRESS_CODE: &[u8] = &[
 ];
 
 const CREATE_USER_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 4, 2, 4, 4, 3, 8, 11, 4, 19, 2, 5, 21, 26, 7, 47, 56, 8,
-    103, 16, 0, 0, 0, 1, 0, 0, 2, 0, 1, 2, 0, 1, 1, 1, 1, 3, 2, 0, 0, 0, 6, 1, 5, 1, 3, 2, 6, 10,
-    2, 6, 10, 2, 3, 6, 12, 10, 2, 10, 2, 3, 5, 1, 3, 0, 1, 8, 0, 3, 71, 65, 83, 12, 76, 105, 98,
-    114, 97, 65, 99, 99, 111, 117, 110, 116, 7, 98, 97, 108, 97, 110, 99, 101, 30, 99, 114, 101,
-    97, 116, 101, 95, 117, 115, 101, 114, 95, 97, 99, 99, 111, 117, 110, 116, 95, 119, 105, 116,
-    104, 95, 112, 114, 111, 111, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 4, 14,
-    14, 1, 14, 2, 17, 1, 12, 3, 10, 3, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 4, 11, 4, 3, 13,
-    6, 1, 0, 0, 0, 0, 0, 0, 0, 39, 2,
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 4, 2, 4, 4, 3, 8, 11, 4, 19, 2, 5, 21, 26, 7, 47, 55, 8,
+    102, 16, 0, 0, 0, 1, 1, 1, 2, 0, 0, 2, 0, 1, 1, 1, 0, 3, 2, 0, 0, 0, 6, 1, 5, 1, 3, 2, 6, 10,
+    2, 6, 10, 2, 3, 6, 12, 10, 2, 10, 2, 3, 5, 1, 3, 0, 1, 8, 0, 11, 68, 105, 101, 109, 65, 99, 99,
+    111, 117, 110, 116, 3, 71, 65, 83, 7, 98, 97, 108, 97, 110, 99, 101, 30, 99, 114, 101, 97, 116,
+    101, 95, 117, 115, 101, 114, 95, 97, 99, 99, 111, 117, 110, 116, 95, 119, 105, 116, 104, 95,
+    112, 114, 111, 111, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 4, 14, 14, 1,
+    14, 2, 17, 1, 12, 3, 10, 3, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 4, 11, 4, 3, 13, 6, 1, 0,
+    0, 0, 0, 0, 0, 0, 39, 2,
 ];
 
 const CREATE_VALIDATOR_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 73, 8, 109, 16, 0, 0, 0,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 72, 8, 108, 16, 0, 0, 0,
     1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
-    2, 10, 2, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
+    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
     110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
     95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
     100, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -4370,9 +4369,9 @@ const CREATE_VALIDATOR_ACCOUNT_CODE: &[u8] = &[
 ];
 
 const CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 82, 8, 118, 16, 0, 0, 0,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 81, 8, 117, 16, 0, 0, 0,
     1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
-    2, 10, 2, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
+    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
     110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
     95, 111, 114, 95, 97, 98, 111, 114, 116, 33, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
     100, 97, 116, 111, 114, 95, 111, 112, 101, 114, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117,
@@ -4424,18 +4423,18 @@ const MINERSTATE_HELPER_CODE: &[u8] = &[
 ];
 
 const MINERSTATE_ONBOARDING_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 58, 7, 86, 86,
-    8, 172, 1, 16, 0, 0, 0, 1, 0, 2, 0, 0, 2, 0, 1, 3, 0, 1, 1, 1, 1, 4, 2, 0, 0, 2, 5, 0, 3, 0, 0,
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 58, 7, 86, 85,
+    8, 171, 1, 16, 0, 0, 0, 1, 0, 2, 1, 1, 2, 0, 0, 3, 0, 1, 1, 1, 0, 4, 2, 0, 0, 2, 5, 0, 3, 0, 0,
     7, 1, 5, 1, 3, 10, 6, 12, 6, 10, 2, 6, 10, 2, 10, 2, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 1,
     1, 10, 6, 12, 10, 2, 10, 2, 10, 2, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 5, 5, 1, 3, 1, 3, 0,
-    1, 8, 0, 3, 71, 65, 83, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 15, 86, 97,
-    108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 7, 98, 97, 108, 97, 110, 99,
-    101, 35, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 95, 97, 99,
-    99, 111, 117, 110, 116, 95, 119, 105, 116, 104, 95, 112, 114, 111, 111, 102, 8, 105, 115, 95,
-    118, 97, 108, 105, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 5, 29, 11, 0, 14,
-    1, 14, 2, 11, 3, 10, 4, 11, 5, 11, 6, 11, 7, 11, 8, 11, 9, 17, 1, 12, 10, 10, 10, 17, 2, 12,
-    11, 11, 11, 3, 19, 6, 3, 0, 0, 0, 0, 0, 0, 0, 39, 10, 10, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33,
-    12, 13, 11, 13, 3, 28, 6, 4, 0, 0, 0, 0, 0, 0, 0, 39, 2,
+    1, 8, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 3, 71, 65, 83, 15, 86, 97, 108,
+    105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 7, 98, 97, 108, 97, 110, 99, 101, 35,
+    99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 95, 97, 99, 99, 111,
+    117, 110, 116, 95, 119, 105, 116, 104, 95, 112, 114, 111, 111, 102, 8, 105, 115, 95, 118, 97,
+    108, 105, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 5, 29, 11, 0, 14, 1, 14,
+    2, 11, 3, 10, 4, 11, 5, 11, 6, 11, 7, 11, 8, 11, 9, 17, 1, 12, 10, 10, 10, 17, 2, 12, 11, 11,
+    11, 3, 19, 6, 3, 0, 0, 0, 0, 0, 0, 0, 39, 10, 10, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 13,
+    11, 13, 3, 28, 6, 4, 0, 0, 0, 0, 0, 0, 0, 39, 2,
 ];
 
 const OL_ORACLE_TX_CODE: &[u8] = &[
@@ -4445,11 +4444,11 @@ const OL_ORACLE_TX_CODE: &[u8] = &[
 ];
 
 const OL_RECONFIG_BULK_UPDATE_SETUP_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 33, 4, 37, 6, 5, 43, 47, 7, 90, 97, 8, 187, 1,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 33, 4, 37, 6, 5, 43, 47, 7, 90, 96, 8, 186, 1,
     16, 0, 0, 0, 1, 1, 2, 0, 1, 1, 1, 1, 3, 2, 3, 1, 1, 1, 4, 4, 0, 1, 1, 0, 5, 5, 0, 0, 0, 6, 6,
     7, 0, 0, 7, 0, 3, 0, 0, 6, 2, 6, 1, 6, 0, 1, 10, 9, 0, 1, 6, 10, 9, 0, 1, 3, 2, 7, 10, 9, 0, 9,
-    0, 2, 6, 12, 10, 5, 1, 5, 1, 1, 6, 6, 12, 5, 5, 5, 5, 5, 9, 1, 3, 1, 3, 1, 3, 1, 3, 10, 5, 11,
-    76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109, 6, 86, 101, 99, 116, 111, 114, 5, 101, 109,
+    0, 2, 6, 12, 10, 5, 1, 5, 1, 1, 6, 6, 12, 5, 5, 5, 5, 5, 9, 1, 3, 1, 3, 1, 3, 1, 3, 10, 5, 10,
+    68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 6, 86, 101, 99, 116, 111, 114, 5, 101, 109,
     112, 116, 121, 6, 108, 101, 110, 103, 116, 104, 9, 112, 117, 115, 104, 95, 98, 97, 99, 107, 22,
     98, 117, 108, 107, 95, 117, 112, 100, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111,
     114, 115, 12, 105, 115, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 18, 118, 97, 108, 105,
@@ -4463,10 +4462,10 @@ const OL_RECONFIG_BULK_UPDATE_SETUP_CODE: &[u8] = &[
 ];
 
 const PEER_TO_PEER_WITH_METADATA_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 29, 7, 53, 97, 8,
-    150, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12,
-    1, 8, 0, 5, 6, 8, 0, 5, 3, 10, 2, 10, 2, 0, 5, 6, 12, 5, 3, 10, 2, 10, 2, 1, 9, 0, 12, 76, 105,
-    98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97,
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 29, 7, 53, 96, 8,
+    149, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12,
+    1, 8, 0, 5, 6, 8, 0, 5, 3, 10, 2, 10, 2, 0, 5, 6, 12, 5, 3, 10, 2, 10, 2, 1, 9, 0, 11, 68, 105,
+    101, 109, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97,
     112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116,
     104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95,
     102, 114, 111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114,
@@ -4476,12 +4475,12 @@ const PEER_TO_PEER_WITH_METADATA_CODE: &[u8] = &[
 ];
 
 const PREBURN_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 21, 7, 45, 96, 8,
-    141, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12,
-    1, 8, 0, 3, 6, 12, 6, 8, 0, 3, 0, 2, 6, 12, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99,
-    111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108,
-    105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119,
-    95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 7, 112, 114, 101, 98, 117, 114, 110, 27, 114,
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 21, 7, 45, 95, 8,
+    140, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12,
+    1, 8, 0, 3, 6, 12, 6, 8, 0, 3, 0, 2, 6, 12, 3, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111,
+    117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105,
+    116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95,
+    99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 7, 112, 114, 101, 98, 117, 114, 110, 27, 114,
     101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97,
     98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 1, 10,
     10, 0, 17, 0, 12, 2, 11, 0, 14, 2, 10, 1, 56, 0, 11, 2, 17, 2, 2,
@@ -4502,22 +4501,22 @@ const REGISTER_VALIDATOR_CONFIG_CODE: &[u8] = &[
 ];
 
 const REMOVE_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 95, 8, 140, 1, 16, 0, 0,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 94, 8, 139, 1, 16, 0, 0,
     0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
-    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109,
-    12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97,
-    116, 111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110,
-    99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97,
-    110, 95, 110, 97, 109, 101, 16, 114, 101, 109, 111, 118, 101, 95, 118, 97, 108, 105, 100, 97,
-    116, 111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17,
-    0, 10, 3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11,
-    0, 10, 3, 17, 2, 2,
+    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
+    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
+    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
+    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
+    95, 110, 97, 109, 101, 16, 114, 101, 109, 111, 118, 101, 95, 118, 97, 108, 105, 100, 97, 116,
+    111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10,
+    3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10,
+    3, 17, 2, 2,
 ];
 
 const ROTATE_AUTHENTICATION_KEY_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 2, 2, 4, 3, 6, 15, 5, 21, 18, 7, 39, 125, 8, 164, 1,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 2, 2, 4, 3, 6, 15, 5, 21, 18, 7, 39, 124, 8, 163, 1,
     16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 1, 2, 0, 0, 4, 3, 2, 0, 1, 6, 12, 1, 8, 0, 0, 2, 6,
-    8, 0, 10, 2, 2, 6, 12, 10, 2, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 21, 75,
+    8, 0, 10, 2, 2, 6, 12, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 21, 75,
     101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121,
     31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111,
     110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 114, 101, 115, 116, 111, 114, 101,
@@ -4528,27 +4527,27 @@ const ROTATE_AUTHENTICATION_KEY_CODE: &[u8] = &[
 ];
 
 const ROTATE_AUTHENTICATION_KEY_WITH_NONCE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 20, 5, 28, 23, 7, 51, 160, 1, 8, 211,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 20, 5, 28, 23, 7, 51, 159, 1, 8, 210,
     1, 16, 0, 0, 0, 1, 0, 3, 1, 0, 1, 2, 0, 1, 0, 0, 4, 2, 3, 0, 0, 5, 3, 1, 0, 0, 6, 4, 1, 0, 2,
-    6, 12, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 8, 0, 10, 2, 3, 6, 12, 3, 10, 2, 12, 76, 105, 98, 114,
-    97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99,
-    101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98,
-    111, 114, 116, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98,
-    105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111,
-    116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 114, 101,
-    115, 116, 111, 114, 101, 95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99,
-    97, 112, 97, 98, 105, 108, 105, 116, 121, 25, 114, 111, 116, 97, 116, 101, 95, 97, 117, 116,
-    104, 101, 110, 116, 105, 99, 97, 116, 105, 111, 110, 95, 107, 101, 121, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 3, 12, 10, 0, 10, 1, 17, 0, 11, 0, 17, 1, 12, 3, 14, 3, 11, 2,
-    17, 3, 11, 3, 17, 2, 2,
+    6, 12, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 8, 0, 10, 2, 3, 6, 12, 3, 10, 2, 11, 68, 105, 101, 109,
+    65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101,
+    21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111,
+    114, 116, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98, 105,
+    108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111, 116,
+    97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 114, 101, 115,
+    116, 111, 114, 101, 95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97,
+    112, 97, 98, 105, 108, 105, 116, 121, 25, 114, 111, 116, 97, 116, 101, 95, 97, 117, 116, 104,
+    101, 110, 116, 105, 99, 97, 116, 105, 111, 110, 95, 107, 101, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 0, 5, 3, 12, 10, 0, 10, 1, 17, 0, 11, 0, 17, 1, 12, 3, 14, 3, 11, 2, 17,
+    3, 11, 3, 17, 2, 2,
 ];
 
 const ROTATE_AUTHENTICATION_KEY_WITH_NONCE_ADMIN_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 20, 5, 28, 25, 7, 53, 160, 1, 8, 213,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 20, 5, 28, 25, 7, 53, 159, 1, 8, 212,
     1, 16, 0, 0, 0, 1, 0, 3, 1, 0, 1, 2, 0, 1, 0, 0, 4, 2, 3, 0, 0, 5, 3, 1, 0, 0, 6, 4, 1, 0, 2,
-    6, 12, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 8, 0, 10, 2, 4, 6, 12, 6, 12, 3, 10, 2, 12, 76, 105, 98,
-    114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110,
-    99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98,
+    6, 12, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 8, 0, 10, 2, 4, 6, 12, 6, 12, 3, 10, 2, 11, 68, 105, 101,
+    109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99,
+    101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98,
     111, 114, 116, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98,
     105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111,
     116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 114, 101,
@@ -4584,13 +4583,13 @@ const ROTATE_SHARED_ED25519_PUBLIC_KEY_CODE: &[u8] = &[
 ];
 
 const SET_VALIDATOR_CONFIG_AND_RECONFIGURE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 15, 7, 29, 69, 8, 98, 16, 0, 0, 0,
-    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 2, 6, 12, 5, 11, 76, 105,
-    98, 114, 97, 83, 121, 115, 116, 101, 109, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67,
-    111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 29, 117, 112, 100,
-    97, 116, 101, 95, 99, 111, 110, 102, 105, 103, 95, 97, 110, 100, 95, 114, 101, 99, 111, 110,
-    102, 105, 103, 117, 114, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 10, 10,
-    0, 10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 11, 0, 10, 1, 17, 1, 2,
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 15, 7, 29, 68, 8, 97, 16, 0, 0, 0,
+    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 2, 6, 12, 5, 10, 68, 105,
+    101, 109, 83, 121, 115, 116, 101, 109, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111,
+    110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 29, 117, 112, 100, 97,
+    116, 101, 95, 99, 111, 110, 102, 105, 103, 95, 97, 110, 100, 95, 114, 101, 99, 111, 110, 102,
+    105, 103, 117, 114, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 10, 10, 0,
+    10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 11, 0, 10, 1, 17, 1, 2,
 ];
 
 const SET_VALIDATOR_OPERATOR_CODE: &[u8] = &[
@@ -4618,13 +4617,13 @@ const SET_VALIDATOR_OPERATOR_WITH_NONCE_ADMIN_CODE: &[u8] = &[
 ];
 
 const TIERED_MINT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 21, 7, 38, 60, 8, 98, 16,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 21, 7, 38, 59, 8, 97, 16,
     0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 4, 6, 12, 5, 3, 3, 5, 6, 12,
-    3, 5, 3, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108,
-    105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111,
-    110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 11, 116, 105, 101, 114, 101, 100, 95,
-    109, 105, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 9, 10, 0, 10,
-    1, 17, 0, 11, 0, 10, 2, 10, 3, 10, 4, 56, 0, 2,
+    3, 5, 3, 3, 1, 9, 0, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105,
+    100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110,
+    99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 11, 116, 105, 101, 114, 101, 100, 95, 109,
+    105, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 9, 10, 0, 10, 1, 17,
+    0, 11, 0, 10, 2, 10, 3, 10, 4, 56, 0, 2,
 ];
 
 const TRUSTED_ACCOUNT_UPDATE_TX_CODE: &[u8] = &[
@@ -4645,21 +4644,30 @@ const UNFREEZE_ACCOUNT_CODE: &[u8] = &[
     1, 17, 1, 11, 0, 10, 2, 17, 0, 2,
 ];
 
-const UPDATE_DUAL_ATTESTATION_LIMIT_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 72, 8, 96, 16, 0, 0, 0,
-    1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 15, 68, 117, 97, 108, 65, 116,
-    116, 101, 115, 116, 97, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110,
-    99, 101, 20, 115, 101, 116, 95, 109, 105, 99, 114, 111, 108, 105, 98, 114, 97, 95, 108, 105,
-    109, 105, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95,
+const UPDATE_DIEM_VERSION_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 51, 8, 75, 16, 0, 0, 0,
+    1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 11, 68, 105, 101, 109, 86,
+    101, 114, 115, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 3,
+    115, 101, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95,
     97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10,
     1, 17, 1, 11, 0, 10, 2, 17, 0, 2,
 ];
 
+const UPDATE_DUAL_ATTESTATION_LIMIT_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 71, 8, 95, 16, 0, 0, 0,
+    1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 15, 68, 117, 97, 108, 65, 116,
+    116, 101, 115, 116, 97, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110,
+    99, 101, 19, 115, 101, 116, 95, 109, 105, 99, 114, 111, 100, 105, 101, 109, 95, 108, 105, 109,
+    105, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97,
+    98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10, 1,
+    17, 1, 11, 0, 10, 2, 17, 0, 2,
+];
+
 const UPDATE_EXCHANGE_RATE_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 25, 7, 53, 100,
-    8, 153, 1, 16, 0, 0, 0, 1, 0, 2, 0, 0, 2, 0, 2, 3, 0, 1, 0, 0, 4, 2, 3, 0, 1, 5, 4, 1, 1, 1, 2,
-    6, 2, 6, 12, 3, 0, 2, 3, 3, 1, 8, 0, 2, 6, 12, 8, 0, 4, 6, 12, 3, 3, 3, 1, 9, 0, 12, 70, 105,
-    120, 101, 100, 80, 111, 105, 110, 116, 51, 50, 5, 76, 105, 98, 114, 97, 12, 83, 108, 105, 100,
+    161, 28, 235, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 25, 7, 53, 99,
+    8, 152, 1, 16, 0, 0, 0, 1, 0, 2, 1, 1, 2, 0, 2, 3, 0, 1, 0, 1, 4, 2, 3, 0, 0, 5, 4, 1, 1, 1, 2,
+    6, 2, 6, 12, 3, 0, 2, 3, 3, 1, 8, 0, 2, 6, 12, 8, 0, 4, 6, 12, 3, 3, 3, 1, 9, 0, 4, 68, 105,
+    101, 109, 12, 70, 105, 120, 101, 100, 80, 111, 105, 110, 116, 51, 50, 12, 83, 108, 105, 100,
     105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
     101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 20, 99, 114, 101, 97, 116, 101, 95, 102, 114,
     111, 109, 95, 114, 97, 116, 105, 111, 110, 97, 108, 24, 117, 112, 100, 97, 116, 101, 95, 108,
@@ -4668,18 +4676,9 @@ const UPDATE_EXCHANGE_RATE_CODE: &[u8] = &[
     0, 11, 4, 56, 0, 2,
 ];
 
-const UPDATE_LIBRA_VERSION_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 52, 8, 76, 16, 0, 0, 0,
-    1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 12, 76, 105, 98, 114, 97, 86,
-    101, 114, 115, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 3,
-    115, 101, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95,
-    97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10,
-    1, 17, 1, 11, 0, 10, 2, 17, 0, 2,
-];
-
 const UPDATE_MINTING_ABILITY_CODE: &[u8] = &[
-    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 8, 7, 18, 29, 8, 47, 16, 0,
-    0, 0, 1, 0, 1, 1, 1, 0, 2, 2, 6, 12, 1, 0, 1, 9, 0, 5, 76, 105, 98, 114, 97, 22, 117, 112, 100,
+    161, 28, 235, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 8, 7, 18, 28, 8, 46, 16, 0,
+    0, 0, 1, 0, 1, 1, 1, 0, 2, 2, 6, 12, 1, 0, 1, 9, 0, 4, 68, 105, 101, 109, 22, 117, 112, 100,
     97, 116, 101, 95, 109, 105, 110, 116, 105, 110, 103, 95, 97, 98, 105, 108, 105, 116, 121, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 4, 11, 0, 10, 1, 56, 0, 2,
 ];

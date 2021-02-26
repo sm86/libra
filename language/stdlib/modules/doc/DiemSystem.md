@@ -40,10 +40,10 @@ and "configuration" are used for several distinct concepts.
 
 <pre><code><b>use</b> <a href="Cases.md#0x1_Cases">0x1::Cases</a>;
 <b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
-<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
-<b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
+<b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="NodeWeight.md#0x1_NodeWeight">0x1::NodeWeight</a>;
 <b>use</b> <a href="Option.md#0x1_Option">0x1::Option</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;

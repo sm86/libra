@@ -25,14 +25,14 @@
 
 
 <pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
-<b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
-<b>use</b> <a href="FullnodeState.md#0x1_FullnodeState">0x1::FullnodeState</a>;
-<b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
-<b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
 <b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
 <b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
+<b>use</b> <a href="FullnodeState.md#0x1_FullnodeState">0x1::FullnodeState</a>;
+<b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
+<b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;
@@ -121,19 +121,17 @@
   // Get the split of payments from <a href="Stats.md#0x1_Stats">Stats</a>.
   <b>let</b> len = <a href="Vector.md#0x1_Vector_length">Vector::length</a>&lt;address&gt;(outgoing_set);
 
-  //TODO: <b>assert</b> the lengths of vectors are the same.
+  // equal subsidy for all active validators
+  <b>let</b> subsidy_granted;
+  <b>if</b> (subsidy_units &gt; len && subsidy_units &gt; 0 ) { // arithmetic safety check
+    subsidy_granted = subsidy_units/len;
+  } <b>else</b> { <b>return</b> };
+
   <b>let</b> i = 0;
   <b>while</b> (i &lt; len) {
 
     <b>let</b> node_address = *(<a href="Vector.md#0x1_Vector_borrow">Vector::borrow</a>&lt;address&gt;(outgoing_set, i));
-    // <b>let</b> node_ratio = *(<a href="Vector.md#0x1_Vector_borrow">Vector::borrow</a>&lt;<a href="FixedPoint32.md#0x1_FixedPoint32">FixedPoint32</a>&gt;(fee_ratio, i));
 
-    <b>let</b> subsidy_granted = 0;
-    <b>if</b> (subsidy_units &gt; len) {
-      subsidy_granted = subsidy_units/len;
-    };
-    // should not be possible
-    <b>if</b> (subsidy_granted == 0) <b>break</b>;
     // Transfer gas from vm address <b>to</b> validator
     <b>let</b> minted_coins = <a href="Diem.md#0x1_Diem_mint">Diem::mint</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(vm_sig, subsidy_granted);
     <a href="DiemAccount.md#0x1_DiemAccount_vm_deposit_with_metadata">DiemAccount::vm_deposit_with_metadata</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(

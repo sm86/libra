@@ -4667,8 +4667,8 @@ Updates the <code>micro_lbr_limit</code> field of the <code><a href="../../modul
 
 
 
-<pre><code><b>use</b> <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
-<b>use</b> <a href="../../modules/doc/Diem.md#0x1_Diem">0x1::Diem</a>;
+<pre><code><b>use</b> <a href="../../modules/doc/Diem.md#0x1_Diem">0x1::Diem</a>;
+<b>use</b> <a href="../../modules/doc/FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="../../modules/doc/SlidingNonce.md#0x1_SlidingNonce">0x1::SlidingNonce</a>;
 </code></pre>
 
@@ -5056,12 +5056,21 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::AccountLimits`](../../modules/doc/AccountLimits.md#0x1_AccountLimits)
 -  [`0x1::Authenticator`](../../modules/doc/Authenticator.md#0x1_Authenticator)
 -  [`0x1::AutoPay`](../../modules/doc/AutoPay.md#0x1_AutoPay)
+-  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_BCS)
 -  [`0x1::Cases`](../../modules/doc/Cases.md#0x1_Cases)
 -  [`0x1::ChainId`](../../modules/doc/ChainId.md#0x1_ChainId)
 -  [`0x1::Coin1`](../../modules/doc/Coin1.md#0x1_Coin1)
 -  [`0x1::CoreAddresses`](../../modules/doc/CoreAddresses.md#0x1_CoreAddresses)
 -  [`0x1::Debug`](../../modules/doc/Debug.md#0x1_Debug)
 -  [`0x1::DesignatedDealer`](../../modules/doc/DesignatedDealer.md#0x1_DesignatedDealer)
+-  [`0x1::Diem`](../../modules/doc/Diem.md#0x1_Diem)
+-  [`0x1::DiemAccount`](../../modules/doc/DiemAccount.md#0x1_DiemAccount)
+-  [`0x1::DiemBlock`](../../modules/doc/DiemBlock.md#0x1_DiemBlock)
+-  [`0x1::DiemConfig`](../../modules/doc/DiemConfig.md#0x1_DiemConfig)
+-  [`0x1::DiemSystem`](../../modules/doc/DiemSystem.md#0x1_DiemSystem)
+-  [`0x1::DiemTimestamp`](../../modules/doc/DiemTimestamp.md#0x1_DiemTimestamp)
+-  [`0x1::DiemTransactionPublishingOption`](../../modules/doc/DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption)
+-  [`0x1::DiemVersion`](../../modules/doc/DiemVersion.md#0x1_DiemVersion)
 -  [`0x1::DualAttestation`](../../modules/doc/DualAttestation.md#0x1_DualAttestation)
 -  [`0x1::Epoch`](../../modules/doc/Epoch.md#0x1_Epoch)
 -  [`0x1::Errors`](../../modules/doc/Errors.md#0x1_Errors)
@@ -5072,15 +5081,6 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`0x1::Globals`](../../modules/doc/Globals.md#0x1_Globals)
 -  [`0x1::Hash`](../../modules/doc/Hash.md#0x1_Hash)
 -  [`0x1::LBR`](../../modules/doc/LBR.md#0x1_LBR)
--  [`0x1::BCS`](../../modules/doc/BCS.md#0x1_BCS)
--  [`0x1::Diem`](../../modules/doc/Diem.md#0x1_Diem)
--  [`0x1::DiemAccount`](../../modules/doc/DiemAccount.md#0x1_DiemAccount)
--  [`0x1::DiemBlock`](../../modules/doc/DiemBlock.md#0x1_DiemBlock)
--  [`0x1::DiemConfig`](../../modules/doc/DiemConfig.md#0x1_DiemConfig)
--  [`0x1::DiemSystem`](../../modules/doc/DiemSystem.md#0x1_DiemSystem)
--  [`0x1::DiemTimestamp`](../../modules/doc/DiemTimestamp.md#0x1_DiemTimestamp)
--  [`0x1::DiemTransactionPublishingOption`](../../modules/doc/DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption)
--  [`0x1::DiemVersion`](../../modules/doc/DiemVersion.md#0x1_DiemVersion)
 -  [`0x1::MinerState`](../../modules/doc/MinerState.md#0x1_MinerState)
 -  [`0x1::NodeWeight`](../../modules/doc/NodeWeight.md#0x1_NodeWeight)
 -  [`0x1::Option`](../../modules/doc/Option.md#0x1_Option)
@@ -5147,9 +5147,9 @@ with this <code>hash</code> can be successfully sent to the network.
 -  [`tiered_mint`](transaction_script_documentation.md#tiered_mint)
 -  [`trusted_account_update_tx`](trusted_account_update.md#trusted_account_update_tx)
 -  [`unfreeze_account`](transaction_script_documentation.md#unfreeze_account)
+-  [`update_diem_version`](transaction_script_documentation.md#update_diem_version)
 -  [`update_dual_attestation_limit`](transaction_script_documentation.md#update_dual_attestation_limit)
 -  [`update_exchange_rate`](transaction_script_documentation.md#update_exchange_rate)
--  [`update_diem_version`](transaction_script_documentation.md#update_diem_version)
 -  [`update_minting_ability`](transaction_script_documentation.md#update_minting_ability)
 
 

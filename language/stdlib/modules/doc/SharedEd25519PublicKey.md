@@ -18,8 +18,8 @@ that the two keys always stay in sync.
 
 
 <pre><code><b>use</b> <a href="Authenticator.md#0x1_Authenticator">0x1::Authenticator</a>;
-<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Signature.md#0x1_Signature">0x1::Signature</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 </code></pre>

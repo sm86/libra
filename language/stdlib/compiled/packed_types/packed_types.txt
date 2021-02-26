@@ -11,137 +11,11 @@
     }
   ],
   [
-    "0103db96f01bcf7ff5102545b9adca4e1459426299a93e1e5bd5e2b615c89e68ed",
+    "010321822cee609b20b9a056f4d49230109f4db0b68032bcf8715327f1b18de1b7",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemTransactionPublishingOption",
-      "name": "DiemTransactionPublishingOption",
-      "type_params": []
-    }
-  ],
-  [
-    "0104d053f08c7af753b09e723c26b943c1528ecf5712e4e493a34c0de8c7cd4d17",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "WithdrawCapability",
-      "type_params": []
-    }
-  ],
-  [
-    "0107d4191bf505b734d820929e98e86ac7b8b31681f0321f2681477c694bbccb31",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "Oracle",
-      "name": "VoteCount",
-      "type_params": []
-    }
-  ],
-  [
-    "010d2f17f3620b93ea63907fdfe33d9d1aea2d5324a8e3ddbe27241f02282f11c1",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemVMConfig",
-      "name": "GasConstants",
-      "type_params": []
-    }
-  ],
-  [
-    "010ee20def5ea5259e1e49f3ec33db727f7edd48e595759dc9b37ef2b45bd71f67",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "RecoveryAddress",
-      "name": "RecoveryAddress",
-      "type_params": []
-    }
-  ],
-  [
-    "01123f3746147847a98608e80d193d84d01fe6dd9a41d3dec1ac45ae5d62b8f074",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "ModifyConfigCapability",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemTransactionPublishingOption",
-            "name": "DiemTransactionPublishingOption",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
-    "0113c36400b15300bab522510fc4cee1444c0effb6049ea20bed8ad024c77b2079",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "VASP",
-      "name": "ChildVASP",
-      "type_params": []
-    }
-  ],
-  [
-    "011a3c18d19411e76ac7acc442296296225ae5b5644bef0ab21f7efa2986fd9017",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "AccountFreezing",
-      "name": "FreezeEventsHolder",
-      "type_params": []
-    }
-  ],
-  [
-    "011b046b3b7b3c4a79ea4e4beed0f3265f95052c1e655a903e525c39f5c488bb8d",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "Option",
-      "name": "Option",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemAccount",
-            "name": "WithdrawCapability",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
-    "011d1d5ec73e13f79f12ac414ad27470a4b394c90d74cb4ba22cd7e8dd4d95d847",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "AutoPay",
-      "name": "AccountList",
-      "type_params": []
-    }
-  ],
-  [
-    "011d57af3a45c686035178347e1b50849f0c2bad90b2baa2ead36bd208450ed175",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "DiemConfig",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemSystem",
-            "name": "DiemSystem",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
-    "011e6178cd71d33aa7f4b42dfdab915d3e9d97e1dae0cc9e02e9f085653ba41250",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "Balance",
+      "module": "Diem",
+      "name": "CurrencyInfo",
       "type_params": [
         {
           "Struct": {
@@ -155,11 +29,101 @@
     }
   ],
   [
-    "011e6638ce73bd5b7ef5abe3ffefec658212ec0acb5fb0cf58e11054c7429cb92c",
+    "0107d4191bf505b734d820929e98e86ac7b8b31681f0321f2681477c694bbccb31",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemSystem",
-      "name": "DiemSystem",
+      "module": "Oracle",
+      "name": "VoteCount",
+      "type_params": []
+    }
+  ],
+  [
+    "010b02d5ef886d6bea511fe903dd52f8eea87219c23ca66b1231aada3f16638b64",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "DiemConfig",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemVMConfig",
+            "name": "DiemVMConfig",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
+    "010ee20def5ea5259e1e49f3ec33db727f7edd48e595759dc9b37ef2b45bd71f67",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "RecoveryAddress",
+      "name": "RecoveryAddress",
+      "type_params": []
+    }
+  ],
+  [
+    "010f2a0cdc6bd9a291e38f4b20f5a1f346cccac671191db3dcfa9b1424e6e8bccd",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemTimestamp",
+      "name": "CurrentTimeMicroseconds",
+      "type_params": []
+    }
+  ],
+  [
+    "0113c36400b15300bab522510fc4cee1444c0effb6049ea20bed8ad024c77b2079",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "VASP",
+      "name": "ChildVASP",
+      "type_params": []
+    }
+  ],
+  [
+    "01188e8740a39bbe91775fa349da1bc853bb589c86f401ffc9faff4c831a4410cd",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "ModifyConfigCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemVersion",
+            "name": "DiemVersion",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
+    "011a3c18d19411e76ac7acc442296296225ae5b5644bef0ab21f7efa2986fd9017",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "AccountFreezing",
+      "name": "FreezeEventsHolder",
+      "type_params": []
+    }
+  ],
+  [
+    "011c73d1880cd77f571a8f737714fa97cf2a701b1e83666691ac37033078cd56a4",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "KeyRotationCapability",
+      "type_params": []
+    }
+  ],
+  [
+    "011d1d5ec73e13f79f12ac414ad27470a4b394c90d74cb4ba22cd7e8dd4d95d847",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "AutoPay",
+      "name": "AccountList",
       "type_params": []
     }
   ],
@@ -169,6 +133,15 @@
       "address": "00000000000000000000000000000001",
       "module": "DesignatedDealer",
       "name": "Dealer",
+      "type_params": []
+    }
+  ],
+  [
+    "01209eabff002669ccadb028d5a2b458f69f87db4bb9e448cbf03cccbe6114dee4",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "ReceivedPaymentEvent",
       "type_params": []
     }
   ],
@@ -191,39 +164,39 @@
     }
   ],
   [
-    "0125f9de45a06fbafa9cadfd8f442e44a935c085e6b79478b53fc08bc98a0c2d78",
+    "0123edf54348148c2e4663a7fb71fcd77bfbf1c0c7f72c5ec16a6b8c26e868bc7e",
     {
       "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "MintEvent",
+      "module": "DiemVMConfig",
+      "name": "DiemVMConfig",
       "type_params": []
     }
   ],
   [
-    "01368c921b1e4a3b117f1be9f349983f71ff624f0a7c92a718989942cca2d0e97c",
+    "013094411ff228e73899b59be5750553f695c826235e4d2c227b77dc567b9a1942",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "NewEpochEvent",
-      "type_params": []
-    }
-  ],
-  [
-    "013b6f6edb9947ebdb990ac372fdec1258e3617ee93a2505ddeafecd78f08188ce",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "ModifyConfigCapability",
+      "module": "Option",
+      "name": "Option",
       "type_params": [
         {
           "Struct": {
             "address": "00000000000000000000000000000001",
-            "module": "DiemVMConfig",
-            "name": "DiemVMConfig",
+            "module": "DiemAccount",
+            "name": "KeyRotationCapability",
             "type_params": []
           }
         }
       ]
+    }
+  ],
+  [
+    "013834b6997b294f7eff537cd8d570e24bdaa30e62b2a2bc075a98549f9115744b",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "DiemWriteSetManager",
+      "type_params": []
     }
   ],
   [
@@ -236,39 +209,12 @@
     }
   ],
   [
-    "013e931be30d1bbe123a84793a5b502b30386db08f7720ea02e3ff0bd5a76cb4ca",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "ReceivedPaymentEvent",
-      "type_params": []
-    }
-  ],
-  [
-    "013ff106f0f16155e14bde37e33ce8f2647e6cd9bf19bc3d0adbee70f9a1784e20",
+    "01453ac804c02d59705841fedd6a070b92512273ce4875a8f47ecd6cafc988f275",
     {
       "address": "00000000000000000000000000000001",
       "module": "Diem",
-      "name": "PreburnEvent",
+      "name": "ToLBRExchangeRateUpdateEvent",
       "type_params": []
-    }
-  ],
-  [
-    "0145dfea169804cc69483167aed1ca32f5a77c46a8226ecb1559c52196f9023ff7",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "DiemConfig",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemVMConfig",
-            "name": "DiemVMConfig",
-            "type_params": []
-          }
-        }
-      ]
     }
   ],
   [
@@ -290,17 +236,17 @@
     }
   ],
   [
-    "014b290fa2a17ee05d69077e10a8bdfcb15bb5c850b97c4c876b706f54434dceba",
+    "014a6f145da0e3382575b0e9c1da676e73695171d22572a26803f0e59ff97f88ad",
     {
       "address": "00000000000000000000000000000001",
-      "module": "Option",
-      "name": "Option",
+      "module": "Diem",
+      "name": "BurnCapability",
       "type_params": [
         {
           "Struct": {
             "address": "00000000000000000000000000000001",
-            "module": "DiemAccount",
-            "name": "KeyRotationCapability",
+            "module": "GAS",
+            "name": "GAS",
             "type_params": []
           }
         }
@@ -308,11 +254,11 @@
     }
   ],
   [
-    "01550376aaa7952c43d9bb922aa9d7c4cffb11e9c21bf6f1baab89b7343ce34db1",
+    "014efa6e81ee3c9be763600b4ec8b28ffa9d19270d790ef7262d775632805e77c6",
     {
       "address": "00000000000000000000000000000001",
       "module": "Diem",
-      "name": "Preburn",
+      "name": "Diem",
       "type_params": [
         {
           "Struct": {
@@ -335,30 +281,21 @@
     }
   ],
   [
-    "015bf62b742bf0eb38d698cf8fa2c1df4f9ed11258f104a37cf4f85d84ae6ece47",
+    "0156e3ea4c733c5859c153b18ceb46cc006b611dc9bf6942a3fb6dd84f466caaaf",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemSystem",
-      "name": "ValidatorInfo",
+      "module": "DiemVMConfig",
+      "name": "GasConstants",
       "type_params": []
     }
   ],
   [
-    "015db657b3c4ae4db41166218f53b2d60334673c0f01d346ba838ca4053a346dd1",
+    "015d26282b94229c0437427c151c5b337f5d61e09f80cb6e9480bd4f82aa7fef77",
     {
       "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "Diem",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "GAS",
-            "name": "GAS",
-            "type_params": []
-          }
-        }
-      ]
+      "module": "DiemAccount",
+      "name": "DiemAccount",
+      "type_params": []
     }
   ],
   [
@@ -398,11 +335,20 @@
     }
   ],
   [
-    "0164fb33270e34819179c0740359e0e188dd65b86c451d01306e0165b07d84ffe3",
+    "0163977de78fcc4b608efabe64c5e6871ee58cad9e6a2b83ae06c0f0f976baac2f",
     {
       "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "ToLBRExchangeRateUpdateEvent",
+      "module": "DiemSystem",
+      "name": "CapabilityHolder",
+      "type_params": []
+    }
+  ],
+  [
+    "0166696c8ecb77d0902e0a388b8e411383fd1bec5ac35571115b2cd9330e2e5559",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "NewEpochEvent",
       "type_params": []
     }
   ],
@@ -425,6 +371,15 @@
     }
   ],
   [
+    "01672ebf51124ec9c271437b2d36a2133bc7a702881726b87552506e64269c163c",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "Diem",
+      "name": "PreburnEvent",
+      "type_params": []
+    }
+  ],
+  [
     "0167556596571d0cc0641b17733cba22cffb51d9fea94e27ad9259b06826371f5d",
     {
       "address": "00000000000000000000000000000001",
@@ -434,17 +389,26 @@
     }
   ],
   [
-    "016d1a969de68e60aa351ee444667b00564618e8eddeed57ec39e4f50528ee290c",
+    "016a8fa0e726ada6861c7c29f24abf05d4c0156e79fb2f3ffc92ae45f14c08a025",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "ModifyConfigCapability",
+      "module": "DiemAccount",
+      "name": "SentPaymentEvent",
+      "type_params": []
+    }
+  ],
+  [
+    "016c605f5b5cf5671b931c7d15a22ec7af92c1821cf9e7e90f1aa760b95b2540be",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "Option",
+      "name": "Option",
       "type_params": [
         {
           "Struct": {
             "address": "00000000000000000000000000000001",
-            "module": "DiemSystem",
-            "name": "DiemSystem",
+            "module": "DiemAccount",
+            "name": "WithdrawCapability",
             "type_params": []
           }
         }
@@ -452,12 +416,30 @@
     }
   ],
   [
-    "0170df01a050acd0d46afb601ffe53534889aced22334f647611ff713279e57a73",
+    "016ed83add82a86272942d5191d6b522efa3291fdb39a04ec2fcddf480ecbf367c",
     {
       "address": "00000000000000000000000000000001",
       "module": "DiemAccount",
-      "name": "CreateAccountEvent",
+      "name": "WithdrawCapability",
       "type_params": []
+    }
+  ],
+  [
+    "016f7f310c0967f903459ff49c6fc529a83fe7f90198de38894305be62d0ab73dd",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "Diem",
+      "name": "MintCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "GAS",
+            "name": "GAS",
+            "type_params": []
+          }
+        }
+      ]
     }
   ],
   [
@@ -475,24 +457,6 @@
       "address": "00000000000000000000000000000001",
       "module": "AccountFreezing",
       "name": "UnfreezeAccountEvent",
-      "type_params": []
-    }
-  ],
-  [
-    "01766a2b1e03f7d08a39838c5329f9b093112bc5a5de8f0a1f37c5922ff188d5ad",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemVersion",
-      "name": "DiemVersion",
-      "type_params": []
-    }
-  ],
-  [
-    "01794ef83d60ee66878154ab293b9fae46b70729ea0793d3ae4097616530869ef1",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemVMConfig",
-      "name": "DiemVMConfig",
       "type_params": []
     }
   ],
@@ -515,12 +479,30 @@
     }
   ],
   [
-    "017cff1dfeb627167d0578945b489e6e9b5082be4a48a4b1f75b156baec658eb15",
+    "017b13e46496aed01ec958cc8e7f78dc50ecb1e7ae66fe8ea9c80e2bd911d4abbd",
     {
       "address": "00000000000000000000000000000001",
       "module": "Diem",
-      "name": "BurnEvent",
+      "name": "MintEvent",
       "type_params": []
+    }
+  ],
+  [
+    "017c1cb28d2812bc873c9e2fa1dcf6ad9173275e01ec334fe9a9342e955c6c5dd1",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "ModifyConfigCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemVMConfig",
+            "name": "DiemVMConfig",
+            "type_params": []
+          }
+        }
+      ]
     }
   ],
   [
@@ -533,11 +515,29 @@
     }
   ],
   [
-    "0185aa1f79e25ca70b8f54f8a0b673259fc19b1af35acb98885d99e160600387c9",
+    "018348d1ba83b8d22ecab6b07c64f02937e5390cd685d28064a061d98ddc67d018",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "DiemAccount",
+      "module": "DiemConfig",
+      "name": "ModifyConfigCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemTransactionPublishingOption",
+            "name": "DiemTransactionPublishingOption",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
+    "0185854c5471586f605dfe158af93860cbc6e26a29331ca8410806fd619686e3cd",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemSystem",
+      "name": "ValidatorInfo",
       "type_params": []
     }
   ],
@@ -560,39 +560,30 @@
     }
   ],
   [
+    "018f6b6e5e985d4bef75235ad2dd4492acdb1384fbf513a4ff837e7a450866088d",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "DiemConfig",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemTransactionPublishingOption",
+            "name": "DiemTransactionPublishingOption",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
     "01909ace5cff20a5be39701b1766c8ed16e4d4b7c6bc01582dc148991c7abcb06b",
     {
       "address": "00000000000000000000000000000001",
       "module": "DualAttestation",
       "name": "BaseUrlRotationEvent",
       "type_params": []
-    }
-  ],
-  [
-    "0190e68263acecae0bd3a5a9743faa6048c63cf6340cb32ba533057dca572d4ec5",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "AccountOperationsCapability",
-      "type_params": []
-    }
-  ],
-  [
-    "0192ed623a2d06d2cb84217bae54cec5ad0cba966b8933e2bf808b2dc69ff16d50",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "ModifyConfigCapability",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "RegisteredCurrencies",
-            "name": "RegisteredCurrencies",
-            "type_params": []
-          }
-        }
-      ]
     }
   ],
   [
@@ -605,57 +596,12 @@
     }
   ],
   [
-    "019796b03ec6a44e423209eb9e81fed035d0a0806068bf22e73e2d913334d054aa",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "CancelBurnEvent",
-      "type_params": []
-    }
-  ],
-  [
     "019902a9c8deb492420ccaa758f8ca0a63f4232590d0a91cae7c2545a46ea8d5f2",
     {
       "address": "00000000000000000000000000000001",
       "module": "VASP",
       "name": "ParentVASP",
       "type_params": []
-    }
-  ],
-  [
-    "0199677a497d5061ef2881b702b5ffdd5b02614888d416ae315d66d84b39ffe1af",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "ModifyConfigCapability",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemVersion",
-            "name": "DiemVersion",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
-    "019de3cab809730245c180e847d5cad98e2117ae02f7741439b3f77184f911dec0",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "MintCapability",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "GAS",
-            "name": "GAS",
-            "type_params": []
-          }
-        }
-      ]
     }
   ],
   [
@@ -677,30 +623,21 @@
     }
   ],
   [
-    "01a63e88f1013330b49bdcaff1e276af4735aad9e76c5950bcb07d6c22019640f2",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "DiemWriteSetManager",
-      "type_params": []
-    }
-  ],
-  [
-    "01a85fca6da4e127a8214a813986f2959674e4b008cf24c1a2022cf1344b910683",
+    "01a5dc5e5fa177507934a0947aa3fdb12b6eee418fc2cc124c7834b36a50834437",
     {
       "address": "00000000000000000000000000000001",
       "module": "DiemConfig",
-      "name": "Configuration",
-      "type_params": []
-    }
-  ],
-  [
-    "01a917cd907e9e09e4c44b003624c5817513bb8b3c979f325a223d2f7d51c5d2d9",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemSystem",
-      "name": "CapabilityHolder",
-      "type_params": []
+      "name": "DiemConfig",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemVersion",
+            "name": "DiemVersion",
+            "type_params": []
+          }
+        }
+      ]
     }
   ],
   [
@@ -740,12 +677,75 @@
     }
   ],
   [
+    "01ad48439c571f5841c18c9cd00cc7d01b345595666f513024ea7305fbfb9fd2ff",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "Diem",
+      "name": "Preburn",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "GAS",
+            "name": "GAS",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
+    "01ae31d75a5d2171ed0c1d07c07856a1b8a21722f90aa4551c704df083f8b5bcd7",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "Balance",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "GAS",
+            "name": "GAS",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
     "01b5d92429a8648f99bcf93f1db0f38ab8a255bd9c68083471f8da5d7f35af0d1c",
     {
       "address": "00000000000000000000000000000001",
       "module": "SharedEd25519PublicKey",
       "name": "SharedEd25519PublicKey",
       "type_params": []
+    }
+  ],
+  [
+    "01b64eeef964602053ce5fd0ef29076b40d56e566174b1834c9a0929879fcc402f",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "AccountOperationsCapability",
+      "type_params": []
+    }
+  ],
+  [
+    "01b7a61c849fed70eb850f3e44d58674cbf8756bd25d1303d637a9c9e1a9126f73",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "ModifyConfigCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "RegisteredCurrencies",
+            "name": "RegisteredCurrencies",
+            "type_params": []
+          }
+        }
+      ]
     }
   ],
   [
@@ -758,12 +758,39 @@
     }
   ],
   [
+    "01bbace12c9df87eb6d0100003629326c6503261cd2dbf533eed541f77027d100d",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemSystem",
+      "name": "DiemSystem",
+      "type_params": []
+    }
+  ],
+  [
     "01bd2815ee2bf508840a11724140ed989e38a7cfcc4fd4acbb07c12a378adff8f5",
     {
       "address": "00000000000000000000000000000001",
       "module": "Roles",
       "name": "RoleId",
       "type_params": []
+    }
+  ],
+  [
+    "01c08b9460ec4523aadd0766f77a67f38a371bac77d796ebe8eba3ab7592bc0709",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "DiemConfig",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemSystem",
+            "name": "DiemSystem",
+            "type_params": []
+          }
+        }
+      ]
     }
   ],
   [
@@ -778,47 +805,11 @@
     }
   ],
   [
-    "01c57e4b1f2f0b310e31551b209d95863037d5d549f41f62d324aeabb6f44e0baf",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "DiemConfig",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemTransactionPublishingOption",
-            "name": "DiemTransactionPublishingOption",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
     "01c98376d68a63e184162b6a088c99555340521bc61c3c6cd842b03935f96827e4",
     {
       "address": "00000000000000000000000000000001",
       "module": "Upgrade",
       "name": "UpgradeHistory",
-      "type_params": []
-    }
-  ],
-  [
-    "01c9ccc5aba203c7a5a0fa74f1e5d94d97b414b86f5086a0a8f6c0ea0e52e7f138",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "SentPaymentEvent",
-      "type_params": []
-    }
-  ],
-  [
-    "01ca1cdf0d3f9f145c25fbc8b486f00b7dc6c3e0bb70d8e56f754894ee6e2217f7",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemBlock",
-      "name": "BlockMetadata",
       "type_params": []
     }
   ],
@@ -832,11 +823,20 @@
     }
   ],
   [
-    "01cc3019332ad35a38c479c561ec953c5ffa2ceab30717688f681070c4536efb3d",
+    "01caa8c16d63a609d2345bdad96964cc77dc2fae88f06977d42a6f10a2da6034c7",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemTimestamp",
-      "name": "CurrentTimeMicroseconds",
+      "module": "DiemTransactionPublishingOption",
+      "name": "DiemTransactionPublishingOption",
+      "type_params": []
+    }
+  ],
+  [
+    "01cc167266f5a9ad73a069354d76cf3bcfcf0abb1ee92ba2292a3c2267821c9c70",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemConfig",
+      "name": "Configuration",
       "type_params": []
     }
   ],
@@ -859,48 +859,12 @@
     }
   ],
   [
-    "01d3eafb5278af3630a1f5580236ea7fef6090bcf190e21e62d5ac220bf4e67628",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "Diem",
-      "name": "BurnCapability",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "GAS",
-            "name": "GAS",
-            "type_params": []
-          }
-        }
-      ]
-    }
-  ],
-  [
     "01d64e7f07962957b7e12e3d2a27f4a6eaa20cb2024a10d27486901de635f7f043",
     {
       "address": "00000000000000000000000000000001",
       "module": "Oracle",
       "name": "UpgradeOracle",
       "type_params": []
-    }
-  ],
-  [
-    "01d6e6cfb8152b64de92443d0187c2f2ba78c18d20243d1bde105270b6992ca952",
-    {
-      "address": "00000000000000000000000000000001",
-      "module": "DiemConfig",
-      "name": "DiemConfig",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "DiemVersion",
-            "name": "DiemVersion",
-            "type_params": []
-          }
-        }
-      ]
     }
   ],
   [
@@ -922,21 +886,30 @@
     }
   ],
   [
-    "01da35b1abe34aa941e510c47d03a9f7e9bd69fbc2f9b8d784fddddb4f3e62582a",
+    "01daadb4e9bca02df66039f6aa04874b2f386e70797b6d4ea665d77c094d2d2d69",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemVersion",
+      "name": "DiemVersion",
+      "type_params": []
+    }
+  ],
+  [
+    "01daf992cb510b521c46ea2af3b2df3e02c2380304e1fb3565e83c5904473ea4cc",
     {
       "address": "00000000000000000000000000000001",
       "module": "Diem",
-      "name": "CurrencyInfo",
-      "type_params": [
-        {
-          "Struct": {
-            "address": "00000000000000000000000000000001",
-            "module": "GAS",
-            "name": "GAS",
-            "type_params": []
-          }
-        }
-      ]
+      "name": "BurnEvent",
+      "type_params": []
+    }
+  ],
+  [
+    "01dfae4e2bb59ee8da368bbb074462928843983d968299cac420b09c6208532b6b",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemAccount",
+      "name": "CreateAccountEvent",
+      "type_params": []
     }
   ],
   [
@@ -958,7 +931,16 @@
     }
   ],
   [
-    "01f093293c23e7acf8fa7b5d6007a807502b1260aab343e20d0f55fd8f9b9c4ae2",
+    "01ec63dc0b4e2c47b853e81d0b4ef7556d76e25fb07f56d270959e006196b48326",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemBlock",
+      "name": "BlockMetadata",
+      "type_params": []
+    }
+  ],
+  [
+    "01f2877a1de704c89887a9b67a4ce2d8733bd4ebc9457d4c52e8ceaed3f871a5fe",
     {
       "address": "00000000000000000000000000000001",
       "module": "DiemConfig",
@@ -994,20 +976,38 @@
     }
   ],
   [
-    "01f6e6015dfdc87abb890b5e2eec18bda87af6c3a12ac8372c65b232ec94a68675",
+    "01f56a243a84eed37951dfb1244f7fa0493683288fba68ddbd43323fc949c5e8bc",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemVMConfig",
-      "name": "GasSchedule",
+      "module": "Diem",
+      "name": "CancelBurnEvent",
       "type_params": []
     }
   ],
   [
-    "01fc85b89061cb030636b232a20908bda195c8fa7f78e18e51e2dc446c760a2573",
+    "01f705fd3c3b707886bcc001983be8b375232db7e1c90cb60b3f5b6987fae6c575",
     {
       "address": "00000000000000000000000000000001",
-      "module": "DiemAccount",
-      "name": "KeyRotationCapability",
+      "module": "DiemConfig",
+      "name": "ModifyConfigCapability",
+      "type_params": [
+        {
+          "Struct": {
+            "address": "00000000000000000000000000000001",
+            "module": "DiemSystem",
+            "name": "DiemSystem",
+            "type_params": []
+          }
+        }
+      ]
+    }
+  ],
+  [
+    "01f910fcee137fb33107ae5df1efe7f021162f0a916c9fbd491eb579d61e521c01",
+    {
+      "address": "00000000000000000000000000000001",
+      "module": "DiemVMConfig",
+      "name": "GasSchedule",
       "type_params": []
     }
   ]

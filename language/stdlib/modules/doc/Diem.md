@@ -70,10 +70,10 @@ minting and burning of coins.
 
 
 <pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
 <b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
-<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">0x1::RegisteredCurrencies</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;

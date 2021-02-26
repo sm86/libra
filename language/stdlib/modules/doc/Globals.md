@@ -16,8 +16,8 @@
 -  [Function `get_constants`](#0x1_Globals_get_constants)
 
 
-<pre><code><b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
-<b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
+<pre><code><b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
+<b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="Testnet.md#0x1_StagingNet">0x1::StagingNet</a>;
 <b>use</b> <a href="Testnet.md#0x1_Testnet">0x1::Testnet</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;

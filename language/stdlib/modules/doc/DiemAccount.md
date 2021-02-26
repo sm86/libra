@@ -86,21 +86,21 @@ before and after every transaction.
 
 <pre><code><b>use</b> <a href="AccountFreezing.md#0x1_AccountFreezing">0x1::AccountFreezing</a>;
 <b>use</b> <a href="AccountLimits.md#0x1_AccountLimits">0x1::AccountLimits</a>;
+<b>use</b> <a href="BCS.md#0x1_BCS">0x1::BCS</a>;
 <b>use</b> <a href="ChainId.md#0x1_ChainId">0x1::ChainId</a>;
 <b>use</b> <a href="Coin1.md#0x1_Coin1">0x1::Coin1</a>;
 <b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
 <b>use</b> <a href="DesignatedDealer.md#0x1_DesignatedDealer">0x1::DesignatedDealer</a>;
+<b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
+<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
+<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">0x1::DiemTransactionPublishingOption</a>;
 <b>use</b> <a href="DualAttestation.md#0x1_DualAttestation">0x1::DualAttestation</a>;
 <b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
 <b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
-<b>use</b> <a href="BCS.md#0x1_BCS">0x1::BCS</a>;
-<b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
-<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
-<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
-<b>use</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">0x1::DiemTransactionPublishingOption</a>;
 <b>use</b> <a href="MinerState.md#0x1_MinerState">0x1::MinerState</a>;
 <b>use</b> <a href="Option.md#0x1_Option">0x1::Option</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;

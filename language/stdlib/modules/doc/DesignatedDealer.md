@@ -20,10 +20,10 @@ Module providing functionality for designated dealers.
 -  [Function `reset_window`](#0x1_DesignatedDealer_reset_window)
 
 
-<pre><code><b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
-<b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
-<b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
+<pre><code><b>use</b> <a href="Diem.md#0x1_Diem">0x1::Diem</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
+<b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
 <b>use</b> <a href="Roles.md#0x1_Roles">0x1::Roles</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;

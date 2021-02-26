@@ -7,8 +7,8 @@
 
 
 
-<pre><code><b>use</b> <a href="../../modules/doc/GAS.md#0x1_GAS">0x1::GAS</a>;
-<b>use</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<pre><code><b>use</b> <a href="../../modules/doc/DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<b>use</b> <a href="../../modules/doc/GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="../../modules/doc/ValidatorConfig.md#0x1_ValidatorConfig">0x1::ValidatorConfig</a>;
 </code></pre>
 

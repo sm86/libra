@@ -19,8 +19,8 @@ This module defines an account recovery mechanism that can be used by VASPs.
     -  [Helper Functions](#@Helper_Functions_6)
 
 
-<pre><code><b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
-<b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<pre><code><b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="VASP.md#0x1_VASP">0x1::VASP</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;
