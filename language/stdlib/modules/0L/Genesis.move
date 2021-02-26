@@ -31,7 +31,7 @@ module Genesis {
 
     /// Initializes the Diem framework.
     fun initialize(
-        lr_account: &signer,
+        dr_account: &signer,
         lr_auth_key: vector<u8>,
         initial_script_allow_list: vector<vector<u8>>,
         is_open_module: bool,
@@ -39,71 +39,71 @@ module Genesis {
         native_schedule: vector<u8>,
         chain_id: u8,
     ) {
-        DiemAccount::initialize(lr_account, x"00000000000000000000000000000000");
+        DiemAccount::initialize(dr_account, x"00000000000000000000000000000000");
 
-        ChainId::initialize(lr_account, chain_id);
+        ChainId::initialize(dr_account, chain_id);
 
         // On-chain config setup
-        DiemConfig::initialize(lr_account);
+        DiemConfig::initialize(dr_account);
 
         // Currency setup
-        Diem::initialize(lr_account);
+        Diem::initialize(dr_account);
 
         // Currency setup
-        // Coin1::initialize(lr_account, tc_account);
+        // Coin1::initialize(dr_account, tc_account);
 
         GAS::initialize(
-            lr_account,
-            // lr_account,
+            dr_account,
+            // dr_account,
         );
-        AccountFreezing::initialize(lr_account);
+        AccountFreezing::initialize(dr_account);
 
-        TransactionFee::initialize(lr_account);
+        TransactionFee::initialize(dr_account);
 
         DiemSystem::initialize_validator_set(
-            lr_account,
+            dr_account,
         );
         DiemVersion::initialize(
-            lr_account,
+            dr_account,
         );
         DualAttestation::initialize(
-            lr_account,
+            dr_account,
         );
-        DiemBlock::initialize_block_metadata(lr_account);
+        DiemBlock::initialize_block_metadata(dr_account);
 
         // outside of testing, brick the diemroot account.
         if (chain_id == 1 || chain_id == 7) {
             lr_auth_key = Hash::sha3_256(b"Protests rage across the nation");
         };
-        let lr_rotate_key_cap = DiemAccount::extract_key_rotation_capability(lr_account);
+        let lr_rotate_key_cap = DiemAccount::extract_key_rotation_capability(dr_account);
         DiemAccount::rotate_authentication_key(&lr_rotate_key_cap, lr_auth_key);
         DiemAccount::restore_key_rotation_capability(lr_rotate_key_cap);
 
         DiemTransactionPublishingOption::initialize(
-            lr_account,
+            dr_account,
             initial_script_allow_list,
             is_open_module,
         );
 
         DiemVMConfig::initialize(
-            lr_account,
+            dr_account,
             instruction_schedule,
             native_schedule,
             chain_id // 0L change
         );
 
         /////// 0L /////////
-        Stats::initialize(lr_account);
-        ValidatorUniverse::initialize(lr_account);
-        AutoPay::initialize(lr_account);
-        Subsidy::init_fullnode_sub(lr_account);
-        Oracle::initialize(lr_account);
-        // FullnodeState::global_init(lr_account);
+        Stats::initialize(dr_account);
+        ValidatorUniverse::initialize(dr_account);
+        AutoPay::initialize(dr_account);
+        Subsidy::init_fullnode_sub(dr_account);
+        Oracle::initialize(dr_account);
+        // FullnodeState::global_init(dr_account);
         // After we have called this function, all invariants which are guarded by
         // `DiemTimestamp::is_operating() ==> ...` will become active and a verification condition.
         // See also discussion at function specification.
-        DiemTimestamp::set_time_has_started(lr_account);
-        Epoch::initialize(lr_account);
+        DiemTimestamp::set_time_has_started(dr_account);
+        Epoch::initialize(dr_account);
 
     }
 

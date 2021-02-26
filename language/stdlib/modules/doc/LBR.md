@@ -134,7 +134,7 @@ correct permissions (<code>&Capability&lt;RegisterNewCurrency&gt;</code>). Both 
 restrictions are enforced in the <code><a href="Diem.md#0x1_Diem_register_currency">Diem::register_currency</a></code> function, but also enforced here.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LBR.md#0x1_LBR_initialize">initialize</a>(lr_account: &signer, tc_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="LBR.md#0x1_LBR_initialize">initialize</a>(dr_account: &signer, tc_account: &signer)
 </code></pre>
 
 
@@ -144,16 +144,16 @@ restrictions are enforced in the <code><a href="Diem.md#0x1_Diem_register_curren
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="LBR.md#0x1_LBR_initialize">initialize</a>(
-    lr_account: &signer,
+    dr_account: &signer,
     tc_account: &signer,
 ) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
     // Operational constraint
-    <a href="CoreAddresses.md#0x1_CoreAddresses_assert_currency_info">CoreAddresses::assert_currency_info</a>(lr_account);
+    <a href="CoreAddresses.md#0x1_CoreAddresses_assert_currency_info">CoreAddresses::assert_currency_info</a>(dr_account);
     // <a href="LBR.md#0x1_LBR_Reserve">Reserve</a> must not exist.
     <b>assert</b>(!<b>exists</b>&lt;<a href="LBR.md#0x1_LBR_Reserve">Reserve</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()), <a href="Errors.md#0x1_Errors_already_published">Errors::already_published</a>(<a href="LBR.md#0x1_LBR_ERESERVE">ERESERVE</a>));
     <b>let</b> (mint_cap, burn_cap) = <a href="Diem.md#0x1_Diem_register_currency">Diem::register_currency</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;(
-        lr_account,
+        dr_account,
         <a href="FixedPoint32.md#0x1_FixedPoint32_create_from_rational">FixedPoint32::create_from_rational</a>(1, 1), // exchange rate <b>to</b> <a href="LBR.md#0x1_LBR">LBR</a>
         <b>true</b>,    // is_synthetic
         1000000, // scaling_factor = 10^6
@@ -162,10 +162,10 @@ restrictions are enforced in the <code><a href="Diem.md#0x1_Diem_register_curren
     );
     // <a href="LBR.md#0x1_LBR">LBR</a> cannot be minted.
     <a href="Diem.md#0x1_Diem_update_minting_ability">Diem::update_minting_ability</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;(tc_account, <b>false</b>);
-    <a href="AccountLimits.md#0x1_AccountLimits_publish_unrestricted_limits">AccountLimits::publish_unrestricted_limits</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;(lr_account);
+    <a href="AccountLimits.md#0x1_AccountLimits_publish_unrestricted_limits">AccountLimits::publish_unrestricted_limits</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;(dr_account);
 
     <b>let</b> preburn_cap = <a href="Diem.md#0x1_Diem_create_preburn">Diem::create_preburn</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;(tc_account);
-    move_to(lr_account, <a href="LBR.md#0x1_LBR_Reserve">Reserve</a> { mint_cap, burn_cap, preburn_cap });
+    move_to(dr_account, <a href="LBR.md#0x1_LBR_Reserve">Reserve</a> { mint_cap, burn_cap, preburn_cap });
 }
 </code></pre>
 
@@ -178,16 +178,16 @@ restrictions are enforced in the <code><a href="Diem.md#0x1_Diem_register_curren
 
 
 
-<pre><code><b>include</b> <a href="CoreAddresses.md#0x1_CoreAddresses_AbortsIfNotCurrencyInfo">CoreAddresses::AbortsIfNotCurrencyInfo</a>{account: lr_account};
+<pre><code><b>include</b> <a href="CoreAddresses.md#0x1_CoreAddresses_AbortsIfNotCurrencyInfo">CoreAddresses::AbortsIfNotCurrencyInfo</a>{account: dr_account};
 <b>aborts_if</b> <b>exists</b>&lt;<a href="LBR.md#0x1_LBR_Reserve">Reserve</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()) <b>with</b> <a href="Errors.md#0x1_Errors_ALREADY_PUBLISHED">Errors::ALREADY_PUBLISHED</a>;
 <b>include</b> <a href="Diem.md#0x1_Diem_RegisterCurrencyAbortsIf">Diem::RegisterCurrencyAbortsIf</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{
     currency_code: b"<a href="LBR.md#0x1_LBR">LBR</a>",
     scaling_factor: 1000000
 };
-<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsAbortsIf">AccountLimits::PublishUnrestrictedLimitsAbortsIf</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{publish_account: lr_account};
+<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsAbortsIf">AccountLimits::PublishUnrestrictedLimitsAbortsIf</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{publish_account: dr_account};
 <b>include</b> <a href="Diem.md#0x1_Diem_RegisterCurrencyEnsures">Diem::RegisterCurrencyEnsures</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;;
 <b>include</b> <a href="Diem.md#0x1_Diem_UpdateMintingAbilityEnsures">Diem::UpdateMintingAbilityEnsures</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{can_mint: <b>false</b>};
-<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsEnsures">AccountLimits::PublishUnrestrictedLimitsEnsures</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{publish_account: lr_account};
+<b>include</b> <a href="AccountLimits.md#0x1_AccountLimits_PublishUnrestrictedLimitsEnsures">AccountLimits::PublishUnrestrictedLimitsEnsures</a>&lt;<a href="LBR.md#0x1_LBR">LBR</a>&gt;{publish_account: dr_account};
 <b>ensures</b> <b>exists</b>&lt;<a href="LBR.md#0x1_LBR_Reserve">Reserve</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>());
 </code></pre>
 
@@ -202,7 +202,7 @@ Registering LBR can only be done in genesis.
 Only the DiemRoot account can register a new currency [[H8]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 </code></pre>
 
 

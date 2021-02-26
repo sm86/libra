@@ -46,22 +46,22 @@ module AccountFreezing {
     /// The account is frozen
     const EACCOUNT_FROZEN: u64 = 5;
 
-    public fun initialize(lr_account: &signer) {
+    public fun initialize(dr_account: &signer) {
         DiemTimestamp::assert_genesis();
-        CoreAddresses::assert_diem_root(lr_account);
+        CoreAddresses::assert_diem_root(dr_account);
         assert(
-            !exists<FreezeEventsHolder>(Signer::address_of(lr_account)),
+            !exists<FreezeEventsHolder>(Signer::address_of(dr_account)),
             Errors::already_published(EFREEZE_EVENTS_HOLDER)
         );
-        move_to(lr_account, FreezeEventsHolder {
-            freeze_event_handle: Event::new_event_handle(lr_account),
-            unfreeze_event_handle: Event::new_event_handle(lr_account),
+        move_to(dr_account, FreezeEventsHolder {
+            freeze_event_handle: Event::new_event_handle(dr_account),
+            unfreeze_event_handle: Event::new_event_handle(dr_account),
         });
     }
     spec fun initialize {
         include DiemTimestamp::AbortsIfNotGenesis;
-        include CoreAddresses::AbortsIfNotDiemRoot{account: lr_account};
-        let addr = Signer::spec_address_of(lr_account);
+        include CoreAddresses::AbortsIfNotDiemRoot{account: dr_account};
+        let addr = Signer::spec_address_of(dr_account);
         aborts_if exists<FreezeEventsHolder>(addr) with Errors::ALREADY_PUBLISHED;
         ensures exists<FreezeEventsHolder>(addr);
     }

@@ -47,16 +47,16 @@ module LBR {
     /// correct permissions (`&Capability<RegisterNewCurrency>`). Both of these
     /// restrictions are enforced in the `Diem::register_currency` function, but also enforced here.
     public fun initialize(
-        lr_account: &signer,
+        dr_account: &signer,
         tc_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
         // Operational constraint
-        CoreAddresses::assert_currency_info(lr_account);
+        CoreAddresses::assert_currency_info(dr_account);
         // Reserve must not exist.
         assert(!exists<Reserve>(CoreAddresses::LIBRA_ROOT_ADDRESS()), Errors::already_published(ERESERVE));
         let (mint_cap, burn_cap) = Diem::register_currency<LBR>(
-            lr_account,
+            dr_account,
             FixedPoint32::create_from_rational(1, 1), // exchange rate to LBR
             true,    // is_synthetic
             1000000, // scaling_factor = 10^6
@@ -65,30 +65,30 @@ module LBR {
         );
         // LBR cannot be minted.
         Diem::update_minting_ability<LBR>(tc_account, false);
-        AccountLimits::publish_unrestricted_limits<LBR>(lr_account);
+        AccountLimits::publish_unrestricted_limits<LBR>(dr_account);
         
         let preburn_cap = Diem::create_preburn<LBR>(tc_account);
-        move_to(lr_account, Reserve { mint_cap, burn_cap, preburn_cap });
+        move_to(dr_account, Reserve { mint_cap, burn_cap, preburn_cap });
     }
     spec fun initialize {
        use 0x1::Roles;
-        include CoreAddresses::AbortsIfNotCurrencyInfo{account: lr_account};
+        include CoreAddresses::AbortsIfNotCurrencyInfo{account: dr_account};
         aborts_if exists<Reserve>(CoreAddresses::LIBRA_ROOT_ADDRESS()) with Errors::ALREADY_PUBLISHED;
         include Diem::RegisterCurrencyAbortsIf<LBR>{
             currency_code: b"LBR",
             scaling_factor: 1000000
         };
-        include AccountLimits::PublishUnrestrictedLimitsAbortsIf<LBR>{publish_account: lr_account};
+        include AccountLimits::PublishUnrestrictedLimitsAbortsIf<LBR>{publish_account: dr_account};
 
         include Diem::RegisterCurrencyEnsures<LBR>;
         include Diem::UpdateMintingAbilityEnsures<LBR>{can_mint: false};
-        include AccountLimits::PublishUnrestrictedLimitsEnsures<LBR>{publish_account: lr_account};
+        include AccountLimits::PublishUnrestrictedLimitsEnsures<LBR>{publish_account: dr_account};
         ensures exists<Reserve>(CoreAddresses::LIBRA_ROOT_ADDRESS());
 
         /// Registering LBR can only be done in genesis.
         include DiemTimestamp::AbortsIfNotGenesis;
         /// Only the DiemRoot account can register a new currency [[H8]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         /// Only the TreasuryCompliance role can update the `can_mint` field of CurrencyInfo [[H2]][PERMISSION].
         /// Moreover, only the TreasuryCompliance role can create Preburn.
         include Roles::AbortsIfNotTreasuryCompliance{account: tc_account};

@@ -69,7 +69,7 @@ module DiemVMConfig {
 
     /// Initialize the table under the diem root account
     public fun initialize(
-        lr_account: &signer,
+        dr_account: &signer,
         instruction_schedule: vector<u8>,
         native_schedule: vector<u8>,
         _chain_id: u8,
@@ -77,7 +77,7 @@ module DiemVMConfig {
         DiemTimestamp::assert_genesis();
 
         // The permission "UpdateVMConfig" is granted to DiemRoot [[H11]][PERMISSION].
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
 
         let min_price_per_gas_unit = 0;
         // if (chain_id == 7 || chain_id == 1) {
@@ -99,7 +99,7 @@ module DiemVMConfig {
         };
 
         DiemConfig::publish_new_config(
-            lr_account,
+            dr_account,
             DiemVMConfig {
                 gas_schedule: GasSchedule {
                     instruction_schedule,
@@ -125,7 +125,7 @@ module DiemVMConfig {
         };
 
         /// Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
 
         include DiemTimestamp::AbortsIfNotGenesis;
         include DiemConfig::PublishNewConfigAbortsIf<DiemVMConfig>;

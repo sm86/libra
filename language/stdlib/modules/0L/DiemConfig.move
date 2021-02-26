@@ -50,17 +50,17 @@ module DiemConfig {
 
     /// Publishes `Configuration` resource. Can only be invoked by Diem root, and only a single time in Genesis.
     public fun initialize(
-        lr_account: &signer,
+        dr_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
-        CoreAddresses::assert_diem_root(lr_account);
+        CoreAddresses::assert_diem_root(dr_account);
         assert(!exists<Configuration>(CoreAddresses::LIBRA_ROOT_ADDRESS()), Errors::already_published(ECONFIGURATION));
         move_to<Configuration>(
-            lr_account,
+            dr_account,
             Configuration {
                 epoch: 0,
                 last_reconfiguration_time: 0,
-                events: Event::new_event_handle<NewEpochEvent>(lr_account),
+                events: Event::new_event_handle<NewEpochEvent>(dr_account),
             }
         );
     }
@@ -71,9 +71,9 @@ module DiemConfig {
         modifies global<Configuration>(CoreAddresses::LIBRA_ROOT_ADDRESS());
     }
     spec schema InitializeAbortsIf {
-        lr_account: signer;
+        dr_account: signer;
         include DiemTimestamp::AbortsIfNotGenesis;
-        include CoreAddresses::AbortsIfNotDiemRoot{account: lr_account};
+        include CoreAddresses::AbortsIfNotDiemRoot{account: dr_account};
         aborts_if spec_has_config() with Errors::ALREADY_PUBLISHED;
     }
     spec schema InitializeEnsures {
@@ -167,23 +167,23 @@ module DiemConfig {
     /// policy for who can modify the config.
     /// Does not trigger a reconfiguration.
     public fun publish_new_config_and_get_capability<Config: copyable>(
-        lr_account: &signer,
+        dr_account: &signer,
         payload: Config,
     ): ModifyConfigCapability<Config> {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
         assert(
-            !exists<DiemConfig<Config>>(Signer::address_of(lr_account)),
+            !exists<DiemConfig<Config>>(Signer::address_of(dr_account)),
             Errors::already_published(ELIBRA_CONFIG)
         );
-        move_to(lr_account, DiemConfig { payload });
+        move_to(dr_account, DiemConfig { payload });
         ModifyConfigCapability<Config> {}
     }
     spec fun publish_new_config_and_get_capability {
         pragma opaque;
         modifies global<DiemConfig<Config>>(CoreAddresses::LIBRA_ROOT_ADDRESS());
         include DiemTimestamp::AbortsIfNotGenesis;
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         include AbortsIfPublished<Config>;
         include SetEnsures<Config>;
     }
@@ -195,15 +195,15 @@ module DiemConfig {
     /// Publishes the capability to modify this config under the Diem root account.
     /// Does not trigger a reconfiguration.
     public fun publish_new_config<Config: copyable>(
-        lr_account: &signer,
+        dr_account: &signer,
         payload: Config
     ) {
-        let capability = publish_new_config_and_get_capability<Config>(lr_account, payload);
+        let capability = publish_new_config_and_get_capability<Config>(dr_account, payload);
         assert(
-            !exists<ModifyConfigCapability<Config>>(Signer::address_of(lr_account)),
+            !exists<ModifyConfigCapability<Config>>(Signer::address_of(dr_account)),
             Errors::already_published(EMODIFY_CAPABILITY)
         );
-        move_to(lr_account, capability);
+        move_to(dr_account, capability);
     }
     spec fun publish_new_config {
         pragma opaque;
@@ -213,30 +213,30 @@ module DiemConfig {
         include PublishNewConfigEnsures<Config>;
     }
     spec schema PublishNewConfigAbortsIf<Config> {
-        lr_account: signer;
+        dr_account: signer;
         include DiemTimestamp::AbortsIfNotGenesis;
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         aborts_if spec_is_published<Config>();
-        aborts_if exists<ModifyConfigCapability<Config>>(Signer::spec_address_of(lr_account));
+        aborts_if exists<ModifyConfigCapability<Config>>(Signer::spec_address_of(dr_account));
     }
     spec schema PublishNewConfigEnsures<Config> {
-        lr_account: signer;
+        dr_account: signer;
         payload: Config;
         include SetEnsures<Config>;
-        ensures exists<ModifyConfigCapability<Config>>(Signer::spec_address_of(lr_account));
+        ensures exists<ModifyConfigCapability<Config>>(Signer::spec_address_of(dr_account));
     }
 
     /// Signal validators to start using new configuration. Must be called by Diem root.
     public fun reconfigure(
-        lr_account: &signer,
+        dr_account: &signer,
     ) acquires Configuration {
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
         reconfigure_();
     }
     spec fun reconfigure {
         pragma opaque;
         modifies global<Configuration>(CoreAddresses::LIBRA_ROOT_ADDRESS());
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         include ReconfigureAbortsIf;
     }
 

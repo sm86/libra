@@ -9,18 +9,18 @@ module GAS {
     struct GAS { }
 
     public fun initialize(
-        lr_account: &signer,
+        dr_account: &signer,
         // tc_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
         Diem::register_SCS_currency<GAS>(
-            lr_account,
+            dr_account,
             FixedPoint32::create_from_rational(1, 1), // exchange rate to GAS
             1000000, // scaling_factor = 10^6
             1000,     // fractional_part = 10^3
             b"GAS"
         );
-        AccountLimits::publish_unrestricted_limits<GAS>(lr_account);
+        AccountLimits::publish_unrestricted_limits<GAS>(dr_account);
     }
 }
 }

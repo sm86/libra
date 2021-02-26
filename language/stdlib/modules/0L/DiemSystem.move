@@ -95,13 +95,13 @@ module DiemSystem {
     /// code in this module to change DiemSystem config (including the validator set).
     /// Must be invoked by the Diem root a single time in Genesis.
     public fun initialize_validator_set(
-        lr_account: &signer,
+        dr_account: &signer,
     ) {
         DiemTimestamp::assert_genesis();
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
 
         let cap = DiemConfig::publish_new_config_and_get_capability<DiemSystem>(
-            lr_account,
+            dr_account,
             DiemSystem {
                 scheme: 0,
                 validators: Vector::empty(),
@@ -111,13 +111,13 @@ module DiemSystem {
             !exists<CapabilityHolder>(CoreAddresses::LIBRA_ROOT_ADDRESS()),
             Errors::already_published(ECAPABILITY_HOLDER)
         );
-        move_to(lr_account, CapabilityHolder { cap })
+        move_to(dr_account, CapabilityHolder { cap })
     }
     spec fun initialize_validator_set {
         modifies global<DiemConfig::DiemConfig<DiemSystem>>(CoreAddresses::LIBRA_ROOT_ADDRESS());
         include DiemTimestamp::AbortsIfNotGenesis;
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
-        let lr_addr = Signer::spec_address_of(lr_account);
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
+        let lr_addr = Signer::spec_address_of(dr_account);
         // TODO: The next two aborts_if's are not independent. Perhaps they can be
         // simplified.
         aborts_if DiemConfig::spec_is_published<DiemSystem>() with Errors::ALREADY_PUBLISHED;
@@ -157,12 +157,12 @@ module DiemSystem {
 
     /// Adds a new validator to the validator set.
     public fun add_validator(
-        lr_account: &signer,
+        dr_account: &signer,
         validator_addr: address
     ) acquires CapabilityHolder {
 
         DiemTimestamp::assert_operating();
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
         // A prospective validator must have a validator config resource
         assert(ValidatorConfig::is_valid(validator_addr), Errors::invalid_argument(EINVALID_PROSPECTIVE_VALIDATOR));
 
@@ -190,10 +190,10 @@ module DiemSystem {
         include AddValidatorEnsures;
     }
     spec schema AddValidatorAbortsIf {
-        lr_account: signer;
+        dr_account: signer;
         validator_addr: address;
         include DiemTimestamp::AbortsIfNotOperating;
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         include DiemConfig::ReconfigureAbortsIf;
         aborts_if !ValidatorConfig::is_valid(validator_addr) with Errors::INVALID_ARGUMENT;
         aborts_if spec_is_validator(validator_addr) with Errors::INVALID_ARGUMENT;
@@ -222,11 +222,11 @@ module DiemSystem {
 
     /// Removes a validator, aborts unless called by diem root account
     public fun remove_validator(
-        lr_account: &signer,
+        dr_account: &signer,
         validator_addr: address
     ) acquires CapabilityHolder {
         DiemTimestamp::assert_operating();
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
         let diem_system_config = get_diem_system_config();
         // Ensure that this address is an active validator
         let to_remove_index_vec = get_validator_index_(&diem_system_config.validators, validator_addr);
@@ -243,9 +243,9 @@ module DiemSystem {
         include RemoveValidatorEnsures;
     }
     spec schema RemoveValidatorAbortsIf {
-        lr_account: signer;
+        dr_account: signer;
         validator_addr: address;
-        include Roles::AbortsIfNotDiemRoot{account: lr_account};
+        include Roles::AbortsIfNotDiemRoot{account: dr_account};
         include DiemTimestamp::AbortsIfNotOperating;
         include DiemConfig::ReconfigureAbortsIf;
         aborts_if !spec_is_validator(validator_addr) with Errors::INVALID_ARGUMENT;
@@ -551,7 +551,7 @@ module DiemSystem {
 
     spec module {
        /// The permission "{Add, Remove} Validator" is granted to DiemRoot [[H13]][PERMISSION].
-       apply Roles::AbortsIfNotDiemRoot{account: lr_account} to add_validator, remove_validator;
+       apply Roles::AbortsIfNotDiemRoot{account: dr_account} to add_validator, remove_validator;
     }
 
     spec schema ValidatorSetConfigRemainsSame {
