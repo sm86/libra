@@ -260,7 +260,7 @@ dependencies = [
  "executor-test-helpers",
  "executor-types",
  "futures 0.3.8",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "num_cpus",
  "once_cell",
@@ -371,8 +371,14 @@ version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e11e16035ea35e4e5997b393eacbf6f63983188f7a2ad25bfb13465f5ad59de"
 dependencies = [
- "bit-vec",
+ "bit-vec 0.6.2",
 ]
+
+[[package]]
+name = "bit-vec"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f59bbe95d4e52a6398ec21238d31577f2b28a9d86807f06ca59d191d8440d0bb"
 
 [[package]]
 name = "bit-vec"
@@ -716,6 +722,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "classgroup"
+version = "0.1.0"
+dependencies = [
+ "criterion",
+ "libc",
+ "num-traits",
+]
+
+[[package]]
 name = "cli"
 version = "0.1.0"
 dependencies = [
@@ -737,7 +752,7 @@ dependencies = [
  "diem-wallet",
  "diem-workspace-hack",
  "generate-key",
- "hex",
+ "hex 0.4.2",
  "num-traits",
  "once_cell",
  "proptest",
@@ -793,7 +808,7 @@ dependencies = [
  "flate2",
  "futures 0.3.8",
  "generate-key",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "k8s-openapi",
  "kube",
@@ -875,7 +890,7 @@ dependencies = [
  "diem-workspace-hack",
  "include_dir",
  "once_cell",
- "sha2",
+ "sha2 0.9.2",
  "stdlib",
  "vm",
 ]
@@ -1366,7 +1381,7 @@ dependencies = [
  "digest 0.9.0",
  "ed25519-dalek 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ed25519-dalek 1.0.1 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat5)",
- "hex",
+ "hex 0.4.2",
  "hkdf",
  "mirai-annotations",
  "once_cell",
@@ -1379,8 +1394,8 @@ dependencies = [
  "serde-name",
  "serde_bytes",
  "serde_json",
- "sha2",
- "sha3",
+ "sha2 0.9.2",
+ "sha3 0.9.1",
  "short-hex-str",
  "static_assertions",
  "thiserror",
@@ -1443,7 +1458,7 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "futures 0.3.8",
- "hex",
+ "hex 0.4.2",
  "reqwest",
  "structopt 0.3.21",
  "tokio",
@@ -1463,7 +1478,7 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "generate-key",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "reqwest",
  "serde",
@@ -1509,7 +1524,7 @@ dependencies = [
  "diemdb",
  "executor",
  "executor-types",
- "hex",
+ "hex 0.4.2",
  "language-e2e-tests",
  "move-core-types",
  "move-vm-types",
@@ -1635,7 +1650,7 @@ dependencies = [
  "fail",
  "futures 0.3.8",
  "generate-key",
- "hex",
+ "hex 0.4.2",
  "hyper",
  "move-core-types",
  "move-vm-types",
@@ -1668,7 +1683,7 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "futures 0.3.8",
- "hex",
+ "hex 0.4.2",
  "rand 0.7.3",
  "reqwest",
  "serde",
@@ -1687,7 +1702,7 @@ dependencies = [
  "diem-crypto",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "move-explain",
  "prost",
@@ -1774,7 +1789,7 @@ dependencies = [
  "diem-temppath",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "serde",
  "serde_yaml",
  "structopt 0.3.21",
@@ -1946,7 +1961,7 @@ dependencies = [
  "diem-temppath",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "serde",
  "serde_json",
  "structopt 0.3.21",
@@ -1989,7 +2004,7 @@ dependencies = [
  "diem-workspace-hack",
  "diemdb",
  "futures 0.3.8",
- "hex",
+ "hex 0.4.2",
  "proptest",
  "serde",
  "serde_json",
@@ -2113,7 +2128,7 @@ name = "diem-temppath"
 version = "0.1.0"
 dependencies = [
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "rand 0.7.3",
 ]
 
@@ -2174,7 +2189,7 @@ dependencies = [
  "diem-network-address",
  "diem-proptest-helpers",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "mirai-annotations",
  "move-core-types",
@@ -2264,13 +2279,13 @@ dependencies = [
  "diem-workspace-hack",
  "ed25519-dalek 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ed25519-dalek 1.0.1 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat5)",
- "hex",
+ "hex 0.4.2",
  "hmac 0.10.1",
  "mirai-annotations",
  "pbkdf2",
  "rand 0.7.3",
  "serde",
- "sha2",
+ "sha2 0.9.2",
  "thiserror",
 ]
 
@@ -2517,7 +2532,7 @@ dependencies = [
  "ed25519",
  "rand 0.7.3",
  "serde",
- "sha2",
+ "sha2 0.9.2",
  "zeroize",
 ]
 
@@ -2531,7 +2546,7 @@ dependencies = [
  "rand 0.7.3",
  "serde",
  "serde_bytes",
- "sha2",
+ "sha2 0.9.2",
  "zeroize",
 ]
 
@@ -2878,7 +2893,7 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "difference",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "language-e2e-tests",
  "mirai-annotations",
@@ -3285,6 +3300,12 @@ dependencies = [
 
 [[package]]
 name = "hex"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "805026a5d0141ffc30abb3be3173848ad46a1b1664fe632428479619a3644d77"
+
+[[package]]
+name = "hex"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "644f9158b2f133fd50f5fb3242878846d9eb792e445c893805ff0e3824006e35"
@@ -3555,7 +3576,7 @@ dependencies = [
  "codespan",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "move-ir-types",
 ]
@@ -3729,7 +3750,7 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "goldenfile",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -4049,7 +4070,7 @@ dependencies = [
  "diem-crypto",
  "diem-crypto-derive",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "mirai-annotations",
  "once_cell",
  "proptest",
@@ -4106,7 +4127,7 @@ dependencies = [
  "codespan",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "once_cell",
  "serde",
@@ -4127,7 +4148,7 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "difference",
- "hex",
+ "hex 0.4.2",
  "ir-to-bytecode",
  "move-core-types",
  "move-ir-types",
@@ -4192,7 +4213,7 @@ dependencies = [
  "errmapgen",
  "futures 0.3.8",
  "handlebars",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "log",
  "move-ir-types",
@@ -4243,12 +4264,16 @@ name = "move-vm-natives"
 version = "0.1.0"
 dependencies = [
  "diem-crypto",
+ "diem-global-constants",
+ "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "mirai-annotations",
  "move-core-types",
  "move-vm-types",
  "once_cell",
- "sha2",
+ "sha2 0.9.2",
+ "vdf",
  "vm",
 ]
 
@@ -4265,7 +4290,7 @@ dependencies = [
  "diem-state-view",
  "diem-workspace-hack",
  "fail",
- "hex",
+ "hex 0.4.2",
  "mirai-annotations",
  "move-core-types",
  "move-lang",
@@ -4299,7 +4324,7 @@ dependencies = [
  "once_cell",
  "proptest",
  "serde",
- "sha2",
+ "sha2 0.9.2",
  "vm",
 ]
 
@@ -4401,7 +4426,7 @@ dependencies = [
  "diem-workspace-hack",
  "futures 0.3.8",
  "futures-util",
- "hex",
+ "hex 0.4.2",
  "memsocket",
  "netcore",
  "network-builder",
@@ -4781,7 +4806,7 @@ dependencies = [
  "hmac 0.10.1",
  "rand 0.7.3",
  "rand_core 0.5.1",
- "sha2",
+ "sha2 0.9.2",
  "subtle",
 ]
 
@@ -5547,7 +5572,7 @@ dependencies = [
  "diem-state-view",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -5662,7 +5687,7 @@ dependencies = [
  "base64 0.12.3",
  "bytes",
  "futures 0.3.8",
- "hex",
+ "hex 0.4.2",
  "hmac 0.8.1",
  "http",
  "hyper",
@@ -5673,7 +5698,7 @@ dependencies = [
  "rusoto_credential",
  "rustc_version",
  "serde",
- "sha2",
+ "sha2 0.9.2",
  "time 0.2.23",
  "tokio",
 ]
@@ -5908,7 +5933,7 @@ dependencies = [
  "diem-temppath",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "rand 0.7.3",
  "serde_yaml",
  "structopt 0.3.21",
@@ -6150,6 +6175,18 @@ checksum = "2579985fda508104f7587689507983eadd6a6e84dd35d6d115361f530916fa0d"
 
 [[package]]
 name = "sha2"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a256f46ea78a0c0d9ff00077504903ac881a1dafdc20da66545699e7776b3e69"
+dependencies = [
+ "block-buffer 0.7.3",
+ "digest 0.8.1",
+ "fake-simd",
+ "opaque-debug 0.2.3",
+]
+
+[[package]]
+name = "sha2"
 version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e7aab86fe2149bad8c507606bdb3f4ef5e7b2380eb92350f56122cca72a42a8"
@@ -6159,6 +6196,19 @@ dependencies = [
  "cpuid-bool",
  "digest 0.9.0",
  "opaque-debug 0.3.0",
+]
+
+[[package]]
+name = "sha3"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd26bc0e7a2e3a7c959bc494caf58b72ee0c71d67704e9520f736ca7e4853ecf"
+dependencies = [
+ "block-buffer 0.7.3",
+ "byte-tools",
+ "digest 0.8.1",
+ "keccak",
+ "opaque-debug 0.2.3",
 ]
 
 [[package]]
@@ -6190,7 +6240,7 @@ name = "short-hex-str"
 version = "0.1.0"
 dependencies = [
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "mirai-annotations",
  "proptest",
  "serde",
@@ -6268,7 +6318,7 @@ dependencies = [
  "diem-vault-client",
  "diem-workspace-hack",
  "generate-key",
- "hex",
+ "hex 0.4.2",
  "num 0.3.1",
  "num-traits",
  "once_cell",
@@ -6436,7 +6486,7 @@ dependencies = [
  "move-lang",
  "move-prover",
  "rayon",
- "sha2",
+ "sha2 0.9.2",
  "transaction-builder-generator",
  "vm",
  "walkdir",
@@ -6631,7 +6681,7 @@ dependencies = [
  "diem-crypto",
  "diem-types",
  "diem-workspace-hack",
- "hex",
+ "hex 0.4.2",
  "move-core-types",
  "rand 0.7.3",
  "serde",
@@ -6759,7 +6809,7 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "getrandom 0.2.0",
- "hex",
+ "hex 0.4.2",
  "itertools 0.9.0",
  "language-e2e-tests",
  "mirai-annotations",
@@ -7287,6 +7337,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6454029bf181f092ad1b853286f23e2c507d8e8194d01d92da4a55c274a5508c"
 
 [[package]]
+name = "vdf"
+version = "0.1.0"
+dependencies = [
+ "bit-vec 0.5.1",
+ "classgroup",
+ "criterion",
+ "hex 0.3.2",
+ "num-traits",
+ "sha2 0.8.2",
+ "sha3 0.8.2",
+]
+
+[[package]]
 name = "vec_map"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7658,7 +7721,7 @@ dependencies = [
  "determinator",
  "diem-workspace-hack",
  "guppy",
- "hex",
+ "hex 0.4.2",
  "indoc",
  "log",
  "once_cell",

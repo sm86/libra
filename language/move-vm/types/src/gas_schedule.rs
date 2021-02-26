@@ -314,4 +314,6 @@ pub enum NativeCostIndex {
     CREATE_SIGNER = 15,
     DESTROY_SIGNER = 16,
     EMIT_EVENT = 17,
+    VDF_VERIFY = 18,
+    VDF_PARSE = 19,
 }
