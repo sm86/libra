@@ -20,12 +20,12 @@ The following diagram shows how the Move Adapter fits into the system.
 ![abstract](../images/move_adapter.png)
 
 The **Move Adapter** uses a **[Move Virtual Machine](#Move-VM)** (VM)
-to execute code in the context of the Libra ecosystem.
-The Move VM is not aware of the structure and semantics of Libra transactions,
-nor is it aware of the Libra storage layer; it only knows how to execute Move functions.
-It is the adapter's job to use the VM in a way that honors the Libra protocol.
+to execute code in the context of the Diem ecosystem.
+The Move VM is not aware of the structure and semantics of Diem transactions,
+nor is it aware of the Diem storage layer; it only knows how to execute Move functions.
+It is the adapter's job to use the VM in a way that honors the Diem protocol.
 
-We will describe the Move Adapter and the Move VM architecture in Libra and how they share responsibilities.
+We will describe the Move Adapter and the Move VM architecture in Diem and how they share responsibilities.
 
 ## Validation
 
@@ -109,7 +109,7 @@ pub struct RawTransaction {
     /// in the future to indicate that a transaction does not expire.
     expiration_timestamp_secs: u64,
 
-    /// Chain ID of the Libra network this transaction is intended for.
+    /// Chain ID of the Diem network this transaction is intended for.
     chain_id: ChainId,
 }
 
@@ -153,15 +153,15 @@ The adapter performs the following steps for any transaction, regardless of the 
 
 * Check if the signature in the `SignedTransaction` is consistent with the public key and the `RawTransaction` content. If not, this check fails with an `INVALID_SIGNATURE` status code. Note that comparing the transaction's public key against the sender account's authorization key is done separately in Move code.
 
-* Check that the `gas_currency_code` in the `RawTransaction` is a name composed of ASCII alphanumeric characters where the first character is a letter. If not, validation will fail with an `INVALID_GAS_SPECIFIER` status code. Note that this check does not ensure that the name corresponds to a currency recognized by the Libra Framework.
+* Check that the `gas_currency_code` in the `RawTransaction` is a name composed of ASCII alphanumeric characters where the first character is a letter. If not, validation will fail with an `INVALID_GAS_SPECIFIER` status code. Note that this check does not ensure that the name corresponds to a currency recognized by the Diem Framework.
 
-* Normalize the `gas_unit_price` from the `RawTransaction` to the Libra (LBR) currency. If the the validation is successful, the normalized gas price is returned as the `score` field of the `VMValidatorResult` for use in prioritizing the transaction. The normalization is calculated using the `to_lbr_exchange_rate` field of the on-chain `CurrencyInfo` for the specified gas currency. This can fail with a status code of `CURRENCY_INFO_DOES_NOT_EXIST` if the exchange rate cannot be retrieved.
+* Normalize the `gas_unit_price` from the `RawTransaction` to the Diem (LBR) currency. If the the validation is successful, the normalized gas price is returned as the `score` field of the `VMValidatorResult` for use in prioritizing the transaction. The normalization is calculated using the `to_lbr_exchange_rate` field of the on-chain `CurrencyInfo` for the specified gas currency. This can fail with a status code of `CURRENCY_INFO_DOES_NOT_EXIST` if the exchange rate cannot be retrieved.
 
 * Load the `RoleId` resource from the sender's account. If the the validation is successful, this value is returned as the `governance_role` field of the `VMValidatorResult` so that the client can choose to prioritize governance transactions.
 
 ### Gas and Size Checks
 
-Next, there are a series of checks related to the transaction size and gas parameters. These checks are performed for `Script` and `Module` payloads, but not for `WriteSet` transactions. The constraints for these checks are defined by the `GasConstants` structure in the `LibraVMConfig` module.
+Next, there are a series of checks related to the transaction size and gas parameters. These checks are performed for `Script` and `Module` payloads, but not for `WriteSet` transactions. The constraints for these checks are defined by the `GasConstants` structure in the `DiemVMConfig` module.
 
 * Check if the transaction size exceeds the limit specified by the `max_transaction_size_in_bytes` field of `GasConstants`. If the transaction is too big, validation fails with a `EXCEEDED_MAX_TRANSACTION_SIZE` status code.
 
@@ -173,13 +173,13 @@ Next, there are a series of checks related to the transaction size and gas param
 
 ### Prologue Checks
 
-The rest of the validation is performed in Move code, which is run using the Move VM with gas metering disabled. Each kind of transaction payload has a corresponding prologue function that is used for validation. These prologue functions are defined in the `LibraAccount` module of the Libra Framework:
+The rest of the validation is performed in Move code, which is run using the Move VM with gas metering disabled. Each kind of transaction payload has a corresponding prologue function that is used for validation. These prologue functions are defined in the `DiemAccount` module of the Diem Framework:
 
-* `Script`: The prologue function is `script_prologue`. In addition to the common checks listed below, it also calls the `is_script_allowed` function in the `LibraTransactionPublishingOption` module with the hash of the script bytecode to check if it is on the list of allowed scripts. If not, validation fails with an `UNKNOWN_SCRIPT` status code.
+* `Script`: The prologue function is `script_prologue`. In addition to the common checks listed below, it also calls the `is_script_allowed` function in the `DiemTransactionPublishingOption` module with the hash of the script bytecode to check if it is on the list of allowed scripts. If not, validation fails with an `UNKNOWN_SCRIPT` status code.
 
-* `Module`: The prologue function is `module_prologue`. In addition to the common checks listed below, it also calls the `is_module_allowed` function in the `LibraTransactionPublishingOption` module to see if publishing is allowed for the transaction sender. If not, validation fails with a `INVALID_MODULE_PUBLISHER` status code.
+* `Module`: The prologue function is `module_prologue`. In addition to the common checks listed below, it also calls the `is_module_allowed` function in the `DiemTransactionPublishingOption` module to see if publishing is allowed for the transaction sender. If not, validation fails with a `INVALID_MODULE_PUBLISHER` status code.
 
-* `WriteSet`: The prologue function is `writeset_prologue`. In addition to the common checks listed below, it also checks that the sender is the Libra root address and that `Roles::has_diem_root_role(sender)` is true. If any checks fail, the status code is set to `REJECTED_WRITE_SET` (not the code that would be used if the same check was performed for a `Script` or `Module` payload).
+* `WriteSet`: The prologue function is `writeset_prologue`. In addition to the common checks listed below, it also checks that the sender is the Diem root address and that `Roles::has_diem_root_role(sender)` is true. If any checks fail, the status code is set to `REJECTED_WRITE_SET` (not the code that would be used if the same check was performed for a `Script` or `Module` payload).
 
 The following checks are performed by all the prologue functions:
 
@@ -236,7 +236,7 @@ The delay in accepting any transaction for that account is a function of the val
 in refreshing the view. If a validator can be "stalled" into a view, a user may be locked out of the system
 and unable to submit transactions.
 What is a tolerable delay?
-Can administrative accounts (e.g., LibraRoot) be locked out of the system?
+Can administrative accounts (e.g., DiemRoot) be locked out of the system?
 
 * Configuration updates: The validator must be restarted after a configuration update, and failure to notice an update may result in inconsistent behavior of the entire system.
 
@@ -361,15 +361,15 @@ Then for each block the flow of execution is the following:
 
   * Sender of the transaction set to `account_config::reserved_vm_address()`
   * Set gas to `GasUnits::new(std::u64::MAX)` _(is this needed?)_
-  * [execute](#Function-Execution) `LibraBlock::block_prologue` with gas. _Explain semantics and error returned_
+  * [execute](#Function-Execution) `DiemBlock::block_prologue` with gas. _Explain semantics and error returned_
 
 * **TransactionBlock::WriteSet**
     - check sender signature
-    * [execute](#Function-Execution) `LibraWriteSetManager::prologue` with free gas policy (Move VM).
+    * [execute](#Function-Execution) `DiemWriteSetManager::prologue` with free gas policy (Move VM).
     _Explain semantics and error returned_
-    * [execute](#Function-Execution) `LibraAccount::bump_sequence_number` with free gas policy (Move VM).
+    * [execute](#Function-Execution) `DiemAccount::bump_sequence_number` with free gas policy (Move VM).
     _Explain semantics and error returned_
-    * [execute](#Function-Execution) `LibraWriteSetManager::epilogue` with free gas policy (Move VM).
+    * [execute](#Function-Execution) `DiemWriteSetManager::epilogue` with free gas policy (Move VM).
     _Explain semantics and error returned_
     - check write set consistency. _Explain semantics and error returned_
     - on return the adapter marks all transactions not executed yet as `Retry`
@@ -380,13 +380,13 @@ Then for each block the flow of execution is the following:
     - TransactionPaylod::Script
         - checks that scripts execution is allowed, and if whitelisted,
         that the script is in the known whitelist (check against configuration)
-        * [execute](#Function-Execution) `LibraAccount::prologue` (Move VM)
+        * [execute](#Function-Execution) `DiemAccount::prologue` (Move VM)
         * [execute](#Script-Execution) script (Move VM)
         - check the set of events returned and if a configuration change event is published,
         on return, the adapter marks all transactions not executed yet as `Retry`
     - TransactionPaylod::Module
         - checks that module publishing is allowed
-        * [execute](#Function-Execution) `LibraAccount::prologue` (Move VM)
+        * [execute](#Function-Execution) `DiemAccount::prologue` (Move VM)
         - publish module (Move VM)
 
 ## Tests
@@ -427,15 +427,15 @@ Maybe, more importantly, the eager model guarantees that no runtime errors can c
 that a given invocation will not fail loading/linking because of different code paths. The consistency of the
 invocation is guaranteed before execution starts. Obviously runtime errors are still possible and "expected".
 
-This model fits well Libra requirements:
+This model fits well Diem requirements:
 * Validation uses only few functions published at genesis. Once loaded, code is always fetched from the cache and
 immediately available.
 * Execution is in the context of a given data view, a stable and immutable view. As such code is stable too, and it
 is important to optimize the process of loading. Also, transactions are reasonably homogeneous
 and reuse of code leads to significant improvements in performance and stability.
 
-The VM in its current form is optimized for Libra, and it offers an API that is targeted for that environment.
-In particular the VM has an internal implementation for a data cache that relieves the Libra client from an
+The VM in its current form is optimized for Diem, and it offers an API that is targeted for that environment.
+In particular the VM has an internal implementation for a data cache that relieves the Diem client from an
 important responsibility (data cache consistency). That abstraction is behind a `Session` which is the only
 way to talk to the runtime.
 
@@ -523,7 +523,7 @@ pub struct TransactionEffects {
 }
 ```
 The objective of a `Session` is to create and manage the data cache for a set of invocations into the VM.
-It is also intended to return side effects in a format that is suitable to the adapter, and in line with Libra
+It is also intended to return side effects in a format that is suitable to the adapter, and in line with Diem
 and the generation of a `WriteSet`.
 
 A `Session` forwards calls to the `Runtime` which is where the logic and implementation of the VM lives and starts.
@@ -611,7 +611,7 @@ and cached by the loader.
 So a reference to a loaded module does not perform any fetching from the network, or verification, or
 transformations into runtime structures (e.g. linking).
 
-In Libra, consistency of the code cache can be broken by a system transaction that performs a hard upgrade,
+In Diem, consistency of the code cache can be broken by a system transaction that performs a hard upgrade,
 requiring the adapter to stop processing transactions until a restart takes place.
 Other clients may have different "code models" (e.g. some form of versioning).
 
@@ -665,10 +665,10 @@ After this step any reference to the module is valid.
 ## Script Execution
 
 The VM allows the execution of [scripts](#Binary-Format). A script is an entry point (equivalent to a `main(...)`)
-that executes Move code. A script performs calls into the Libra Framework (_reference to specification?_) to
+that executes Move code. A script performs calls into the Diem Framework (_reference to specification?_) to
 accomplish a logical transaction.
 A script is not saved on storage, like modules are, and a script cannot be invoked by other scripts or modules.
-A script is "temporary" code intended to move the state using calls into the Libra Framework.
+A script is "temporary" code intended to move the state using calls into the Diem Framework.
 
 ```rust
 // Execute a user script
@@ -921,7 +921,7 @@ A SignatureToken is 1 byte, and it is one of:
 * `0x2`: **U8** - a U8 (byte)
 * `0x3`: **U64** - a 64bit unsigned integer
 * `0x4`: **U128** - a 128bit unsigned integer
-* `0x5`: **ADDRESS** - an `AccountAddress` in Libra, which is a 128bit unsigned integer
+* `0x5`: **ADDRESS** - an `AccountAddress` in Diem, which is a 128bit unsigned integer
 * `0x6`: **REFERENCE** - a reference; must be followed by another SignatureToken representing the type referenced
 * `0x7`: **MUTABLE_REFERENCE** - a mutable reference; must be followed by another SignatureToken representing
 the type referenced

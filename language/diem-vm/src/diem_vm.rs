@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -19,7 +19,7 @@ use diem_types::{
     account_config::{self, CurrencyInfoResource},
     contract_event::ContractEvent,
     event::EventKey,
-    on_chain_config::{ConfigStorage, LibraVersion, OnChainConfig, VMConfig, VMPublishingOption},
+    on_chain_config::{ConfigStorage, DiemVersion, OnChainConfig, VMConfig, VMPublishingOption},
     transaction::{TransactionOutput, TransactionStatus},
     vm_status::{KeptVMStatus, StatusCode, VMStatus},
     write_set::{WriteOp, WriteSet, WriteSetMut},
@@ -46,14 +46,14 @@ use vm::errors::Location;
 
 #[derive(Clone)]
 /// A wrapper to make VMRuntime standalone and thread safe.
-pub struct LibraVMImpl {
+pub struct DiemVMImpl {
     move_vm: Arc<MoveVM>,
     on_chain_config: Option<VMConfig>,
-    version: Option<LibraVersion>,
+    version: Option<DiemVersion>,
     publishing_option: Option<VMPublishingOption>,
 }
 
-impl LibraVMImpl {
+impl DiemVMImpl {
     #[allow(clippy::new_without_default)]
     pub fn new<S: StateView>(state: &S) -> Self {
         let inner = MoveVM::new();
@@ -68,7 +68,7 @@ impl LibraVMImpl {
     }
 
     pub fn init_with_config(
-        version: LibraVersion,
+        version: DiemVersion,
         on_chain_config: VMConfig,
         publishing_option: VMPublishingOption,
     ) -> Self {
@@ -81,9 +81,9 @@ impl LibraVMImpl {
         }
     }
 
-    /// Provides access to some internal APIs of the Libra VM.
-    pub fn internals(&self) -> LibraVMInternals {
-        LibraVMInternals(self)
+    /// Provides access to some internal APIs of the Diem VM.
+    pub fn internals(&self) -> DiemVMInternals {
+        DiemVMInternals(self)
     }
 
     pub(crate) fn publishing_option(
@@ -102,7 +102,7 @@ impl LibraVMImpl {
 
     fn load_configs_impl<S: ConfigStorage>(&mut self, data_cache: &S) {
         self.on_chain_config = VMConfig::fetch_config(data_cache);
-        self.version = LibraVersion::fetch_config(data_cache);
+        self.version = DiemVersion::fetch_config(data_cache);
         self.publishing_option = VMPublishingOption::fetch_config(data_cache);
     }
 
@@ -117,10 +117,10 @@ impl LibraVMImpl {
             })
     }
 
-    pub fn get_diem_version(&self) -> Result<LibraVersion, VMStatus> {
+    pub fn get_diem_version(&self) -> Result<DiemVersion, VMStatus> {
         self.version.clone().ok_or_else(|| {
             CRITICAL_ERRORS.inc();
-            error!("VM Startup Failed. Libra Version Not Found");
+            error!("VM Startup Failed. Diem Version Not Found");
             VMStatus::Error(StatusCode::VM_STARTUP_FAILURE)
         })
     }
@@ -538,12 +538,12 @@ impl LibraVMImpl {
     }
 }
 
-/// Internal APIs for the Libra VM, primarily used for testing.
+/// Internal APIs for the Diem VM, primarily used for testing.
 #[derive(Clone, Copy)]
-pub struct LibraVMInternals<'a>(&'a LibraVMImpl);
+pub struct DiemVMInternals<'a>(&'a DiemVMImpl);
 
-impl<'a> LibraVMInternals<'a> {
-    pub fn new(internal: &'a LibraVMImpl) -> Self {
+impl<'a> DiemVMInternals<'a> {
+    pub fn new(internal: &'a DiemVMImpl) -> Self {
         Self(internal)
     }
 
@@ -558,7 +558,7 @@ impl<'a> LibraVMInternals<'a> {
     }
 
     /// Returns the version of Move Runtime.
-    pub fn diem_version(self) -> Result<LibraVersion, VMStatus> {
+    pub fn diem_version(self) -> Result<DiemVersion, VMStatus> {
         self.0.get_diem_version()
     }
 
@@ -695,12 +695,12 @@ fn vm_thread_safe() {
     fn assert_send<T: Send>() {}
     fn assert_sync<T: Sync>() {}
 
-    use crate::{LibraVM, LibraVMValidator};
+    use crate::{DiemVM, DiemVMValidator};
 
-    assert_send::<LibraVM>();
-    assert_sync::<LibraVM>();
-    assert_send::<LibraVMValidator>();
-    assert_sync::<LibraVMValidator>();
+    assert_send::<DiemVM>();
+    assert_sync::<DiemVM>();
+    assert_send::<DiemVMValidator>();
+    assert_sync::<DiemVMValidator>();
     assert_send::<MoveVM>();
     assert_sync::<MoveVM>();
 }

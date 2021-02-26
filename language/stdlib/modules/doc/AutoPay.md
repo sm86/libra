@@ -29,9 +29,9 @@
 <b>use</b> <a href="FixedPoint32.md#0x1_FixedPoint32">0x1::FixedPoint32</a>;
 <b>use</b> <a href="GAS.md#0x1_GAS">0x1::GAS</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
-<b>use</b> <a href="LibraAccount.md#0x1_LibraAccount">0x1::LibraAccount</a>;
-<b>use</b> <a href="LibraConfig.md#0x1_LibraConfig">0x1::LibraConfig</a>;
-<b>use</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp">0x1::LibraTimestamp</a>;
+<b>use</b> <a href="DiemAccount.md#0x1_DiemAccount">0x1::DiemAccount</a>;
+<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
+<b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="Option.md#0x1_Option">0x1::Option</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Vector.md#0x1_Vector">0x1::Vector</a>;
@@ -208,7 +208,7 @@ Attempted to send funds to an account that does not exist
   <b>let</b> tick_state = borrow_global_mut&lt;<a href="AutoPay.md#0x1_AutoPay_Tick">Tick</a>&gt;(<a href="Signer.md#0x1_Signer_address_of">Signer::address_of</a>(vm));
 
   <b>if</b> (!tick_state.triggered) {
-    <b>let</b> timer = <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_seconds">LibraTimestamp::now_seconds</a>() - <a href="Epoch.md#0x1_Epoch_get_timer_seconds_start">Epoch::get_timer_seconds_start</a>(vm);
+    <b>let</b> timer = <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_seconds">DiemTimestamp::now_seconds</a>() - <a href="Epoch.md#0x1_Epoch_get_timer_seconds_start">Epoch::get_timer_seconds_start</a>(vm);
     <b>let</b> tick_interval = <a href="Globals.md#0x1_Globals_get_epoch_length">Globals::get_epoch_length</a>();
     <b>if</b> (timer &gt; tick_interval/2) {
       tick_state.triggered = <b>true</b>;
@@ -295,7 +295,7 @@ Attempted to send funds to an account that does not exist
   // Only account 0x0 should be triggering this autopayment each block
   <b>assert</b>(<a href="Signer.md#0x1_Signer_address_of">Signer::address_of</a>(vm) == <a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>(), 0101064010);
 
-  <b>let</b> epoch = <a href="LibraConfig.md#0x1_LibraConfig_get_current_epoch">LibraConfig::get_current_epoch</a>();
+  <b>let</b> epoch = <a href="DiemConfig.md#0x1_DiemConfig_get_current_epoch">DiemConfig::get_current_epoch</a>();
 
   // Go through all accounts in <a href="AutoPay.md#0x1_AutoPay_AccountList">AccountList</a>
   // This is the list of accounts which currently have autopay enabled
@@ -308,7 +308,7 @@ Attempted to send funds to an account that does not exist
     <b>let</b> account_addr = <a href="Vector.md#0x1_Vector_borrow">Vector::borrow</a>&lt;address&gt;(account_list, account_idx);
 
     // Obtain the account balance
-    <b>let</b> account_bal = <a href="LibraAccount.md#0x1_LibraAccount_balance">LibraAccount::balance</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(*account_addr);
+    <b>let</b> account_bal = <a href="DiemAccount.md#0x1_DiemAccount_balance">DiemAccount::balance</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(*account_addr);
 
     // Go through all payments for this account and pay
     <b>let</b> payments = &<b>mut</b> borrow_global_mut&lt;<a href="AutoPay.md#0x1_AutoPay_Data">Data</a>&gt;(*account_addr).payments;
@@ -322,7 +322,7 @@ Attempted to send funds to an account that does not exist
         // A payment will happen now
         // Obtain the amount <b>to</b> pay from percentage and balance
         <b>let</b> amount = <a href="FixedPoint32.md#0x1_FixedPoint32_multiply_u64">FixedPoint32::multiply_u64</a>(account_bal , <a href="FixedPoint32.md#0x1_FixedPoint32_create_from_rational">FixedPoint32::create_from_rational</a>(payment.percentage, 100));
-        <a href="LibraAccount.md#0x1_LibraAccount_make_payment">LibraAccount::make_payment</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(*account_addr, payment.payee, amount, x"", x"", vm);
+        <a href="DiemAccount.md#0x1_DiemAccount_make_payment">DiemAccount::make_payment</a>&lt;<a href="GAS.md#0x1_GAS">GAS</a>&gt;(*account_addr, payment.payee, amount, x"", x"", vm);
       };
       // ToDo: might want <b>to</b> delete inactive instructions <b>to</b> save memory
       payments_idx = payments_idx + 1;
@@ -434,7 +434,7 @@ Attempted to send funds to an account that does not exist
   };
   <b>let</b> payments = &<b>mut</b> borrow_global_mut&lt;<a href="AutoPay.md#0x1_AutoPay_Data">Data</a>&gt;(addr).payments;
 
-  <b>assert</b>(<a href="LibraAccount.md#0x1_LibraAccount_exists_at">LibraAccount::exists_at</a>(payee), <a href="Errors.md#0x1_Errors_not_published">Errors::not_published</a>(<a href="AutoPay.md#0x1_AutoPay_EPAYEE_DOES_NOT_EXIST">EPAYEE_DOES_NOT_EXIST</a>));
+  <b>assert</b>(<a href="DiemAccount.md#0x1_DiemAccount_exists_at">DiemAccount::exists_at</a>(payee), <a href="Errors.md#0x1_Errors_not_published">Errors::not_published</a>(<a href="AutoPay.md#0x1_AutoPay_EPAYEE_DOES_NOT_EXIST">EPAYEE_DOES_NOT_EXIST</a>));
 
   <a href="Vector.md#0x1_Vector_push_back">Vector::push_back</a>&lt;<a href="AutoPay.md#0x1_AutoPay_Payment">Payment</a>&gt;(payments, <a href="AutoPay.md#0x1_AutoPay_Payment">Payment</a> {
     // name: name,

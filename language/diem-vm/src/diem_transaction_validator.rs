@@ -1,11 +1,11 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
     counters::*,
     create_access_path,
     data_cache::StateViewCache,
-    diem_vm::{get_currency_info, LibraVMImpl},
+    diem_vm::{get_currency_info, DiemVMImpl},
     transaction_metadata::TransactionMetadata,
     VMValidator,
 };
@@ -14,7 +14,7 @@ use diem_state_view::StateView;
 use diem_types::{
     account_address::AccountAddress,
     account_config::{self, RoleId},
-    on_chain_config::{LibraVersion, VMConfig, VMPublishingOption},
+    on_chain_config::{DiemVersion, VMConfig, VMPublishingOption},
     transaction::{
         GovernanceRole, SignatureCheckedTransaction, SignedTransaction, TransactionPayload,
         VMValidatorResult,
@@ -31,24 +31,24 @@ use crate::logging::AdapterLogSchema;
 use move_vm_types::gas_schedule::CostStrategy;
 
 #[derive(Clone)]
-pub struct LibraVMValidator(LibraVMImpl);
+pub struct DiemVMValidator(DiemVMImpl);
 
-impl LibraVMValidator {
+impl DiemVMValidator {
     pub fn new<S: StateView>(state: &S) -> Self {
         info!(
             AdapterLogSchema::new(state.id(), 0),
             "Adapter created for Validation"
         );
-        Self(LibraVMImpl::new(state))
+        Self(DiemVMImpl::new(state))
     }
 
     pub fn init_with_config(
-        version: LibraVersion,
+        version: DiemVersion,
         on_chain_config: VMConfig,
         publishing_option: VMPublishingOption,
     ) -> Self {
         info!("Adapter restarted for Validation");
-        LibraVMValidator(LibraVMImpl::init_with_config(
+        DiemVMValidator(DiemVMImpl::init_with_config(
             version,
             on_chain_config,
             publishing_option,
@@ -96,14 +96,14 @@ impl LibraVMValidator {
 }
 
 // VMValidator external API
-impl VMValidator for LibraVMValidator {
+impl VMValidator for DiemVMValidator {
     /// Determine if a transaction is valid. Will return `None` if the transaction is accepted,
     /// `Some(Err)` if the VM rejects it, with `Err` as an error code. Verification performs the
     /// following steps:
     /// 1. The signature on the `SignedTransaction` matches the public key included in the
     ///    transaction
     /// 2. The script to be executed is under given specific configuration.
-    /// 3. Invokes `LibraAccount.prologue`, which checks properties such as the transaction has the
+    /// 3. Invokes `DiemAccount.prologue`, which checks properties such as the transaction has the
     /// right sequence number and the sender has enough balance to pay for the gas.
     /// TBD:
     /// 1. Transaction arguments matches the main function's type signature.

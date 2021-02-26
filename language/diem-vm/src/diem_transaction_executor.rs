@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -7,7 +7,7 @@ use crate::{
     errors::expect_only_successful_execution,
     diem_vm::{
         charge_global_write_gas_usage, get_currency_info, get_transaction_output,
-        txn_effects_to_writeset_and_events_cached, LibraVMImpl, LibraVMInternals,
+        txn_effects_to_writeset_and_events_cached, DiemVMImpl, DiemVMInternals,
     },
     logging::AdapterLogSchema,
     system_module_names::*,
@@ -44,15 +44,15 @@ use std::{
     convert::{AsMut, AsRef},
 };
 
-pub struct LibraVM(LibraVMImpl);
+pub struct DiemVM(DiemVMImpl);
 
-impl LibraVM {
+impl DiemVM {
     pub fn new<S: StateView>(state: &S) -> Self {
-        Self(LibraVMImpl::new(state))
+        Self(DiemVMImpl::new(state))
     }
 
-    pub fn internals(&self) -> LibraVMInternals {
-        LibraVMInternals::new(&self.0)
+    pub fn internals(&self) -> DiemVMInternals {
+        DiemVMInternals::new(&self.0)
     }
 
     /// Generates a transaction output for a transaction that encountered errors during the
@@ -736,7 +736,7 @@ impl LibraVM {
         state_view: &dyn StateView,
     ) -> Result<Vec<(VMStatus, TransactionOutput)>, VMStatus> {
         let mut state_view_cache = StateViewCache::new(state_view);
-        let mut vm = LibraVM::new(&state_view_cache);
+        let mut vm = DiemVM::new(&state_view_cache);
         vm.execute_block_impl(transactions, &mut state_view_cache)
     }
 }
@@ -777,7 +777,7 @@ enum PreprocessedTransaction {
 }
 
 // Executor external API
-impl VMExecutor for LibraVM {
+impl VMExecutor for DiemVM {
     /// Execute a block of `transactions`. The output vector will have the exact same length as the
     /// input vector. The discarded transactions will be marked as `TransactionStatus::Discard` and
     /// have an empty `WriteSet`. Also `state_view` is immutable, and does not have interior
@@ -838,14 +838,14 @@ fn convert_txn_args(args: &[TransactionArgument]) -> Vec<Value> {
         .collect()
 }
 
-impl AsRef<LibraVMImpl> for LibraVM {
-    fn as_ref(&self) -> &LibraVMImpl {
+impl AsRef<DiemVMImpl> for DiemVM {
+    fn as_ref(&self) -> &DiemVMImpl {
         &self.0
     }
 }
 
-impl AsMut<LibraVMImpl> for LibraVM {
-    fn as_mut(&mut self) -> &mut LibraVMImpl {
+impl AsMut<DiemVMImpl> for DiemVM {
+    fn as_mut(&mut self) -> &mut DiemVMImpl {
         &mut self.0
     }
 }

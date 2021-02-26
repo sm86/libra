@@ -27,19 +27,19 @@ script {
 //! sender: diemroot
 script {
   use 0x1::AutoPay;
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
   fun main(sender: &signer) {
-    let alice_balance = LibraAccount::balance<GAS>({{alice}});
-    let bob_balance = LibraAccount::balance<GAS>({{bob}});
+    let alice_balance = DiemAccount::balance<GAS>({{alice}});
+    let bob_balance = DiemAccount::balance<GAS>({{bob}});
     assert(alice_balance==1000000, 1);
     AutoPay::process_autopay(sender);
     
-    let alice_balance_after = LibraAccount::balance<GAS>({{alice}});
+    let alice_balance_after = DiemAccount::balance<GAS>({{alice}});
     assert(alice_balance_after < alice_balance, 2);
     
     let transferred = alice_balance - alice_balance_after;
-    let bob_received = LibraAccount::balance<GAS>({{bob}}) - bob_balance;
+    let bob_received = DiemAccount::balance<GAS>({{bob}}) - bob_balance;
     assert(bob_received == transferred, 2);
     }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use compiled_stdlib::transaction_scripts::StdlibScript;
@@ -11,11 +11,11 @@ use language_e2e_tests::{
 };
 use diem_crypto::HashValue;
 use diem_types::{
-    on_chain_config::LibraVersion,
+    on_chain_config::DiemVersion,
     transaction::{Script, TransactionArgument, TransactionStatus},
     vm_status::{KeptVMStatus, StatusCode},
 };
-use diem_vm::LibraVM;
+use diem_vm::DiemVM;
 use transaction_builder::{
     encode_add_to_script_allow_list_script, encode_update_dual_attestation_limit_script,
 };
@@ -23,18 +23,18 @@ use transaction_builder::{
 #[test]
 fn initial_diem_version() {
     let mut executor = FakeExecutor::from_genesis_file();
-    let vm = LibraVM::new(executor.get_state_view());
+    let vm = DiemVM::new(executor.get_state_view());
 
     assert_eq!(
         vm.internals().diem_version().unwrap(),
-        LibraVersion { major: 1 }
+        DiemVersion { major: 1 }
     );
 
     let account = Account::new_genesis_account(diem_types::on_chain_config::config_address());
     let txn = account
         .transaction()
         .script(Script::new(
-            StdlibScript::UpdateLibraVersion.compiled_bytes().into_vec(),
+            StdlibScript::UpdateDiemVersion.compiled_bytes().into_vec(),
             vec![],
             vec![TransactionArgument::U64(0), TransactionArgument::U64(2)],
         ))
@@ -43,28 +43,28 @@ fn initial_diem_version() {
     executor.new_block();
     executor.execute_and_apply(txn);
 
-    let new_vm = LibraVM::new(executor.get_state_view());
+    let new_vm = DiemVM::new(executor.get_state_view());
     assert_eq!(
         new_vm.internals().diem_version().unwrap(),
-        LibraVersion { major: 2 }
+        DiemVersion { major: 2 }
     );
 }
 
 #[test]
 fn drop_txn_after_reconfiguration() {
     let mut executor = FakeExecutor::from_genesis_file();
-    let vm = LibraVM::new(executor.get_state_view());
+    let vm = DiemVM::new(executor.get_state_view());
 
     assert_eq!(
         vm.internals().diem_version().unwrap(),
-        LibraVersion { major: 1 }
+        DiemVersion { major: 1 }
     );
 
     let account = Account::new_genesis_account(diem_types::on_chain_config::config_address());
     let txn = account
         .transaction()
         .script(Script::new(
-            StdlibScript::UpdateLibraVersion.compiled_bytes().into_vec(),
+            StdlibScript::UpdateDiemVersion.compiled_bytes().into_vec(),
             vec![],
             vec![TransactionArgument::U64(0), TransactionArgument::U64(2)],
         ))

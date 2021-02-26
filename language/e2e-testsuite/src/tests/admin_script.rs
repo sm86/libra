@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use language_e2e_tests::{
@@ -28,13 +28,13 @@ fn admin_script_rotate_key_single_signer_no_epoch() {
 
     let script_body = {
         let code = r#"
-import 0x1.LibraAccount;
+import 0x1.DiemAccount;
 
 main(lr_account: &signer, account: &signer, auth_key_prefix: vector<u8>) {
-  let rotate_cap: LibraAccount.KeyRotationCapability;
-  rotate_cap = LibraAccount.extract_key_rotation_capability(copy(account));
-  LibraAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
-  LibraAccount.restore_key_rotation_capability(move(rotate_cap));
+  let rotate_cap: DiemAccount.KeyRotationCapability;
+  rotate_cap = DiemAccount.extract_key_rotation_capability(copy(account));
+  DiemAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
+  DiemAccount.restore_key_rotation_capability(move(rotate_cap));
 
   return;
 }
@@ -91,16 +91,16 @@ fn admin_script_rotate_key_single_signer_new_epoch() {
 
     let script_body = {
         let code = r#"
-import 0x1.LibraAccount;
-import 0x1.LibraConfig;
+import 0x1.DiemAccount;
+import 0x1.DiemConfig;
 
 main(lr_account: &signer, account: &signer, auth_key_prefix: vector<u8>) {
-  let rotate_cap: LibraAccount.KeyRotationCapability;
-  rotate_cap = LibraAccount.extract_key_rotation_capability(copy(account));
-  LibraAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
-  LibraAccount.restore_key_rotation_capability(move(rotate_cap));
+  let rotate_cap: DiemAccount.KeyRotationCapability;
+  rotate_cap = DiemAccount.extract_key_rotation_capability(copy(account));
+  DiemAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
+  DiemAccount.restore_key_rotation_capability(move(rotate_cap));
 
-  LibraConfig.reconfigure(move(lr_account));
+  DiemConfig.reconfigure(move(lr_account));
   return;
 }
 "#;
@@ -156,13 +156,13 @@ fn admin_script_rotate_key_multi_signer() {
 
     let script_body = {
         let code = r#"
-import 0x1.LibraAccount;
+import 0x1.DiemAccount;
 
 main(account: &signer, auth_key_prefix: vector<u8>) {
-  let rotate_cap: LibraAccount.KeyRotationCapability;
-  rotate_cap = LibraAccount.extract_key_rotation_capability(copy(account));
-  LibraAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
-  LibraAccount.restore_key_rotation_capability(move(rotate_cap));
+  let rotate_cap: DiemAccount.KeyRotationCapability;
+  rotate_cap = DiemAccount.extract_key_rotation_capability(copy(account));
+  DiemAccount.rotate_authentication_key(&rotate_cap, move(auth_key_prefix));
+  DiemAccount.restore_key_rotation_capability(move(rotate_cap));
 
   return;
 }

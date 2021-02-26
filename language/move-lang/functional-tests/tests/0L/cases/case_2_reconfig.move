@@ -18,23 +18,23 @@
 //! sender: bob
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::MinerState;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
 
 
     fun main(_sender: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 5, 7357000180101);
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180102);
-        assert(LibraSystem::is_validator({{eve}}) == true, 7357000180103);
+        assert(DiemSystem::validator_set_size() == 5, 7357000180101);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180102);
+        assert(DiemSystem::is_validator({{eve}}) == true, 7357000180103);
         assert(MinerState::test_helper_get_height({{bob}}) == 0, 7357000180104);
 
         //// NO MINING ////
 
-        assert(LibraAccount::balance<GAS>({{bob}}) == 1, 7357000180106);
+        assert(DiemAccount::balance<GAS>({{bob}}) == 1, 7357000180106);
         assert(NodeWeight::proof_of_weight({{bob}}) == 0, 7357000180107);  
         assert(MinerState::test_helper_get_height({{bob}}) == 0, 7357000180108);
     }
@@ -99,22 +99,22 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
 
     fun main(_account: &signer) {
         // We are in a new epoch.
 
         // Check the validator set is at expected size
         // case 2 does not reject Alice.
-        assert(LibraSystem::validator_set_size() == 5, 7357000180110);
+        assert(DiemSystem::validator_set_size() == 5, 7357000180110);
 
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180111);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180111);
         
         //case 2 does not get rewards.
-        assert(LibraAccount::balance<GAS>({{bob}}) == 1, 7357000180112);  
+        assert(DiemAccount::balance<GAS>({{bob}}) == 1, 7357000180112);  
 
         //case 2 does not increment weight.
         assert(NodeWeight::proof_of_weight({{bob}}) == 0, 7357000180113);  

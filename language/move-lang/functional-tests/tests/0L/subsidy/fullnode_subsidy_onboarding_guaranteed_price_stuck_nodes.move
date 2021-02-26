@@ -5,7 +5,7 @@
 
 script {
 use 0x1::VDF;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::MinerState;
 use 0x1::TestFixtures;
 use 0x1::Signer;
@@ -21,7 +21,7 @@ fun main(sender: &signer) {
   let epochs_since_creation = 10;
   MinerState::test_helper_set_rate_limit(sender_addr, epochs_since_creation);
 
-  LibraAccount::create_validator_account_with_proof(
+  DiemAccount::create_validator_account_with_proof(
       sender,
       &challenge,
       &solution,
@@ -42,7 +42,7 @@ fun main(sender: &signer) {
 //! sender: diemroot
 script {
 use 0x1::Subsidy;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::GAS::GAS;
 use 0x1::Debug::print;
 use 0x1::Reconfigure;
@@ -50,7 +50,7 @@ use 0x1::FullnodeState;
 
 fun main(vm: &signer) {
     let eve_addr = 0x3DC18D1CF61FAAC6AC70E3A63F062E4B;
-    let old_account_bal = LibraAccount::balance<GAS>(eve_addr);
+    let old_account_bal = DiemAccount::balance<GAS>(eve_addr);
     print(&old_account_bal);
 
     print(&FullnodeState::is_onboarding(eve_addr));
@@ -63,7 +63,7 @@ fun main(vm: &signer) {
     // Fullnode rewards are paid at epoch boundary.
     Reconfigure::reconfigure(vm, 100);
 
-    let new_account_bal = LibraAccount::balance<GAS>(eve_addr);
+    let new_account_bal = DiemAccount::balance<GAS>(eve_addr);
     print(&new_account_bal);
 
     assert(new_account_bal == 576000, 735702);

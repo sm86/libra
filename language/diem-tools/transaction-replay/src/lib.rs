@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{bail, format_err, Result};
@@ -9,10 +9,10 @@ use diem_types::{
     transaction::{ChangeSet, Transaction, TransactionOutput, Version},
 };
 use diem_validator_interface::{
-    DBDebuggerInterface, DebuggerStateView, JsonRpcDebuggerInterface, LibraValidatorInterface,
+    DBDebuggerInterface, DebuggerStateView, JsonRpcDebuggerInterface, DiemValidatorInterface,
 };
 use diem_vm::{
-    data_cache::RemoteStorage, txn_effects_to_writeset_and_events, LibraVM, VMExecutor,
+    data_cache::RemoteStorage, txn_effects_to_writeset_and_events, DiemVM, VMExecutor,
 };
 use move_core_types::gas_schedule::{GasAlgebra, GasUnits};
 use move_lang::{compiled_unit::CompiledUnit, move_compile_no_report, shared::Address};
@@ -26,12 +26,12 @@ use vm::errors::VMResult;
 #[cfg(test)]
 mod unit_tests;
 
-pub struct LibraDebugger {
-    debugger: Box<dyn LibraValidatorInterface>,
+pub struct DiemDebugger {
+    debugger: Box<dyn DiemValidatorInterface>,
 }
 
-impl LibraDebugger {
-    pub fn new(debugger: Box<dyn LibraValidatorInterface>) -> Self {
+impl DiemDebugger {
+    pub fn new(debugger: Box<dyn DiemValidatorInterface>) -> Self {
         Self { debugger }
     }
 
@@ -53,7 +53,7 @@ impl LibraDebugger {
         txns: Vec<Transaction>,
     ) -> Result<Vec<TransactionOutput>> {
         let state_view = DebuggerStateView::new(&*self.debugger, version);
-        LibraVM::execute_block(txns, &state_view)
+        DiemVM::execute_block(txns, &state_view)
             .map_err(|err| format_err!("Unexpected VM Error: {:?}", err))
     }
 

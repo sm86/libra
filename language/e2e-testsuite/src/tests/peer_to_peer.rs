@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use compiled_stdlib::transaction_scripts::StdlibScript;
@@ -273,7 +273,7 @@ impl TxnInfo {
 }
 
 // Create a cyclic transfer around a slice of Accounts.
-// Each Account makes a transfer for the same amount to the next LibraAccount.
+// Each Account makes a transfer for the same amount to the next DiemAccount.
 fn create_cyclic_transfers(
     executor: &FakeExecutor,
     accounts: &[Account],

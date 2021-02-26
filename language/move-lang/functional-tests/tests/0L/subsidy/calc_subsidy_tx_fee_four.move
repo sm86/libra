@@ -20,7 +20,7 @@ script {
   use 0x1::Stats;
   use 0x1::TransactionFee;
   use 0x1::GAS::GAS;
-  use 0x1::Libra;
+  use 0x1::Diem;
   use 0x1::Debug::print;
   
   fun main(vm: &signer) {
@@ -38,7 +38,7 @@ script {
       i = i + 1;
     };
 
-    TransactionFee::pay_fee(Libra::mint<GAS>(vm, 100000000));
+    TransactionFee::pay_fee(Diem::mint<GAS>(vm, 100000000));
     print(&Subsidy::calculate_subsidy(vm, 0, 15));
     assert(Subsidy::calculate_subsidy(vm, 0, 15) == 196000000, 7357190101021000);
 

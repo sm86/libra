@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -23,7 +23,7 @@ mod vm_config;
 mod vm_publishing_option;
 
 pub use self::{
-    diem_version::LibraVersion, registered_currencies::RegisteredCurrencies,
+    diem_version::DiemVersion, registered_currencies::RegisteredCurrencies,
     validator_set::ValidatorSet, vm_config::VMConfig, vm_publishing_option::VMPublishingOption,
 };
 
@@ -63,7 +63,7 @@ impl fmt::Display for ConfigID {
 pub const ON_CHAIN_CONFIG_REGISTRY: &[ConfigID] = &[
     VMConfig::CONFIG_ID,
     VMPublishingOption::CONFIG_ID,
-    LibraVersion::CONFIG_ID,
+    DiemVersion::CONFIG_ID,
     ValidatorSet::CONFIG_ID,
     RegisteredCurrencies::CONFIG_ID,
 ];
@@ -162,8 +162,8 @@ pub fn access_path_for_config(address: AccountAddress, config_name: Identifier) 
         address,
         AccessPath::resource_access_vec(&StructTag {
             address: CORE_CODE_ADDRESS,
-            module: Identifier::new("LibraConfig").unwrap(),
-            name: Identifier::new("LibraConfig").unwrap(),
+            module: Identifier::new("DiemConfig").unwrap(),
+            name: Identifier::new("DiemConfig").unwrap(),
             type_params: vec![TypeTag::Struct(StructTag {
                 address: CORE_CODE_ADDRESS,
                 module: config_name.clone(),
@@ -221,6 +221,6 @@ impl Default for ConfigurationResource {
 }
 
 impl MoveResource for ConfigurationResource {
-    const MODULE_NAME: &'static str = "LibraConfig";
+    const MODULE_NAME: &'static str = "DiemConfig";
     const STRUCT_NAME: &'static str = "Configuration";
 }

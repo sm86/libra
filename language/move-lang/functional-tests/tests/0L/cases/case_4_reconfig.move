@@ -99,19 +99,19 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::MinerState;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
 
 
     fun main(_sender: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 6, 7357000180101);
-        assert(LibraSystem::is_validator({{dave}}) == true, 7357000180102);
+        assert(DiemSystem::validator_set_size() == 6, 7357000180101);
+        assert(DiemSystem::is_validator({{dave}}) == true, 7357000180102);
         assert(MinerState::test_helper_get_height({{dave}}) == 0, 7357000180104);
-        assert(LibraAccount::balance<GAS>({{dave}}) == 1, 7357000180106);
+        assert(DiemAccount::balance<GAS>({{dave}}) == 1, 7357000180106);
         assert(NodeWeight::proof_of_weight({{dave}}) == 0, 7357000180107);  
         assert(MinerState::test_helper_get_height({{dave}}) == 0, 7357000180108);
     }
@@ -177,22 +177,22 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
-    use 0x1::LibraConfig;
+    use 0x1::DiemAccount;
+    use 0x1::DiemConfig;
     
 
     fun main(_account: &signer) {
         // We are in a new epoch.
 
         // Check the validator set is at expected size
-        assert(LibraSystem::validator_set_size() == 5, 7357000180110);
-        assert(LibraSystem::is_validator({{dave}}) == false, 7357000180111);            
-        assert(LibraAccount::balance<GAS>({{dave}}) == 1, 7357000180112);
+        assert(DiemSystem::validator_set_size() == 5, 7357000180110);
+        assert(DiemSystem::is_validator({{dave}}) == false, 7357000180111);            
+        assert(DiemAccount::balance<GAS>({{dave}}) == 1, 7357000180112);
         assert(NodeWeight::proof_of_weight({{dave}}) == 0, 7357000180113);  
-        assert(LibraConfig::get_current_epoch()==2, 7357000180114);
+        assert(DiemConfig::get_current_epoch()==2, 7357000180114);
 
     }
 }

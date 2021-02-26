@@ -92,9 +92,9 @@ fun main(account: &signer) {
 script {
 use 0x1::DesignatedDealer;
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 0, 500000 * Libra::scaling_factor<Coin1>());
+    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 0, 500000 * Diem::scaling_factor<Coin1>());
 }
 }
 // check: "Keep(EXECUTED)"
@@ -104,9 +104,9 @@ fun main(account: &signer) {
 script {
 use 0x1::DesignatedDealer;
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 0, 5000000 * Libra::scaling_factor<Coin1>());
+    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 0, 5000000 * Diem::scaling_factor<Coin1>());
 }
 }
 // check: "Keep(ABORTED { code: 519,"
@@ -116,9 +116,9 @@ fun main(account: &signer) {
 script {
 use 0x1::DesignatedDealer;
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 2, 5000000 * Libra::scaling_factor<Coin1>());
+    DesignatedDealer::update_tier<Coin1>(account, {{bob}}, 2, 5000000 * Diem::scaling_factor<Coin1>());
 }
 }
 // check: "Keep(ABORTED { code: 519,"
@@ -128,9 +128,9 @@ fun main(account: &signer) {
 script {
 use 0x1::DesignatedDealer;
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    Libra::destroy_zero(
+    Diem::destroy_zero(
         DesignatedDealer::tiered_mint<Coin1>(account, 0, {{bob}}, 0)
     );
 }
@@ -140,12 +140,12 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
-    use 0x1::Libra;
+    use 0x1::Diem;
     fun main(tc_account: &signer) {
-        LibraAccount::tiered_mint<Coin1>(
-            tc_account, {{bob}},  500000 * Libra::scaling_factor<Coin1>() - 1, 0
+        DiemAccount::tiered_mint<Coin1>(
+            tc_account, {{bob}},  500000 * Diem::scaling_factor<Coin1>() - 1, 0
         );
     }
 }
@@ -156,10 +156,10 @@ script {
 //! new-transaction
 //! sender: blessed
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(tc_account: &signer) {
-        LibraAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<Coin1>(
             tc_account, {{bob}},  2, 0
         );
     }
@@ -174,12 +174,12 @@ script {
 //! sender: blessed
 //! expiration-time: 95000000001
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
-    use 0x1::Libra;
+    use 0x1::Diem;
     fun main(tc_account: &signer) {
-        LibraAccount::tiered_mint<Coin1>(
-            tc_account, {{bob}},  500000 * Libra::scaling_factor<Coin1>() - 1, 0
+        DiemAccount::tiered_mint<Coin1>(
+            tc_account, {{bob}},  500000 * Diem::scaling_factor<Coin1>() - 1, 0
         );
     }
 }

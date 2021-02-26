@@ -51,7 +51,7 @@ script {
 script {
     use 0x1::Stats;
     use 0x1::Vector;
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
 
     fun main(vm: &signer) {
         let voters = Vector::singleton<address>({{alice}});
@@ -69,8 +69,8 @@ script {
             i = i + 1;
         };
 
-        assert(LibraSystem::validator_set_size() == 6, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(DiemSystem::validator_set_size() == 6, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
     }
 }
 //check: EXECUTED
@@ -89,14 +89,14 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
-    use 0x1::LibraConfig;
+    use 0x1::DiemSystem;
+    use 0x1::DiemConfig;
 
     fun main(_account: &signer) {
         // We are in a new epoch.
-        assert(LibraConfig::get_current_epoch() == 2, 7357180107);
+        assert(DiemConfig::get_current_epoch() == 2, 7357180107);
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 6, 7357180207);
+        assert(DiemSystem::validator_set_size() == 6, 7357180207);
     }
 }
 //check: EXECUTED

@@ -14,10 +14,10 @@
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraTimestamp;
+  use 0x1::DiemTimestamp;
   use 0x1::AutoPay;
   fun main(vm: &signer) {
-    let time = LibraTimestamp::now_seconds();
+    let time = DiemTimestamp::now_seconds();
     assert(time == 31, 7357001);
     assert(AutoPay::tick(vm), 7357002);
   }
@@ -37,10 +37,10 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraTimestamp;
+  use 0x1::DiemTimestamp;
   use 0x1::AutoPay;
   fun main(vm: &signer) {
-    let time = LibraTimestamp::now_seconds();
+    let time = DiemTimestamp::now_seconds();
     assert(time == 45, 7357004);
     assert(!AutoPay::tick(vm), 7357005);
   }
@@ -63,10 +63,10 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraTimestamp;
+  use 0x1::DiemTimestamp;
   use 0x1::AutoPay;
   fun main(vm: &signer) {
-    let time = LibraTimestamp::now_seconds();
+    let time = DiemTimestamp::now_seconds();
     assert(time == 61, 7357006);
     assert(!AutoPay::tick(vm), 7357007);
   }
@@ -86,10 +86,10 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraTimestamp;
+  use 0x1::DiemTimestamp;
   use 0x1::AutoPay;
   fun main(vm: &signer) {
-    let time = LibraTimestamp::now_seconds();
+    let time = DiemTimestamp::now_seconds();
     assert(time == 75, 7357008);
     assert(!AutoPay::tick(vm), 7357009);
   }
@@ -109,10 +109,10 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraTimestamp;
+  use 0x1::DiemTimestamp;
   use 0x1::AutoPay;
   fun main(vm: &signer) {
-    let time = LibraTimestamp::now_seconds();
+    let time = DiemTimestamp::now_seconds();
     assert(time == 92, 7357010);
     assert(AutoPay::tick(vm), 7357011);
   }

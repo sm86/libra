@@ -1,33 +1,33 @@
 
-<a name="0x1_LibraTimestamp"></a>
+<a name="0x1_DiemTimestamp"></a>
 
-# Module `0x1::LibraTimestamp`
+# Module `0x1::DiemTimestamp`
 
 This module keeps a global wall clock that stores the current Unix time in microseconds.
 It interacts with the other modules in the following ways:
 
 * Genesis: to initialize the timestamp
 * VASP: to keep track of when credentials expire
-* LibraSystem, LibraAccount, LibraConfig: to check if the current state is in the genesis state
-* LibraBlock: to reach consensus on the global wall clock time
+* DiemSystem, DiemAccount, DiemConfig: to check if the current state is in the genesis state
+* DiemBlock: to reach consensus on the global wall clock time
 * AccountLimits: to limit the time of account limits
 
-This module moreover enables code to assert that it is running in genesis (<code><a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_genesis">Self::assert_genesis</a></code>) or after
-genesis (<code><a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">Self::assert_operating</a></code>). These are essentially distinct states of the system. Specifically,
-if <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">Self::assert_operating</a></code> succeeds, assumptions about invariants over the global state can be made
+This module moreover enables code to assert that it is running in genesis (<code><a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">Self::assert_genesis</a></code>) or after
+genesis (<code><a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">Self::assert_operating</a></code>). These are essentially distinct states of the system. Specifically,
+if <code><a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">Self::assert_operating</a></code> succeeds, assumptions about invariants over the global state can be made
 which reflect that the system has been successfully initialized.
 
 
--  [Resource `CurrentTimeMicroseconds`](#0x1_LibraTimestamp_CurrentTimeMicroseconds)
+-  [Resource `CurrentTimeMicroseconds`](#0x1_DiemTimestamp_CurrentTimeMicroseconds)
 -  [Constants](#@Constants_0)
--  [Function `set_time_has_started`](#0x1_LibraTimestamp_set_time_has_started)
--  [Function `update_global_time`](#0x1_LibraTimestamp_update_global_time)
--  [Function `now_microseconds`](#0x1_LibraTimestamp_now_microseconds)
--  [Function `now_seconds`](#0x1_LibraTimestamp_now_seconds)
--  [Function `is_genesis`](#0x1_LibraTimestamp_is_genesis)
--  [Function `assert_genesis`](#0x1_LibraTimestamp_assert_genesis)
--  [Function `is_operating`](#0x1_LibraTimestamp_is_operating)
--  [Function `assert_operating`](#0x1_LibraTimestamp_assert_operating)
+-  [Function `set_time_has_started`](#0x1_DiemTimestamp_set_time_has_started)
+-  [Function `update_global_time`](#0x1_DiemTimestamp_update_global_time)
+-  [Function `now_microseconds`](#0x1_DiemTimestamp_now_microseconds)
+-  [Function `now_seconds`](#0x1_DiemTimestamp_now_seconds)
+-  [Function `is_genesis`](#0x1_DiemTimestamp_is_genesis)
+-  [Function `assert_genesis`](#0x1_DiemTimestamp_assert_genesis)
+-  [Function `is_operating`](#0x1_DiemTimestamp_is_operating)
+-  [Function `assert_operating`](#0x1_DiemTimestamp_assert_operating)
 -  [Module Specification](#@Module_Specification_1)
 
 
@@ -37,14 +37,14 @@ which reflect that the system has been successfully initialized.
 
 
 
-<a name="0x1_LibraTimestamp_CurrentTimeMicroseconds"></a>
+<a name="0x1_DiemTimestamp_CurrentTimeMicroseconds"></a>
 
 ## Resource `CurrentTimeMicroseconds`
 
 A singleton resource holding the current Unix time in microseconds
 
 
-<pre><code><b>resource</b> <b>struct</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>
+<pre><code><b>resource</b> <b>struct</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>
 </code></pre>
 
 
@@ -70,47 +70,47 @@ A singleton resource holding the current Unix time in microseconds
 ## Constants
 
 
-<a name="0x1_LibraTimestamp_ENOT_GENESIS"></a>
+<a name="0x1_DiemTimestamp_ENOT_GENESIS"></a>
 
 The blockchain is not in the genesis state anymore
 
 
-<pre><code><b>const</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_ENOT_GENESIS">ENOT_GENESIS</a>: u64 = 0;
+<pre><code><b>const</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_ENOT_GENESIS">ENOT_GENESIS</a>: u64 = 0;
 </code></pre>
 
 
 
-<a name="0x1_LibraTimestamp_ENOT_OPERATING"></a>
+<a name="0x1_DiemTimestamp_ENOT_OPERATING"></a>
 
 The blockchain is not in an operating state yet
 
 
-<pre><code><b>const</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_ENOT_OPERATING">ENOT_OPERATING</a>: u64 = 1;
+<pre><code><b>const</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_ENOT_OPERATING">ENOT_OPERATING</a>: u64 = 1;
 </code></pre>
 
 
 
-<a name="0x1_LibraTimestamp_ETIMESTAMP"></a>
+<a name="0x1_DiemTimestamp_ETIMESTAMP"></a>
 
 An invalid timestamp was provided
 
 
-<pre><code><b>const</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_ETIMESTAMP">ETIMESTAMP</a>: u64 = 2;
+<pre><code><b>const</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_ETIMESTAMP">ETIMESTAMP</a>: u64 = 2;
 </code></pre>
 
 
 
-<a name="0x1_LibraTimestamp_MICRO_CONVERSION_FACTOR"></a>
+<a name="0x1_DiemTimestamp_MICRO_CONVERSION_FACTOR"></a>
 
 Conversion factor between seconds and microseconds
 
 
-<pre><code><b>const</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>: u64 = 1000000;
+<pre><code><b>const</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>: u64 = 1000000;
 </code></pre>
 
 
 
-<a name="0x1_LibraTimestamp_set_time_has_started"></a>
+<a name="0x1_DiemTimestamp_set_time_has_started"></a>
 
 ## Function `set_time_has_started`
 
@@ -118,7 +118,7 @@ Marks that time has started and genesis has finished. This can only be called fr
 account.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_set_time_has_started">set_time_has_started</a>(lr_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_set_time_has_started">set_time_has_started</a>(lr_account: &signer)
 </code></pre>
 
 
@@ -127,10 +127,10 @@ account.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_set_time_has_started">set_time_has_started</a>(lr_account: &signer) {
-    <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_genesis">assert_genesis</a>();
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_set_time_has_started">set_time_has_started</a>(lr_account: &signer) {
+    <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">assert_genesis</a>();
     <a href="CoreAddresses.md#0x1_CoreAddresses_assert_diem_root">CoreAddresses::assert_diem_root</a>(lr_account);
-    <b>let</b> timer = <a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> { microseconds: 0 };
+    <b>let</b> timer = <a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> { microseconds: 0 };
     move_to(lr_account, timer);
 }
 </code></pre>
@@ -144,28 +144,28 @@ account.
 
 
 Verification of this function is turned off because it cannot be verified without genesis execution
-context. After time has started, all invariants guarded by <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">LibraTimestamp::is_operating</a></code> will become
+context. After time has started, all invariants guarded by <code><a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">DiemTimestamp::is_operating</a></code> will become
 activated and need to hold.
 
 
 <pre><code><b>pragma</b> verify = <b>false</b>;
-<b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a>;
-<b>include</b> <a href="CoreAddresses.md#0x1_CoreAddresses_AbortsIfNotLibraRoot">CoreAddresses::AbortsIfNotLibraRoot</a>{account: lr_account};
-<b>ensures</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>();
+<b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a>;
+<b>include</b> <a href="CoreAddresses.md#0x1_CoreAddresses_AbortsIfNotDiemRoot">CoreAddresses::AbortsIfNotDiemRoot</a>{account: lr_account};
+<b>ensures</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>();
 </code></pre>
 
 
 
 </details>
 
-<a name="0x1_LibraTimestamp_update_global_time"></a>
+<a name="0x1_DiemTimestamp_update_global_time"></a>
 
 ## Function `update_global_time`
 
 Updates the wall clock time by consensus. Requires VM privilege and will be invoked during block prologue.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_update_global_time">update_global_time</a>(account: &signer, proposer: address, timestamp: u64)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_update_global_time">update_global_time</a>(account: &signer, proposer: address, timestamp: u64)
 </code></pre>
 
 
@@ -174,23 +174,23 @@ Updates the wall clock time by consensus. Requires VM privilege and will be invo
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_update_global_time">update_global_time</a>(
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_update_global_time">update_global_time</a>(
     account: &signer,
     proposer: address,
     timestamp: u64
-) <b>acquires</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
-    <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">assert_operating</a>();
-    // Can only be invoked by LibraVM signer.
+) <b>acquires</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
+    <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">assert_operating</a>();
+    // Can only be invoked by DiemVM signer.
     <a href="CoreAddresses.md#0x1_CoreAddresses_assert_vm">CoreAddresses::assert_vm</a>(account);
 
-    <b>let</b> global_timer = borrow_global_mut&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>());
+    <b>let</b> global_timer = borrow_global_mut&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>());
     <b>let</b> now = global_timer.microseconds;
     <b>if</b> (proposer == <a href="CoreAddresses.md#0x1_CoreAddresses_VM_RESERVED_ADDRESS">CoreAddresses::VM_RESERVED_ADDRESS</a>()) {
         // NIL block <b>with</b> null address <b>as</b> proposer. Timestamp must be equal.
-        <b>assert</b>(now == timestamp, <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_ETIMESTAMP">ETIMESTAMP</a>));
+        <b>assert</b>(now == timestamp, <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_ETIMESTAMP">ETIMESTAMP</a>));
     } <b>else</b> {
         // Normal block. Time must advance
-        <b>assert</b>(now &lt; timestamp, <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_ETIMESTAMP">ETIMESTAMP</a>));
+        <b>assert</b>(now &lt; timestamp, <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_ETIMESTAMP">ETIMESTAMP</a>));
     };
     global_timer.microseconds = timestamp;
 }
@@ -205,10 +205,10 @@ Updates the wall clock time by consensus. Requires VM privilege and will be invo
 
 
 
-<pre><code><b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
+<pre><code><b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
 <b>include</b> <a href="CoreAddresses.md#0x1_CoreAddresses_AbortsIfNotVM">CoreAddresses::AbortsIfNotVM</a>;
-<a name="0x1_LibraTimestamp_now$10"></a>
-<b>let</b> now = <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
+<a name="0x1_DiemTimestamp_now$10"></a>
+<b>let</b> now = <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
 <b>aborts_if</b> [<b>assume</b>]
     (<b>if</b> (proposer == <a href="CoreAddresses.md#0x1_CoreAddresses_VM_RESERVED_ADDRESS">CoreAddresses::VM_RESERVED_ADDRESS</a>()) {
         now != timestamp
@@ -217,21 +217,21 @@ Updates the wall clock time by consensus. Requires VM privilege and will be invo
      }
     )
     <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>;
-<b>ensures</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>() == timestamp;
+<b>ensures</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>() == timestamp;
 </code></pre>
 
 
 
 </details>
 
-<a name="0x1_LibraTimestamp_now_microseconds"></a>
+<a name="0x1_DiemTimestamp_now_microseconds"></a>
 
 ## Function `now_microseconds`
 
 Gets the current time in microseconds.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_microseconds">now_microseconds</a>(): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_microseconds">now_microseconds</a>(): u64
 </code></pre>
 
 
@@ -240,9 +240,9 @@ Gets the current time in microseconds.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_microseconds">now_microseconds</a>(): u64 <b>acquires</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
-    <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">assert_operating</a>();
-    borrow_global&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_microseconds">now_microseconds</a>(): u64 <b>acquires</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
+    <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">assert_operating</a>();
+    borrow_global&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds
 }
 </code></pre>
 
@@ -256,18 +256,18 @@ Gets the current time in microseconds.
 
 
 <pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
-<b>ensures</b> result == <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
+<b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
+<b>ensures</b> result == <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
 </code></pre>
 
 
 
 
-<a name="0x1_LibraTimestamp_spec_now_microseconds"></a>
+<a name="0x1_DiemTimestamp_spec_now_microseconds"></a>
 
 
-<pre><code><b>define</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>(): u64 {
-   <b>global</b>&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds
+<pre><code><b>define</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>(): u64 {
+   <b>global</b>&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds
 }
 </code></pre>
 
@@ -275,14 +275,14 @@ Gets the current time in microseconds.
 
 </details>
 
-<a name="0x1_LibraTimestamp_now_seconds"></a>
+<a name="0x1_DiemTimestamp_now_seconds"></a>
 
 ## Function `now_seconds`
 
 Gets the current time in seconds.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_seconds">now_seconds</a>(): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_seconds">now_seconds</a>(): u64
 </code></pre>
 
 
@@ -291,8 +291,8 @@ Gets the current time in seconds.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_seconds">now_seconds</a>(): u64 <b>acquires</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
-    <a href="LibraTimestamp.md#0x1_LibraTimestamp_now_microseconds">now_microseconds</a>() / <a href="LibraTimestamp.md#0x1_LibraTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_seconds">now_seconds</a>(): u64 <b>acquires</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a> {
+    <a href="DiemTimestamp.md#0x1_DiemTimestamp_now_microseconds">now_microseconds</a>() / <a href="DiemTimestamp.md#0x1_DiemTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>
 }
 </code></pre>
 
@@ -306,18 +306,18 @@ Gets the current time in seconds.
 
 
 <pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
-<b>ensures</b> result == <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>() /  <a href="LibraTimestamp.md#0x1_LibraTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>;
+<b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
+<b>ensures</b> result == <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>() /  <a href="DiemTimestamp.md#0x1_DiemTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>;
 </code></pre>
 
 
 
 
-<a name="0x1_LibraTimestamp_spec_now_seconds"></a>
+<a name="0x1_DiemTimestamp_spec_now_seconds"></a>
 
 
-<pre><code><b>define</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_seconds">spec_now_seconds</a>(): u64 {
-   <b>global</b>&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds / <a href="LibraTimestamp.md#0x1_LibraTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>
+<pre><code><b>define</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_seconds">spec_now_seconds</a>(): u64 {
+   <b>global</b>&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).microseconds / <a href="DiemTimestamp.md#0x1_DiemTimestamp_MICRO_CONVERSION_FACTOR">MICRO_CONVERSION_FACTOR</a>
 }
 </code></pre>
 
@@ -325,14 +325,14 @@ Gets the current time in seconds.
 
 </details>
 
-<a name="0x1_LibraTimestamp_is_genesis"></a>
+<a name="0x1_DiemTimestamp_is_genesis"></a>
 
 ## Function `is_genesis`
 
-Helper function to determine if Libra is in genesis state.
+Helper function to determine if Diem is in genesis state.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>(): bool
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>(): bool
 </code></pre>
 
 
@@ -341,8 +341,8 @@ Helper function to determine if Libra is in genesis state.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>(): bool {
-    !<b>exists</b>&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>())
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>(): bool {
+    !<b>exists</b>&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>())
 }
 </code></pre>
 
@@ -350,14 +350,14 @@ Helper function to determine if Libra is in genesis state.
 
 </details>
 
-<a name="0x1_LibraTimestamp_assert_genesis"></a>
+<a name="0x1_DiemTimestamp_assert_genesis"></a>
 
 ## Function `assert_genesis`
 
 Helper function to assert genesis state.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_genesis">assert_genesis</a>()
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">assert_genesis</a>()
 </code></pre>
 
 
@@ -366,8 +366,8 @@ Helper function to assert genesis state.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_genesis">assert_genesis</a>() {
-    <b>assert</b>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>(), <a href="Errors.md#0x1_Errors_invalid_state">Errors::invalid_state</a>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_ENOT_GENESIS">ENOT_GENESIS</a>));
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">assert_genesis</a>() {
+    <b>assert</b>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>(), <a href="Errors.md#0x1_Errors_invalid_state">Errors::invalid_state</a>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_ENOT_GENESIS">ENOT_GENESIS</a>));
 }
 </code></pre>
 
@@ -381,18 +381,18 @@ Helper function to assert genesis state.
 
 
 <pre><code><b>pragma</b> opaque = <b>true</b>;
-<b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a>;
+<b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a>;
 </code></pre>
 
 
 Helper schema to specify that a function aborts if not in genesis.
 
 
-<a name="0x1_LibraTimestamp_AbortsIfNotGenesis"></a>
+<a name="0x1_DiemTimestamp_AbortsIfNotGenesis"></a>
 
 
-<pre><code><b>schema</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a> {
-    <b>aborts_if</b> !<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>() <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>;
+<pre><code><b>schema</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">AbortsIfNotGenesis</a> {
+    <b>aborts_if</b> !<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>() <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>;
 }
 </code></pre>
 
@@ -400,15 +400,15 @@ Helper schema to specify that a function aborts if not in genesis.
 
 </details>
 
-<a name="0x1_LibraTimestamp_is_operating"></a>
+<a name="0x1_DiemTimestamp_is_operating"></a>
 
 ## Function `is_operating`
 
-Helper function to determine if Libra is operating. This is the same as <code>!<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>()</code> and is provided
-for convenience. Testing <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>()</code> is more frequent than <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">is_genesis</a>()</code>.
+Helper function to determine if Diem is operating. This is the same as <code>!<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>()</code> and is provided
+for convenience. Testing <code><a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>()</code> is more frequent than <code><a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">is_genesis</a>()</code>.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>(): bool
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>(): bool
 </code></pre>
 
 
@@ -417,8 +417,8 @@ for convenience. Testing <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_is_
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>(): bool {
-    <b>exists</b>&lt;<a href="LibraTimestamp.md#0x1_LibraTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>())
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>(): bool {
+    <b>exists</b>&lt;<a href="DiemTimestamp.md#0x1_DiemTimestamp_CurrentTimeMicroseconds">CurrentTimeMicroseconds</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>())
 }
 </code></pre>
 
@@ -426,14 +426,14 @@ for convenience. Testing <code><a href="LibraTimestamp.md#0x1_LibraTimestamp_is_
 
 </details>
 
-<a name="0x1_LibraTimestamp_assert_operating"></a>
+<a name="0x1_DiemTimestamp_assert_operating"></a>
 
 ## Function `assert_operating`
 
 Helper function to assert operating (!genesis) state.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">assert_operating</a>()
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">assert_operating</a>()
 </code></pre>
 
 
@@ -442,8 +442,8 @@ Helper function to assert operating (!genesis) state.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_assert_operating">assert_operating</a>() {
-    <b>assert</b>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>(), <a href="Errors.md#0x1_Errors_invalid_state">Errors::invalid_state</a>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_ENOT_OPERATING">ENOT_OPERATING</a>));
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">assert_operating</a>() {
+    <b>assert</b>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>(), <a href="Errors.md#0x1_Errors_invalid_state">Errors::invalid_state</a>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_ENOT_OPERATING">ENOT_OPERATING</a>));
 }
 </code></pre>
 
@@ -457,18 +457,18 @@ Helper function to assert operating (!genesis) state.
 
 
 <pre><code><b>pragma</b> opaque = <b>true</b>;
-<b>include</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
+<b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a>;
 </code></pre>
 
 
 Helper schema to specify that a function aborts if not operating.
 
 
-<a name="0x1_LibraTimestamp_AbortsIfNotOperating"></a>
+<a name="0x1_DiemTimestamp_AbortsIfNotOperating"></a>
 
 
-<pre><code><b>schema</b> <a href="LibraTimestamp.md#0x1_LibraTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a> {
-    <b>aborts_if</b> !<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>() <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>;
+<pre><code><b>schema</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">AbortsIfNotOperating</a> {
+    <b>aborts_if</b> !<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>() <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_STATE">Errors::INVALID_STATE</a>;
 }
 </code></pre>
 
@@ -486,7 +486,7 @@ After genesis, time progresses monotonically.
 
 
 <pre><code><b>invariant</b> <b>update</b> [<b>global</b>]
-    <b>old</b>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_operating">is_operating</a>()) ==&gt; <b>old</b>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>()) &lt;= <a href="LibraTimestamp.md#0x1_LibraTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
+    <b>old</b>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">is_operating</a>()) ==&gt; <b>old</b>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>()) &lt;= <a href="DiemTimestamp.md#0x1_DiemTimestamp_spec_now_microseconds">spec_now_microseconds</a>();
 </code></pre>
 
 

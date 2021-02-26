@@ -7,7 +7,7 @@
 
 
 
-<pre><code><b>use</b> <a href="../../modules/doc/LibraSystem.md#0x1_LibraSystem">0x1::LibraSystem</a>;
+<pre><code><b>use</b> <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
 <b>use</b> <a href="../../modules/doc/Vector.md#0x1_Vector">0x1::Vector</a>;
 </code></pre>
 
@@ -35,12 +35,12 @@
     <b>assert</b>(<a href="../../modules/doc/Vector.md#0x1_Vector_length">Vector::length</a>&lt;address&gt;(&vec) == 5, 1);
 
     // Set this <b>to</b> be the validator set
-    <a href="../../modules/doc/LibraSystem.md#0x1_LibraSystem_bulk_update_validators">LibraSystem::bulk_update_validators</a>(account, vec);
+    <a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_bulk_update_validators">DiemSystem::bulk_update_validators</a>(account, vec);
 
     // Tests on initial validator set
-    <b>assert</b>(<a href="../../modules/doc/LibraSystem.md#0x1_LibraSystem_validator_set_size">LibraSystem::validator_set_size</a>() == 5, 2);
-    <b>assert</b>(<a href="../../modules/doc/LibraSystem.md#0x1_LibraSystem_is_validator">LibraSystem::is_validator</a>(sha) == <b>true</b>, 3);
-    <b>assert</b>(<a href="../../modules/doc/LibraSystem.md#0x1_LibraSystem_is_validator">LibraSystem::is_validator</a>(alice) == <b>true</b>, 4);
+    <b>assert</b>(<a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_validator_set_size">DiemSystem::validator_set_size</a>() == 5, 2);
+    <b>assert</b>(<a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_is_validator">DiemSystem::is_validator</a>(sha) == <b>true</b>, 3);
+    <b>assert</b>(<a href="../../modules/doc/DiemSystem.md#0x1_DiemSystem_is_validator">DiemSystem::is_validator</a>(alice) == <b>true</b>, 4);
 }
 </code></pre>
 

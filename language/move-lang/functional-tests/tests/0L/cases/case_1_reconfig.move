@@ -18,21 +18,21 @@
 //! sender: alice
 script {
 
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::MinerState;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
 
 
     fun main(sender: &signer) {
         // Tests on initial size of validators
-        assert(LibraSystem::validator_set_size() == 5, 7357300101011000);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357300101021000);
-        assert(LibraSystem::is_validator({{eve}}) == true, 7357300101031000);
+        assert(DiemSystem::validator_set_size() == 5, 7357300101011000);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357300101021000);
+        assert(DiemSystem::is_validator({{eve}}) == true, 7357300101031000);
 
         assert(MinerState::test_helper_get_count({{alice}}) == 1, 7357300101041000);
-        assert(LibraAccount::balance<GAS>({{alice}}) == 1, 7357300101051000);
+        assert(DiemAccount::balance<GAS>({{alice}}) == 1, 7357300101051000);
         assert(NodeWeight::proof_of_weight({{alice}}) == 0, 7357300101051000);
 
         // Alice continues to mine after genesis.
@@ -100,20 +100,20 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {  
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::NodeWeight;
     use 0x1::GAS::GAS;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Debug::print;
 
     fun main(_account: &signer) {
         // We are in a new epoch.
 
         // Check the validator set is at expected size
-        assert(LibraSystem::validator_set_size() == 5, 7357000180110);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180111);
-        print(&LibraAccount::balance<GAS>({{alice}}));
-        assert(LibraAccount::balance<GAS>({{alice}}) == 295000001, 7357000180112);  
+        assert(DiemSystem::validator_set_size() == 5, 7357000180110);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180111);
+        print(&DiemAccount::balance<GAS>({{alice}}));
+        assert(DiemAccount::balance<GAS>({{alice}}) == 295000001, 7357000180112);  
         assert(NodeWeight::proof_of_weight({{alice}}) == 1, 7357000180113);  
     }
 }

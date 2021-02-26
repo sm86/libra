@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use language_e2e_tests::{
@@ -203,13 +203,13 @@ fn bad_writesets() {
         &TransactionStatus::Discard(StatusCode::INVALID_WRITE_SET)
     );
 
-    // (3) The WriteSet attempts to change LibraWriteSetManager, will be dropped.
+    // (3) The WriteSet attempts to change DiemWriteSetManager, will be dropped.
     let key = ResourceKey::new(
         *genesis_account.address(),
         StructTag {
             address: CORE_CODE_ADDRESS,
-            module: Identifier::new("LibraAccount").unwrap(),
-            name: Identifier::new("LibraWriteSetManager").unwrap(),
+            module: Identifier::new("DiemAccount").unwrap(),
+            name: Identifier::new("DiemWriteSetManager").unwrap(),
             type_params: vec![],
         },
     );
@@ -234,8 +234,8 @@ fn bad_writesets() {
         *genesis_account.address(),
         StructTag {
             address: CORE_CODE_ADDRESS,
-            module: Identifier::new("LibraAccount").unwrap(),
-            name: Identifier::new("LibraAccount").unwrap(),
+            module: Identifier::new("DiemAccount").unwrap(),
+            name: Identifier::new("DiemAccount").unwrap(),
             type_params: vec![],
         },
     );

@@ -1,8 +1,8 @@
 [package]
 name = "ir-to-bytecode"
 version = "0.1.0"
-authors = ["Libra Association <opensource@diem.org>"]
-description = "Libra ir to bytecode"
+authors = ["Diem Association <opensource@diem.org>"]
+description = "Diem ir to bytecode"
 repository = "https://github.com/diem/diem"
 homepage = "https://diem.org"
 license = "Apache-2.0"

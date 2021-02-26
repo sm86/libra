@@ -4,16 +4,16 @@ script {
     use 0x1::Coin1;
     use 0x1::DualAttestation;
     use 0x1::LBR;
-    use 0x1::Libra;
-    use 0x1::LibraAccount;
-    use 0x1::LibraBlock;
-    use 0x1::LibraConfig;
-    use 0x1::LibraSystem;
-    use 0x1::LibraTimestamp;
-    use 0x1::LibraTransactionPublishingOption;
-    use 0x1::LibraVersion;
+    use 0x1::Diem;
+    use 0x1::DiemAccount;
+    use 0x1::DiemBlock;
+    use 0x1::DiemConfig;
+    use 0x1::DiemSystem;
+    use 0x1::DiemTimestamp;
+    use 0x1::DiemTransactionPublishingOption;
+    use 0x1::DiemVersion;
     use 0x1::TransactionFee;
-    use 0x1::LibraVMConfig;
+    use 0x1::DiemVMConfig;
     use 0x1::Vector;
 
     fun initialize(
@@ -31,15 +31,15 @@ script {
         let native_schedule = Vector::empty();
         let chain_id = 0;
 
-        LibraAccount::initialize(lr_account, x"00000000000000000000000000000000");
+        DiemAccount::initialize(lr_account, x"00000000000000000000000000000000");
 
         ChainId::initialize(lr_account, chain_id);
 
         // On-chain config setup
-        LibraConfig::initialize(lr_account);
+        DiemConfig::initialize(lr_account);
 
         // Currency setup
-        Libra::initialize(lr_account);
+        Diem::initialize(lr_account);
 
         // Currency setup
         Coin1::initialize(lr_account, tc_account);
@@ -53,37 +53,37 @@ script {
 
         TransactionFee::initialize(tc_account);
 
-        LibraSystem::initialize_validator_set(
+        DiemSystem::initialize_validator_set(
             lr_account,
         );
-        LibraVersion::initialize(
+        DiemVersion::initialize(
             lr_account,
         );
         DualAttestation::initialize(
             lr_account,
         );
-        LibraBlock::initialize_block_metadata(lr_account);
+        DiemBlock::initialize_block_metadata(lr_account);
 
-        let lr_rotate_key_cap = LibraAccount::extract_key_rotation_capability(lr_account);
-        LibraAccount::rotate_authentication_key(&lr_rotate_key_cap, lr_auth_key);
-        LibraAccount::restore_key_rotation_capability(lr_rotate_key_cap);
+        let lr_rotate_key_cap = DiemAccount::extract_key_rotation_capability(lr_account);
+        DiemAccount::rotate_authentication_key(&lr_rotate_key_cap, lr_auth_key);
+        DiemAccount::restore_key_rotation_capability(lr_rotate_key_cap);
 
-        LibraTransactionPublishingOption::initialize(
+        DiemTransactionPublishingOption::initialize(
             lr_account,
             initial_script_allow_list,
             is_open_module,
         );
 
-        LibraVMConfig::initialize(
+        DiemVMConfig::initialize(
             lr_account,
             instruction_schedule,
             native_schedule,
         );
 
-        let tc_rotate_key_cap = LibraAccount::extract_key_rotation_capability(tc_account);
-        LibraAccount::rotate_authentication_key(&tc_rotate_key_cap, tc_auth_key);
-        LibraAccount::restore_key_rotation_capability(tc_rotate_key_cap);
-        LibraTimestamp::set_time_has_started(lr_account);
+        let tc_rotate_key_cap = DiemAccount::extract_key_rotation_capability(tc_account);
+        DiemAccount::rotate_authentication_key(&tc_rotate_key_cap, tc_auth_key);
+        DiemAccount::restore_key_rotation_capability(tc_rotate_key_cap);
+        DiemTimestamp::set_time_has_started(lr_account);
     }
 
 }

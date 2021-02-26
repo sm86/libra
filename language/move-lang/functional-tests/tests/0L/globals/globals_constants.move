@@ -4,13 +4,13 @@
 script {
 use 0x1::Globals;
 use 0x1::Testnet;
-use 0x1::LibraSystem;
+use 0x1::DiemSystem;
 
     fun main(_sender: &signer) {
-        assert(LibraSystem::is_validator({{alice}}) == true, 98);
+        assert(DiemSystem::is_validator({{alice}}) == true, 98);
 
         let len = Globals::get_epoch_length();
-        let set = LibraSystem::validator_set_size();
+        let set = DiemSystem::validator_set_size();
         
         assert(set == 1u64, 73570001);
 

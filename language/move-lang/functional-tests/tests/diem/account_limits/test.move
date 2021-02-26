@@ -9,12 +9,12 @@
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // TODO: fix
@@ -25,11 +25,11 @@ script {
 //! sender: moneybags
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
-    LibraAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 1, x"", x"");
-    LibraAccount::restore_withdraw_capability(with_cap)
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
+    DiemAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 1, x"", x"");
+    DiemAccount::restore_withdraw_capability(with_cap)
 }
 }
 // TODO: fix
@@ -57,11 +57,11 @@ script {
 //! sender: moneybags
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{bob}}, 3, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap)
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 3, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap)
     }
 }
 
@@ -85,15 +85,15 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     // Since we directly wrote into this account using fake data store, we
     // don't actually know that the balance is greater than 0 in the
     // account limits code, but it is.
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -102,11 +102,11 @@ script {
 //! sender: moneybags
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
-    LibraAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 2, x"", x"");
-    LibraAccount::restore_withdraw_capability(with_cap);
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
+    DiemAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 2, x"", x"");
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -114,12 +114,12 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: otherblessed
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -128,11 +128,11 @@ script {
 //! sender: moneybags
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
-    LibraAccount::pay_from<Coin1>(&with_cap, {{bob}}, 2, x"", x"");
-    LibraAccount::restore_withdraw_capability(with_cap);
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
+    DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 2, x"", x"");
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -140,12 +140,12 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -153,12 +153,12 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // TODO: fix
@@ -173,11 +173,11 @@ script {
 //! sender: moneybags
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{bob}}, 100, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 100, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -186,11 +186,11 @@ script {
 //! sender: moneybags
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // TODO: fix
@@ -200,12 +200,12 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 101, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 101, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // chec: ABORTED
@@ -214,12 +214,12 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Coin1::Coin1;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // TODO: fix
@@ -230,11 +230,11 @@ script {
 //! sender: moneybags
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // TODO: fix

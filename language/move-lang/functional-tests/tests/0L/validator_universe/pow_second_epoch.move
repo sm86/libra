@@ -13,12 +13,12 @@
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::NodeWeight;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357220101011000);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357220101021000);
+        assert(DiemSystem::validator_set_size() == 4, 7357220101011000);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357220101021000);
         assert(NodeWeight::proof_of_weight({{alice}}) == 0, 7357220101031000);
 
     }
@@ -63,12 +63,12 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::NodeWeight;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357220101041000);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357220101051000);
+        assert(DiemSystem::validator_set_size() == 4, 7357220101041000);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357220101051000);
         //no mining was done by Alice.
         assert(NodeWeight::proof_of_weight({{alice}}) == 0, 7357220101061000);
     }

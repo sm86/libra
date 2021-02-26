@@ -24,10 +24,10 @@
 
 script {
     use 0x1::Epoch;
-    use 0x1::LibraTimestamp;
+    use 0x1::DiemTimestamp;
     fun main(){
       // the new epoch has reset the timer.
-      assert(LibraTimestamp::now_seconds() == 61, 735701);
+      assert(DiemTimestamp::now_seconds() == 61, 735701);
       assert(!Epoch::epoch_finished(), 735702);
     }
 }

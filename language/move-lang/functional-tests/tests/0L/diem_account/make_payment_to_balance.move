@@ -6,13 +6,13 @@
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
 
   fun main(vm: &signer) {
     // Does not fail when trying to make payment to an account which cannot receive balance.
     // fails silently, as asserts can cause the VM to halt.
-    LibraAccount::make_payment<GAS>(
+    DiemAccount::make_payment<GAS>(
       {{alice}},
       0x0, // cannot receive balance
       100,
@@ -28,12 +28,12 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
 
   fun main(vm: &signer) {
     // Should be fine if the balance is 0
-    LibraAccount::make_payment<GAS>(
+    DiemAccount::make_payment<GAS>(
       {{alice}},
       {{bob}}, // has a 0 in balance
       100,

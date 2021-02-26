@@ -1295,14 +1295,14 @@ function {:inline} $Hash_$sha3_256(val: $Value): $Value {
 // ==================================================================================
 // Native diem_account
 
-procedure {:inline 1} $LibraAccount_create_signer(
+procedure {:inline 1} $DiemAccount_create_signer(
   addr: $Value
 ) returns (signer: $Value) {
     // A signer is currently identical to an address.
     signer := addr;
 }
 
-procedure {:inline 1} $LibraAccount_destroy_signer(
+procedure {:inline 1} $DiemAccount_destroy_signer(
   signer: $Value
 ) {
   return;

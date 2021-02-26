@@ -1,27 +1,27 @@
 address 0x1 {
 
-/// The `Libra` module describes the concept of a coin in the Libra framework. It introduces the
-/// resource `Libra::Libra<CoinType>`, representing a coin of given coin type.
+/// The `Diem` module describes the concept of a coin in the Diem framework. It introduces the
+/// resource `Diem::Diem<CoinType>`, representing a coin of given coin type.
 /// The module defines functions operating on coins as well as functionality like
 /// minting and burning of coins.
-module LibraTest {
+module DiemTest {
     use 0x1::CoreAddresses;
     use 0x1::Event::{Self, EventHandle};
     use 0x1::FixedPoint32::{Self, FixedPoint32};
     use 0x1::RegisteredCurrencies;
     use 0x1::Signer;
     use 0x1::Roles;
-    use 0x1::LibraTimestamp;
+    use 0x1::DiemTimestamp;
 
     resource struct RegisterNewCurrency {}
 
-    /// The `Libra` resource defines the Libra coin for each currency in
-    /// Libra. Each "coin" is coupled with a type `CoinType` specifying the
+    /// The `Diem` resource defines the Diem coin for each currency in
+    /// Diem. Each "coin" is coupled with a type `CoinType` specifying the
     /// currency of the coin, and a `value` field specifying the value
     /// of the coin (in the base units of the currency `CoinType`
     /// and specified in the `CurrencyInfo` resource for that `CoinType`
     /// published under the `CoreAddresses::CURRENCY_INFO_ADDRESS()` account address).
-    resource struct Libra<CoinType> {
+    resource struct Diem<CoinType> {
         /// The value of this coin in the base units for `CoinType`
         value: u64
     }
@@ -39,10 +39,10 @@ module LibraTest {
 
     /// The `CurrencyRegistrationCapability` is a singleton resource
     /// published under the `CoreAddresses::LIBRA_ROOT_ADDRESS()` and grants
-    /// the capability to the `0x1::Libra` module to add currencies to the
+    /// the capability to the `0x1::Diem` module to add currencies to the
     /// `0x1::RegisteredCurrencies` on-chain config.
 
-    /// A `MintEvent` is emitted every time a Libra coin is minted. This
+    /// A `MintEvent` is emitted every time a Diem coin is minted. This
     /// contains the `amount` minted (in base units of the currency being
     /// minted) along with the `currency_code` for the coin(s) being
     /// minted, and that is defined in the `currency_code` field of the
@@ -54,7 +54,7 @@ module LibraTest {
         currency_code: vector<u8>,
     }
 
-    /// A `BurnEvent` is emitted every time a non-synthetic[1] Libra coin is
+    /// A `BurnEvent` is emitted every time a non-synthetic[1] Diem coin is
     /// burned. It contains the `amount` burned in base units for the
     /// currency, along with the `currency_code` for the coins being burned
     /// (and as defined in the `CurrencyInfo` resource for that currency).
@@ -174,7 +174,7 @@ module LibraTest {
     resource struct Preburn<CoinType> {
         /// A single pending burn amount.
         /// There is no pending burn request if the value in to_burn is 0
-        to_burn: Libra<CoinType>,
+        to_burn: Diem<CoinType>,
     }
 
     const ENOT_GENESIS: u64 = 0;
@@ -200,14 +200,14 @@ module LibraTest {
     // public fun grant_privileges(account: &signer) {
     // }
 
-    /// Initialization of the `Libra` module; initializes the set of
+    /// Initialization of the `Diem` module; initializes the set of
     /// registered currencies in the `0x1::RegisteredCurrencies` on-chain
     /// config, and publishes the `CurrencyRegistrationCapability` under the
     /// `CoreAddresses::LIBRA_ROOT_ADDRESS()`. This can only be called from genesis.
     public fun initialize(
         config_account: &signer,
     ) {
-        assert(LibraTimestamp::is_genesis(), ENOT_GENESIS);
+        assert(DiemTimestamp::is_genesis(), ENOT_GENESIS);
         // Operational constraint
         assert(
             Signer::address_of(config_account) == CoreAddresses::LIBRA_ROOT_ADDRESS(),
@@ -233,7 +233,7 @@ module LibraTest {
     /// Mints `amount` coins. The `account` must hold a
     /// `MintCapability<CoinType>` at the top-level in order for this call
     /// to be successful, and will fail with `MISSING_DATA` otherwise.
-    public fun mint<CoinType>(account: &signer, value: u64): Libra<CoinType>
+    public fun mint<CoinType>(account: &signer, value: u64): Diem<CoinType>
     acquires CurrencyInfo, MintCapability {
         mint_with_capability(
             value,
@@ -272,21 +272,21 @@ module LibraTest {
     public fun cancel_burn<CoinType>(
         account: &signer,
         preburn_address: address
-    ): Libra<CoinType> acquires BurnCapability, CurrencyInfo, Preburn {
+    ): Diem<CoinType> acquires BurnCapability, CurrencyInfo, Preburn {
         cancel_burn_with_capability(
             preburn_address,
             borrow_global<BurnCapability<CoinType>>(Signer::address_of(account))
         )
     }
 
-    /// Mint a new `Libra` coin of `CoinType` currency worth `value`. The
+    /// Mint a new `Diem` coin of `CoinType` currency worth `value`. The
     /// caller must have a reference to a `MintCapability<CoinType>`. Only
     /// the treasury compliance account or the `0x1::LBR` module can acquire such a
     /// reference.
     public fun mint_with_capability<CoinType>(
         value: u64,
         _capability: &MintCapability<CoinType>
-    ): Libra<CoinType> acquires CurrencyInfo {
+    ): Diem<CoinType> acquires CurrencyInfo {
         assert_is_currency<CoinType>();
         let currency_code = currency_code<CoinType>();
         // update market cap resource to reflect minting
@@ -304,7 +304,7 @@ module LibraTest {
             );
         };
 
-        Libra<CoinType> { value }
+        Diem<CoinType> { value }
     }
     spec fun mint_with_capability {
         include MintAbortsIf<CoinType>;
@@ -318,7 +318,7 @@ module LibraTest {
     }
     spec schema MintEnsures<CoinType> {
         value: u64;
-        result: Libra<CoinType>;
+        result: Diem<CoinType>;
         ensures spec_currency_info<CoinType>().total_value
                     == old(spec_currency_info<CoinType>().total_value) + value;
         ensures result.value == value;
@@ -331,7 +331,7 @@ module LibraTest {
     /// `CoinType` passed in. However, if the currency being preburned is
     /// `synthetic` then no `PreburnEvent` event will be emitted.
     public fun preburn_with_resource<CoinType>(
-        coin: Libra<CoinType>,
+        coin: Diem<CoinType>,
         preburn: &mut Preburn<CoinType>,
         preburn_address: address,
     ) acquires CurrencyInfo {
@@ -362,13 +362,13 @@ module LibraTest {
         include PreburnEnsures<CoinType>;
     }
     spec schema PreburnAbortsIf<CoinType> {
-        coin: Libra<CoinType>;
+        coin: Diem<CoinType>;
         aborts_if !spec_is_currency<CoinType>();
         aborts_if spec_currency_info<CoinType>().preburn_value + coin.value > max_u64();
     }
     // TODO change - Move prover
     spec schema PreburnEnsures<CoinType> {
-        coin: Libra<CoinType>;
+        coin: Diem<CoinType>;
         preburn: Preburn<CoinType>;
         // ensures Vector::eq_push_back(preburn.requests, old(preburn.requests), coin);
         ensures spec_currency_info<CoinType>().preburn_value
@@ -409,7 +409,7 @@ module LibraTest {
     /// Calls to this function will fail if `account` does not have a
     /// `Preburn<CoinType>` resource published under it.
     public fun preburn_to<CoinType>(
-        account: &signer, coin: Libra<CoinType>) acquires CurrencyInfo, Preburn {
+        account: &signer, coin: Diem<CoinType>) acquires CurrencyInfo, Preburn {
         let sender = Signer::address_of(account);
         preburn_with_resource(coin, borrow_global_mut<Preburn<CoinType>>(sender), sender);
     }
@@ -459,7 +459,7 @@ module LibraTest {
         // Abort if no coin present in preburn area
         assert(preburn.to_burn.value > 0, 7);
         // destroy the coin in Preburn area
-        let Libra { value } = withdraw_all<CoinType>(&mut preburn.to_burn);
+        let Diem { value } = withdraw_all<CoinType>(&mut preburn.to_burn);
         // update the market cap
         let info = borrow_global_mut<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS());
         info.total_value = info.total_value - (value as u128);
@@ -507,7 +507,7 @@ module LibraTest {
     public fun cancel_burn_with_capability<CoinType>(
         preburn_address: address,
         _capability: &BurnCapability<CoinType>
-    ): Libra<CoinType> acquires CurrencyInfo, Preburn {
+    ): Diem<CoinType> acquires CurrencyInfo, Preburn {
         // destroy the coin in the preburn area
         let preburn = borrow_global_mut<Preburn<CoinType>>(preburn_address);
         let coin = withdraw_all<CoinType>(&mut preburn.to_burn);
@@ -540,7 +540,7 @@ module LibraTest {
         move_from<BurnCapability<CoinType>>(Signer::address_of(account))
     }
 
-    /// Returns the total value of `Libra<CoinType>` that is waiting to be
+    /// Returns the total value of `Diem<CoinType>` that is waiting to be
     /// burned throughout the system (i.e. the sum of all outstanding
     /// preburn requests across all preburn resources for the `CoinType`
     /// currency).
@@ -548,24 +548,24 @@ module LibraTest {
         borrow_global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).preburn_value
     }
 
-    /// Create a new `Libra<CoinType>` with a value of `0`. Anyone can call
+    /// Create a new `Diem<CoinType>` with a value of `0`. Anyone can call
     /// this and it will be successful as long as `CoinType` is a registered currency.
-    public fun zero<CoinType>(): Libra<CoinType> {
+    public fun zero<CoinType>(): Diem<CoinType> {
         assert_is_currency<CoinType>();
-        Libra<CoinType> { value: 0 }
+        Diem<CoinType> { value: 0 }
     }
 
     /// Returns the `value` of the passed in `coin`. The value is
     /// represented in the base units for the currency represented by
     /// `CoinType`.
-    public fun value<CoinType>(coin: &Libra<CoinType>): u64 {
+    public fun value<CoinType>(coin: &Diem<CoinType>): u64 {
         coin.value
     }
 
     /// Removes `amount` of value from the passed in `coin`. Returns the
     /// remaining balance of the passed in `coin`, along with another coin
-    /// with value equal to `amount`. Calls will fail if `amount > Libra::value(&coin)`.
-    public fun split<CoinType>(coin: Libra<CoinType>, amount: u64): (Libra<CoinType>, Libra<CoinType>) {
+    /// with value equal to `amount`. Calls will fail if `amount > Diem::value(&coin)`.
+    public fun split<CoinType>(coin: Diem<CoinType>, amount: u64): (Diem<CoinType>, Diem<CoinType>) {
         let other = withdraw(&mut coin, amount);
         (coin, other)
     }
@@ -581,11 +581,11 @@ module LibraTest {
     /// `value = original_value - amount`, and the new coin will have a `value = amount`.
     /// Calls will abort if the passed-in `amount` is greater than the
     /// value of the passed-in `coin`.
-    public fun withdraw<CoinType>(coin: &mut Libra<CoinType>, amount: u64): Libra<CoinType> {
+    public fun withdraw<CoinType>(coin: &mut Diem<CoinType>, amount: u64): Diem<CoinType> {
         // Check that `amount` is less than the coin's value
         assert(coin.value >= amount, EAMOUNT_EXCEEDS_COIN_VALUE);
         coin.value = coin.value - amount;
-        Libra { value: amount }
+        Diem { value: amount }
     }
     spec fun withdraw {
         aborts_if coin.value < amount;
@@ -593,9 +593,9 @@ module LibraTest {
         ensures result.value == amount;
     }
 
-    /// Return a `Libra<CoinType>` worth `coin.value` and reduces the `value` of the input `coin` to
+    /// Return a `Diem<CoinType>` worth `coin.value` and reduces the `value` of the input `coin` to
     /// zero. Does not abort.
-    public fun withdraw_all<CoinType>(coin: &mut Libra<CoinType>): Libra<CoinType> {
+    public fun withdraw_all<CoinType>(coin: &mut Diem<CoinType>): Diem<CoinType> {
         let val = coin.value;
         withdraw(coin, val)
     }
@@ -606,7 +606,7 @@ module LibraTest {
     }
 
     /// and returns a new coin whose value is equal to the sum of the two inputs.
-    public fun join<CoinType>(coin1_tmp: Libra<CoinType>, coin2: Libra<CoinType>): Libra<CoinType>  {
+    public fun join<CoinType>(coin1_tmp: Diem<CoinType>, coin2: Diem<CoinType>): Diem<CoinType>  {
         deposit(&mut coin1_tmp, coin2);
         coin1_tmp
     }
@@ -619,16 +619,16 @@ module LibraTest {
     /// "Merges" the two coins.
     /// The coin passed in by reference will have a value equal to the sum of the two coins
     /// The `check` coin is consumed in the process
-    public fun deposit<CoinType>(coin: &mut Libra<CoinType>, check: Libra<CoinType>) {
-        let Libra { value } = check;
+    public fun deposit<CoinType>(coin: &mut Diem<CoinType>, check: Diem<CoinType>) {
+        let Diem { value } = check;
         coin.value = coin.value + value;
     }
 
     /// Destroy a zero-value coin. Calls will fail if the `value` in the passed-in `coin` is non-zero
-    /// so you cannot "burn" any non-zero amount of `Libra` without having
+    /// so you cannot "burn" any non-zero amount of `Diem` without having
     /// a `BurnCapability` for the specific `CoinType`.
-    public fun destroy_zero<CoinType>(coin: Libra<CoinType>) {
-        let Libra { value } = coin;
+    public fun destroy_zero<CoinType>(coin: Diem<CoinType>) {
+        let Diem { value } = coin;
         assert(value == 0, EDESTRUCTION_OF_NONZERO_COIN)
     }
     spec fun destroy_zero {
@@ -640,7 +640,7 @@ module LibraTest {
     ///////////////////////////////////////////////////////////////////////////
 
     /// Register the type `CoinType` as a currency. Until the type is
-    /// registered as a currency it cannot be used as a coin/currency unit in Libra.
+    /// registered as a currency it cannot be used as a coin/currency unit in Diem.
     /// The passed-in `lr_account` must be a specific address (`CoreAddresses::CURRENCY_INFO_ADDRESS()`) and
     /// `lr_account` must also have the correct `RegisterNewCurrency` capability.
     /// After the first registration of `CoinType` as a
@@ -697,7 +697,7 @@ module LibraTest {
 
     /// Registers a stable currency (SCS) coin -- i.e., a non-synthetic currency.
     /// Resources are published on two distinct
-    /// accounts: The CoinInfo is published on the Libra root account, and the mint and
+    /// accounts: The CoinInfo is published on the Diem root account, and the mint and
     /// burn capabilities are published on a treasury compliance account.
     /// This code allows different currencies to have different treasury compliance
     /// accounts.
@@ -749,7 +749,7 @@ module LibraTest {
     /// Returns the value of the coin in the `FromCoinType` currency in LBR.
     /// This should only be used where a rough approximation of the exchange
     /// rate is needed.
-    public fun approx_lbr_for_coin<FromCoinType>(coin: &Libra<FromCoinType>): u64
+    public fun approx_lbr_for_coin<FromCoinType>(coin: &Diem<FromCoinType>): u64
     acquires CurrencyInfo {
         let from_value = value(coin);
         approx_lbr_for_value<FromCoinType>(from_value)
@@ -947,8 +947,8 @@ module LibraTest {
         global sum_of_coin_values<CoinType>: num;
     }
 
-    /// Account for updating `sum_of_coin_values` when a `Libra` is packed or unpacked.
-    spec struct Libra {
+    /// Account for updating `sum_of_coin_values` when a `Diem` is packed or unpacked.
+    spec struct Diem {
         invariant pack sum_of_coin_values<CoinType> = sum_of_coin_values<CoinType> + value;
         invariant unpack sum_of_coin_values<CoinType> = sum_of_coin_values<CoinType> - value;
     }

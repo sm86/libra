@@ -7,7 +7,7 @@
 // a hurdle that must be cleared for all payments to the payee. In addition, approved payments do
 // not have replay protection.
 module ApprovedPayment {
-    use 0x1::Libra::{Self, Libra};
+    use 0x1::Diem::{Self, Diem};
     use 0x1::Signature;
     use 0x1::Signer;
     use 0x1::Vector;
@@ -16,7 +16,7 @@ module ApprovedPayment {
     resource struct T {
         // 32 byte single Ed25519 public key whose counterpart must be used to sign the payment
         // metadata. Note that this is different (and simpler) than the `authentication_key` used in
-        // LibraAccount, which is a hash of a public key + signature scheme identifier.
+        // DiemAccount, which is a hash of a public key + signature scheme identifier.
         public_key: vector<u8>,
         // TODO: events?
     }
@@ -27,7 +27,7 @@ module ApprovedPayment {
         _payer: &signer,
         approved_payment: &T,
         _payee: address,
-        coin: Libra<Token>,
+        coin: Diem<Token>,
         metadata: vector<u8>,
         signature: vector<u8>
     ) {
@@ -42,9 +42,9 @@ module ApprovedPayment {
             ),
             9002, // TODO: proper error code
         );
-        //LibraAccount::deposit_with_metadata<Token>(payer, payee, coin, metadata, x"")
-        // TODO: LibraAccount APIs no longer support depositing a coin stored in a local
-        Libra::destroy_zero(coin);
+        //DiemAccount::deposit_with_metadata<Token>(payer, payee, coin, metadata, x"")
+        // TODO: DiemAccount APIs no longer support depositing a coin stored in a local
+        Diem::destroy_zero(coin);
     }
 
     // Wrapper of `deposit` that withdraw's from the sender's balance and uses the top-level
@@ -60,9 +60,9 @@ module ApprovedPayment {
             payer,
             borrow_global<T>(payee),
             payee,
-            // TODO: LibraAccount APIs no longer support withdrawing a coin into a local
-            //LibraAccount::withdraw_from<Token>(&with_cap, amount),
-            Libra::zero<Token>(),
+            // TODO: DiemAccount APIs no longer support withdrawing a coin into a local
+            //DiemAccount::withdraw_from<Token>(&with_cap, amount),
+            Diem::zero<Token>(),
             metadata,
             signature
         );

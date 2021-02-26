@@ -6,14 +6,14 @@
 //! sender: alice
 //! gas-currency: GAS
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::GAS::GAS;
 fun main(account: &signer) {
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
-    LibraAccount::pay_from<GAS>(&with_cap, {{bob}}, 10, x"", x"");
-    assert(LibraAccount::balance<GAS>({{alice}}) == 0, 0);
-    assert(LibraAccount::balance<GAS>({{bob}}) == 10, 1);
-    LibraAccount::restore_withdraw_capability(with_cap);
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
+    DiemAccount::pay_from<GAS>(&with_cap, {{bob}}, 10, x"", x"");
+    assert(DiemAccount::balance<GAS>({{alice}}) == 0, 0);
+    assert(DiemAccount::balance<GAS>({{bob}}) == 10, 1);
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 ////////// Transfers should fail ////////
@@ -25,14 +25,14 @@ fun main(account: &signer) {
 // //! sender: diemroot
 // //! gas-currency: GAS
 // script {
-// use 0x1::Libra;
-// use 0x1::LibraAccount;
+// use 0x1::Diem;
+// use 0x1::DiemAccount;
 // use 0x1::GAS;
 // ;
 // fun main(account: &signer) {
-//     let coin = Libra::mint<GAS::T>(account, 10);
-//     LibraAccount::deposit(account, {{bob}}, coin);
-//     assert(LibraAccount::balance<GAS>({{bob}}) == 10, 4);
+//     let coin = Diem::mint<GAS::T>(account, 10);
+//     DiemAccount::deposit(account, {{bob}}, coin);
+//     assert(DiemAccount::balance<GAS>({{bob}}) == 10, 4);
 // }
 // }
 // // check: EXECUTED

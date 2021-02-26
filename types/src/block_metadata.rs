@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -76,28 +76,28 @@ pub fn new_block_event_key() -> EventKey {
     EventKey::new_from_address(&diem_root_address(), 12)
 }
 
-/// The path to the new block event handle under a LibraBlock::BlockMetadata resource.
+/// The path to the new block event handle under a DiemBlock::BlockMetadata resource.
 pub static NEW_BLOCK_EVENT_PATH: Lazy<Vec<u8>> = Lazy::new(|| {
-    let mut path = LibraBlockResource::resource_path();
+    let mut path = DiemBlockResource::resource_path();
     // it can be anything as long as it's referenced in AccountState::get_event_handle_by_query_path
     path.extend_from_slice(b"/new_block_event/");
     path
 });
 
 #[derive(Deserialize, Serialize)]
-pub struct LibraBlockResource {
+pub struct DiemBlockResource {
     height: u64,
     new_block_events: EventHandle,
 }
 
-impl LibraBlockResource {
+impl DiemBlockResource {
     pub fn new_block_events(&self) -> &EventHandle {
         &self.new_block_events
     }
 }
 
-impl MoveResource for LibraBlockResource {
-    const MODULE_NAME: &'static str = "LibraBlock";
+impl MoveResource for DiemBlockResource {
+    const MODULE_NAME: &'static str = "DiemBlock";
     const STRUCT_NAME: &'static str = "BlockMetadata";
 }
 

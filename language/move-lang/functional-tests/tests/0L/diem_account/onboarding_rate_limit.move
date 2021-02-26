@@ -1,10 +1,10 @@
-// Module to test bulk validator updates function in LibraSystem.move
+// Module to test bulk validator updates function in DiemSystem.move
 //! account: alice, 1000000, 0, validator
 
 //! new-transaction
 //! sender: alice
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
   use 0x1::TestFixtures;
   use 0x1::VDF;
@@ -22,7 +22,7 @@ script {
   let epochs_since_creation = 6;
   MinerState::test_helper_set_rate_limit(sender_addr, epochs_since_creation);
 
-  LibraAccount::create_validator_account_with_proof(
+  DiemAccount::create_validator_account_with_proof(
       sender,
       &challenge,
       &solution,
@@ -40,7 +40,7 @@ script {
   assert(Roles::assert_validator_addr(parsed_address), 7357130101011000);
   assert(ValidatorConfig::is_valid(parsed_address), 7357130101021000);
   // Check the account exists and the balance is 0
-  assert(LibraAccount::balance<GAS>(parsed_address) == 0, 7357130101031000);
+  assert(DiemAccount::balance<GAS>(parsed_address) == 0, 7357130101031000);
   assert(MinerState::can_create_val_account(sender_addr) == false, 7357130101041000);
   }
 }

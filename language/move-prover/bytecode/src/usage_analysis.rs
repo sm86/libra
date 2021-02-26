@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -36,7 +36,7 @@ pub fn get_modified_memory<'env>(
 
 /// Get all closed types that may be packed by (1) genesis and (2) all transaction scripts.
 /// This makes some simplifying assumptions that are not correct in general, but hold for the
-/// current Libra Framework:
+/// current Diem Framework:
 /// - Transaction scripts have at most 1 type argument
 /// - The only values that can be bound to a transaction script type argument are Coin1 and
 ///   LBR. Passing any other values will lead to an aborted transaction.

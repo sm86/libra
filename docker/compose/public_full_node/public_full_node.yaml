@@ -1,5 +1,5 @@
 base:
-    # This is the location Libra will store its database. It is backed by a dedicated docker volume
+    # This is the location Diem will store its database. It is backed by a dedicated docker volume
     # for persistence.
     data_dir: "/opt/diem/data"
     role: "full_node"

@@ -6,7 +6,7 @@ custom_edit_url: https://github.com/diem/diem/edit/master/language/transaction-b
 
 # Transaction Builder Generator
 
-A *transaction builder* is a helper function that converts its arguments into the payload of a Libra transaction calling a particular Move script.
+A *transaction builder* is a helper function that converts its arguments into the payload of a Diem transaction calling a particular Move script.
 
 In Rust, the signature of such a function typically looks like this:
 ```rust
@@ -21,10 +21,10 @@ pub fn encode_peer_to_peer_with_metadata_script(
 
 This crate provide a binary tool `generate-transaction-builders` to generate and install transaction builders in several programming languages.
 
-The tool will also generate and install type definitions for Libra types such as `TypeTag`, `AccountAddress`, and `Script`.
+The tool will also generate and install type definitions for Diem types such as `TypeTag`, `AccountAddress`, and `Script`.
 
-In practice, hashing and signing Libra transactions additionally requires a runtime diemry for Libra Canonical Serialization ("BCS").
-Such a diemry will be installed together with the Libra types.
+In practice, hashing and signing Diem transactions additionally requires a runtime diemry for Diem Canonical Serialization ("BCS").
+Such a diemry will be installed together with the Diem types.
 
 
 ## Supported Languages
@@ -39,12 +39,12 @@ The following languages are currently supported:
 
 * Go >= 1.13
 
-* Rust (NOTE: Code generation of dependency-free Rust is experimental. Consider using the diemries of the Libra repository instead.)
+* Rust (NOTE: Code generation of dependency-free Rust is experimental. Consider using the diemries of the Diem repository instead.)
 
 
 ## Quick Start
 
-From the root of the Libra repository, run `cargo build -p transaction-builder-generator`.
+From the root of the Diem repository, run `cargo build -p transaction-builder-generator`.
 
 You may browse command line options with `target/debug/generate-transaction-builders --help`.
 
@@ -139,7 +139,7 @@ Next, you may copy and execute the [Rust demo file](examples/rust/stdlib_demo.rs
 
 Supporting transaction builders in an additional programming language boils down to providing the following items:
 
-1. Code generation for Libra types (Rust diemry and tool),
+1. Code generation for Diem types (Rust diemry and tool),
 
 2. BCS runtime (diemry in target language),
 
@@ -148,9 +148,9 @@ Supporting transaction builders in an additional programming language boils down
 
 Items (1) and (2) are provided by the Rust diemry `serde-generate` which is developed in a separate [github repository](https://github.com/novifinancial/serde-reflection).
 
-Item (3) --- this tool --- is currently developed in the Libra repository.
+Item (3) --- this tool --- is currently developed in the Diem repository.
 
-Items (2) and (3) are mostly independent. Both crucially depend on (1) to be sufficiently stable, therefore our suggestion for adding a new language is first to open a new github issue in `serde-generate` and contact the Libra maintainers.
+Items (2) and (3) are mostly independent. Both crucially depend on (1) to be sufficiently stable, therefore our suggestion for adding a new language is first to open a new github issue in `serde-generate` and contact the Diem maintainers.
 
 
 The new issue created on `serde-generate` should include:

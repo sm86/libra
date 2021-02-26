@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -83,7 +83,7 @@ pub struct RawTransaction {
     /// in the future to indicate that a transaction does not expire.
     expiration_timestamp_secs: u64,
 
-    /// Chain ID of the Libra network this transaction is intended for.
+    /// Chain ID of the Diem network this transaction is intended for.
     chain_id: ChainId,
 }
 
@@ -617,7 +617,7 @@ impl From<VMStatus> for TransactionStatus {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum GovernanceRole {
-    LibraRoot,
+    DiemRoot,
     TreasuryCompliance,
     Validator,
     ValidatorOperator,
@@ -629,7 +629,7 @@ impl GovernanceRole {
     pub fn from_role_id(role_id: u64) -> Self {
         use GovernanceRole::*;
         match role_id {
-            0 => LibraRoot,
+            0 => DiemRoot,
             1 => TreasuryCompliance,
             2 => DesignatedDealer,
             3 => Validator,
@@ -645,7 +645,7 @@ impl GovernanceRole {
     pub fn priority(&self) -> u64 {
         use GovernanceRole::*;
         match self {
-            LibraRoot => 3,
+            DiemRoot => 3,
             TreasuryCompliance => 2,
             Validator | ValidatorOperator | DesignatedDealer => 1,
             NonGovernanceRole => 0,

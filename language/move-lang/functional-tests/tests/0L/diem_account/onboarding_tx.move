@@ -4,7 +4,7 @@
 //! sender: bob
 script {
 use 0x1::VDF;
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::GAS::GAS;
 use 0x1::MinerState;
 use 0x1::NodeWeight;
@@ -26,7 +26,7 @@ fun main(sender: &signer) {
   let epochs_since_creation = 10;
   MinerState::test_helper_set_rate_limit(sender_addr, epochs_since_creation);
 
-  LibraAccount::create_validator_account_with_proof(
+  DiemAccount::create_validator_account_with_proof(
       sender,
       &challenge,
       &solution,
@@ -56,8 +56,8 @@ fun main(sender: &signer) {
 
   // Check the account exists and the balance is 0
   // TODO: Needs some balance
-  print(&LibraAccount::balance<GAS>(eve_addr));
-  assert(LibraAccount::balance<GAS>(eve_addr) == 0, 7357130101081000);
+  print(&DiemAccount::balance<GAS>(eve_addr));
+  assert(DiemAccount::balance<GAS>(eve_addr) == 0, 7357130101081000);
 
   // Is rate-limited
   // assert(MinerState::can_create_val_account(sender_addr) == false, 7357130101091000);

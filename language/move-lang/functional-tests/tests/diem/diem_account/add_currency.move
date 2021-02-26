@@ -11,9 +11,9 @@
 //! sender: diemroot
 // Change option to CustomModule
 script {
-use 0x1::LibraTransactionPublishingOption;
+use 0x1::DiemTransactionPublishingOption;
 fun main(config: &signer) {
-    LibraTransactionPublishingOption::set_open_module(config, false)
+    DiemTransactionPublishingOption::set_open_module(config, false)
 }
 }
 // check: "Keep(EXECUTED)"
@@ -28,13 +28,13 @@ fun main(config: &signer) {
 address 0x1 {
 module COIN {
     use 0x1::FixedPoint32;
-    use 0x1::Libra;
+    use 0x1::Diem;
 
     struct COIN { }
 
     public fun initialize(lr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
-        Libra::register_SCS_currency<COIN>(
+        Diem::register_SCS_currency<COIN>(
             lr_account,
             tc_account,
             FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
@@ -66,14 +66,14 @@ fun main(lr_account: &signer, tc_account: &signer) {
 
 // END: registration of a currency
 
-// LibraRoot should not be able to add a balance
+// DiemRoot should not be able to add a balance
 //! new-transaction
 //! sender: diemroot
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<Coin1>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -82,10 +82,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<Coin1>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -95,10 +95,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: diemroot
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    LibraAccount::create_validator_account(account, {{vivian}}, {{vivian::auth_key}}, b"owner_name");
-    LibraAccount::create_validator_operator_account(account, {{otto}}, {{otto::auth_key}}, b"operator_name")
+    DiemAccount::create_validator_account(account, {{vivian}}, {{vivian::auth_key}}, b"owner_name");
+    DiemAccount::create_validator_operator_account(account, {{otto}}, {{otto::auth_key}}, b"operator_name")
 
 }
 }
@@ -108,10 +108,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: vivian
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<Coin1>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -120,10 +120,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: otto
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<Coin1>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"

@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common;
@@ -119,7 +119,7 @@ from {}diem_types import (Script, TypeTag, AccountAddress, TransactionArgument, 
             self.out,
             r#"
 def encode_script(call: ScriptCall) -> Script:
-    """Build a Libra `Script` from a structured object `ScriptCall`.
+    """Build a Diem `Script` from a structured object `ScriptCall`.
     """
     helper = SCRIPT_ENCODER_MAP[call.__class__]
     return helper(call)
@@ -132,7 +132,7 @@ def encode_script(call: ScriptCall) -> Script:
             self.out,
             r#"
 def decode_script(script: Script) -> ScriptCall:
-    """Try to recognize a Libra `Script` and convert it into a structured object `ScriptCall`.
+    """Try to recognize a Diem `Script` and convert it into a structured object `ScriptCall`.
     """
     helper = SCRIPT_DECODER_MAP.get(script.code)
     if helper is None:

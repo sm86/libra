@@ -1,8 +1,8 @@
 [package]
 name = "compiler"
 version = "0.1.0"
-authors = ["Libra Association <opensource@diem.org>"]
-description = "Libra compiler"
+authors = ["Diem Association <opensource@diem.org>"]
+description = "Diem compiler"
 repository = "https://github.com/diem/diem"
 homepage = "https://diem.org"
 license = "Apache-2.0"

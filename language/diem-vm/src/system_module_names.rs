@@ -1,6 +1,6 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
-//! Names of modules, functions, and types used by Libra System.
+//! Names of modules, functions, and types used by Diem System.
 
 use diem_types::account_config;
 use move_core_types::{identifier::Identifier, language_storage::ModuleId};
@@ -12,7 +12,7 @@ use once_cell::sync::Lazy;
 pub static LIBRA_BLOCK_MODULE: Lazy<ModuleId> = Lazy::new(|| {
     ModuleId::new(
         account_config::CORE_CODE_ADDRESS,
-        Identifier::new("LibraBlock").unwrap(),
+        Identifier::new("DiemBlock").unwrap(),
     )
 });
 

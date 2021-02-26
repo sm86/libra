@@ -1,13 +1,13 @@
 address 0x1 {
 
-// The module for the account resource that governs every Libra account
-module LibraAccount {
+// The module for the account resource that governs every Diem account
+module DiemAccount {
     use 0x1::Transaction;
     use 0x1::Hash;
     use 0x1::LBR;
     use 0x1::BCS;
-    use 0x1::Libra;
-    use 0x1::LibraTransactionTimeout;
+    use 0x1::Diem;
+    use 0x1::DiemTransactionTimeout;
     use 0x1::Vector;
 
     spec module {
@@ -16,7 +16,7 @@ module LibraAccount {
         pragma verify=false;
     }
 
-    // Every Libra account has a LibraAccount::T resource
+    // Every Diem account has a DiemAccount::T resource
     resource struct T {
         // The current authentication key.
         // This can be different than the key used to create the account
@@ -38,18 +38,18 @@ module LibraAccount {
 
     // A resource that holds the coins stored in this account
     resource struct Balance<Token> {
-        coin: Libra::T<Token>,
+        coin: Diem::T<Token>,
     }
 
-    // The holder of WithdrawalCapability for account_address can withdraw Libra from
-    // account_address/LibraAccount::T/balance.
+    // The holder of WithdrawalCapability for account_address can withdraw Diem from
+    // account_address/DiemAccount::T/balance.
     // There is at most one WithdrawalCapability in existence for a given address.
     resource struct WithdrawalCapability {
         account_address: address,
     }
 
     // The holder of KeyRotationCapability for account_address can rotate the authentication key for
-    // account_address (i.e., write to account_address/LibraAccount::T/authentication_key).
+    // account_address (i.e., write to account_address/DiemAccount::T/authentication_key).
     // There is at most one KeyRotationCapability in existence for a given address.
     resource struct KeyRotationCapability {
         account_address: address,
@@ -57,7 +57,7 @@ module LibraAccount {
 
     // Message for sent events
     struct SentPaymentEvent {
-        // The amount of Libra::T<Token> sent
+        // The amount of Diem::T<Token> sent
         amount: u64,
         // The address that was paid
         payee: address,
@@ -67,7 +67,7 @@ module LibraAccount {
 
     // Message for received events
     struct ReceivedPaymentEvent {
-        // The amount of Libra::T<Token> received
+        // The amount of Diem::T<Token> received
         amount: u64,
         // The address that sent the coin
         payer: address,
@@ -94,7 +94,7 @@ module LibraAccount {
     }
 
     // Deposits the `to_deposit` coin into the `payee`'s account balance
-    public fun deposit<Token>(payee: address, to_deposit: Libra::T<Token>) acquires T, Balance {
+    public fun deposit<Token>(payee: address, to_deposit: Diem::T<Token>) acquires T, Balance {
         // Since we don't have vector<u8> literals in the source language at
         // the moment.
         deposit_with_metadata(payee, to_deposit, x"")
@@ -113,7 +113,7 @@ module LibraAccount {
     }
 
     // Deposits the `to_deposit` coin into the sender's account balance
-    public fun deposit_to_sender<Token>(to_deposit: Libra::T<Token>) acquires T, Balance {
+    public fun deposit_to_sender<Token>(to_deposit: Diem::T<Token>) acquires T, Balance {
         deposit(Transaction::sender(), to_deposit)
     }
     spec fun deposit_to_sender {
@@ -131,7 +131,7 @@ module LibraAccount {
     // Deposits the `to_deposit` coin into the `payee`'s account balance with the attached `metadata`
     public fun deposit_with_metadata<Token>(
         payee: address,
-        to_deposit: Libra::T<Token>,
+        to_deposit: Diem::T<Token>,
         metadata: vector<u8>
     ) acquires T, Balance {
         deposit_with_sender_and_metadata(
@@ -159,11 +159,11 @@ module LibraAccount {
     fun deposit_with_sender_and_metadata<Token>(
         payee: address,
         sender: address,
-        to_deposit: Libra::T<Token>,
+        to_deposit: Diem::T<Token>,
         metadata: vector<u8>
     ) acquires T, Balance {
         // Check that the `to_deposit` coin is non-zero
-        let deposit_value = Libra::value(&to_deposit);
+        let deposit_value = Diem::value(&to_deposit);
         assert(deposit_value > 0, 7);
 
         // Load the sender's account
@@ -182,7 +182,7 @@ module LibraAccount {
         let payee_account_ref = borrow_global_mut<T>(payee);
         let payee_balance = borrow_global_mut<Balance<Token>>(payee);
         // Deposit the `to_deposit` coin
-        Libra::deposit(&mut payee_balance.coin, to_deposit);
+        Diem::deposit(&mut payee_balance.coin, to_deposit);
         // Log a received event
         emit_event<ReceivedPaymentEvent>(
             &mut payee_account_ref.received_events,
@@ -206,7 +206,7 @@ module LibraAccount {
         ensures global<Balance<Token>>(payee).coin.value == old(global<Balance<Token>>(payee).coin.value) + to_deposit.value;
     }
 
-    // mint_to_address can only be called by accounts with MintCapability (see Libra)
+    // mint_to_address can only be called by accounts with MintCapability (see Diem)
     // and those accounts will be charged for gas. If those accounts don't have enough gas to pay
     // for the transaction cost they will fail minting.
     // However those account can also mint to themselves so that is a decent workaround
@@ -220,12 +220,12 @@ module LibraAccount {
             create_account<Token>(payee, auth_key_prefix);
         };
         // Mint and deposit the coin
-        deposit(payee, Libra::mint<Token>(amount));
+        deposit(payee, Diem::mint<Token>(amount));
     }
 
     spec module {
-        define to_return<Token>(preburn_address: address): Libra::T<Token> {
-            global<Libra::Preburn<Token>>(preburn_address).requests[0]
+        define to_return<Token>(preburn_address: address): Diem::T<Token> {
+            global<Diem::Preburn<Token>>(preburn_address).requests[0]
         }
     }
 
@@ -234,16 +234,16 @@ module LibraAccount {
     public fun cancel_burn<Token>(
         preburn_address: address,
     ) acquires T, Balance {
-        let to_return = Libra::cancel_burn<Token>(preburn_address);
+        let to_return = Diem::cancel_burn<Token>(preburn_address);
         deposit(preburn_address, to_return)
     }
     spec fun cancel_burn {
-        // derived from Libra::cancel_burn
-        aborts_if !exists<Libra::MintCapability<Token>>(sender());
-        aborts_if !exists<Libra::Preburn<Token>>(preburn_address);
-        aborts_if len(global<Libra::Preburn<Token>>(preburn_address).requests) == 0;
-        aborts_if !exists<Libra::Info<Token>>(0xA550C18);
-        aborts_if global<Libra::Info<Token>>(0xA550C18).preburn_value < global<Libra::Preburn<Token>>(preburn_address).requests[0].value;
+        // derived from Diem::cancel_burn
+        aborts_if !exists<Diem::MintCapability<Token>>(sender());
+        aborts_if !exists<Diem::Preburn<Token>>(preburn_address);
+        aborts_if len(global<Diem::Preburn<Token>>(preburn_address).requests) == 0;
+        aborts_if !exists<Diem::Info<Token>>(0xA550C18);
+        aborts_if global<Diem::Info<Token>>(0xA550C18).preburn_value < global<Diem::Preburn<Token>>(preburn_address).requests[0].value;
 
         // derived from Self::deposit
         aborts_if to_return<Token>(preburn_address).value == 0;
@@ -259,14 +259,14 @@ module LibraAccount {
         ensures global<T>(preburn_address).received_events.counter == old(global<T>(preburn_address).received_events.counter) + 1;
         ensures global<Balance<Token>>(preburn_address).coin.value == old(global<Balance<Token>>(preburn_address).coin.value) + old(to_return<Token>(preburn_address).value);
 
-        // derived from Libra::CancelBurn
-        ensures Vector::eq_pop_front(global<Libra::Preburn<Token>>(preburn_address).requests, old(global<Libra::Preburn<Token>>(preburn_address).requests));
-        ensures global<Libra::Info<Token>>(0xA550C18).preburn_value == old(global<Libra::Info<Token>>(0xA550C18).preburn_value) - old(global<Libra::Preburn<Token>>(preburn_address).requests[0].value);
+        // derived from Diem::CancelBurn
+        ensures Vector::eq_pop_front(global<Diem::Preburn<Token>>(preburn_address).requests, old(global<Diem::Preburn<Token>>(preburn_address).requests));
+        ensures global<Diem::Info<Token>>(0xA550C18).preburn_value == old(global<Diem::Info<Token>>(0xA550C18).preburn_value) - old(global<Diem::Preburn<Token>>(preburn_address).requests[0].value);
     }
 
-    // Helper to withdraw `amount` from the given account balance and return the withdrawn Libra::T<Token>
-    fun withdraw_from_balance<Token>(balance: &mut Balance<Token>, amount: u64): Libra::T<Token> {
-        Libra::withdraw(&mut balance.coin, amount)
+    // Helper to withdraw `amount` from the given account balance and return the withdrawn Diem::T<Token>
+    fun withdraw_from_balance<Token>(balance: &mut Balance<Token>, amount: u64): Diem::T<Token> {
+        Diem::withdraw(&mut balance.coin, amount)
     }
     spec fun withdraw_from_balance {
         aborts_if balance.coin.value < amount;
@@ -274,8 +274,8 @@ module LibraAccount {
         ensures result.value == amount;
     }
 
-    // Withdraw `amount` Libra::T<Token> from the transaction sender's account balance
-    public fun withdraw_from_sender<Token>(amount: u64): Libra::T<Token> acquires T, Balance {
+    // Withdraw `amount` Diem::T<Token> from the transaction sender's account balance
+    public fun withdraw_from_sender<Token>(amount: u64): Diem::T<Token> acquires T, Balance {
         let sender_account = borrow_global_mut<T>(Transaction::sender());
         let sender_balance = borrow_global_mut<Balance<Token>>(Transaction::sender());
         // The sender has delegated the privilege to withdraw from her account elsewhere--abort.
@@ -292,10 +292,10 @@ module LibraAccount {
         ensures result.value == amount;
     }
 
-    // Withdraw `amount` Libra::T<Token> from the account under cap.account_address
+    // Withdraw `amount` Diem::T<Token> from the account under cap.account_address
     public fun withdraw_with_capability<Token>(
         cap: &WithdrawalCapability, amount: u64
-    ): Libra::T<Token> acquires Balance {
+    ): Diem::T<Token> acquires Balance {
         let balance = borrow_global_mut<Balance<Token>>(cap.account_address);
         withdraw_from_balance<Token>(balance , amount)
     }
@@ -340,7 +340,7 @@ module LibraAccount {
         ensures global<T>(cap.account_address).delegated_withdrawal_capability == false;
     }
 
-    // Withdraws `amount` Libra::T<Token> using the passed in WithdrawalCapability, and deposits it
+    // Withdraws `amount` Diem::T<Token> using the passed in WithdrawalCapability, and deposits it
     // into the `payee`'s account balance. Creates the `payee` account if it doesn't exist.
     public fun pay_from_capability<Token>(
         payee: address,
@@ -360,7 +360,7 @@ module LibraAccount {
         );
     }
 
-    // Withdraw `amount` Libra::T<Token> from the transaction sender's
+    // Withdraw `amount` Diem::T<Token> from the transaction sender's
     // account balance and send the coin to the `payee` address with the
     // attached `metadata` Creates the `payee` account if it does not exist
     public fun pay_from_sender_with_metadata<Token>(
@@ -382,7 +382,7 @@ module LibraAccount {
         // derived from create_account
         aborts_if !exists<T>(payee) && len(BCS::serialize(payee)) + len(auth_key_prefix) != 32; // modified
         aborts_if !exists<T>(payee) && exists<Balance<Token>>(payee); // modified
-        aborts_if !exists<T>(payee) && !exists<Libra::Info<Token>>(0xA550C18); // modified
+        aborts_if !exists<T>(payee) && !exists<Diem::Info<Token>>(0xA550C18); // modified
         // derived from withdraw_from_sender
         aborts_if sender() != payee && !exists<T>(sender()); // modified
         aborts_if sender() != payee && !exists<Balance<Token>>(sender()); // modified
@@ -418,7 +418,7 @@ module LibraAccount {
     }
 
 
-    // Withdraw `amount` Libra::T<Token> from the transaction sender's
+    // Withdraw `amount` Diem::T<Token> from the transaction sender's
     // account balance  and send the coin to the `payee` address
     // Creates the `payee` account if it does not exist
     public fun pay_from_sender<Token>(
@@ -432,7 +432,7 @@ module LibraAccount {
         // derived from create_account
         aborts_if !exists<T>(payee) && len(BCS::serialize(payee)) + len(auth_key_prefix) != 32; // modified
         aborts_if !exists<T>(payee) && exists<Balance<Token>>(payee); // modified
-        aborts_if !exists<T>(payee) && !exists<Libra::Info<Token>>(0xA550C18); // modified
+        aborts_if !exists<T>(payee) && !exists<Diem::Info<Token>>(0xA550C18); // modified
         // derived from withdraw_from_sender
         aborts_if sender() != payee && !exists<T>(sender()); // modified
         aborts_if sender() != payee && !exists<Balance<Token>>(sender()); // modified
@@ -555,7 +555,7 @@ module LibraAccount {
 
         save_account(
             Balance{
-                coin: Libra::zero<Token>()
+                coin: Diem::zero<Token>()
             },
             T {
                 authentication_key,
@@ -573,7 +573,7 @@ module LibraAccount {
         aborts_if len(BCS::serialize(fresh_address)) + len(auth_key_prefix) != 32;
         aborts_if exists<Balance<Token>>(fresh_address);
         aborts_if exists<T>(fresh_address);
-        aborts_if !exists<Libra::Info<Token>>(0xA550C18);
+        aborts_if !exists<Diem::Info<Token>>(0xA550C18);
         ensures exists<Balance<Token>>(fresh_address);
         ensures global<Balance<Token>>(fresh_address).coin.value == 0;
         ensures exists<T>(fresh_address);
@@ -609,7 +609,7 @@ module LibraAccount {
         aborts_if len(BCS::serialize(fresh_address)) + len(auth_key_prefix) != 32;
         aborts_if exists<Balance<Token>>(fresh_address);
         aborts_if exists<T>(fresh_address);
-        aborts_if !exists<Libra::Info<Token>>(0xA550C18);
+        aborts_if !exists<Diem::Info<Token>>(0xA550C18);
         // derived from withdraw_from_sender
         aborts_if initial_balance > 0 && !exists<T>(sender()); // modified
         aborts_if initial_balance > 0 && !exists<Balance<Token>>(sender()); // modified
@@ -647,7 +647,7 @@ module LibraAccount {
 
     // Helper to return the u64 value of the `balance` for `account`
     fun balance_for<Token>(balance: &Balance<Token>): u64 {
-        Libra::value<Token>(&balance.coin)
+        Diem::value<Token>(&balance.coin)
     }
     spec fun balance_for {
         ensures result == balance.coin.value;
@@ -765,7 +765,7 @@ module LibraAccount {
         // Check that the transaction sequence number matches the sequence number of the account
         assert(txn_sequence_number >= sender_account.sequence_number, 3);
         assert(txn_sequence_number == sender_account.sequence_number, 4);
-        assert(LibraTransactionTimeout::is_valid_transaction_timestamp(txn_expiration_time), 7);
+        assert(DiemTransactionTimeout::is_valid_transaction_timestamp(txn_expiration_time), 7);
     }
 
     // The epilogue is invoked at the end of transactions.
@@ -795,7 +795,7 @@ module LibraAccount {
         sender_account.sequence_number = txn_sequence_number + 1;
         // Pay the transaction fee into the transaction fee balance
         let transaction_fee_balance = borrow_global_mut<Balance<LBR::T>>(0xFEE);
-        Libra::deposit(&mut transaction_fee_balance.coin, transaction_fee);
+        Diem::deposit(&mut transaction_fee_balance.coin, transaction_fee);
     }
 
     /// Events

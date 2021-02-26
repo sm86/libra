@@ -22,8 +22,8 @@
 #   * Connecting to the local testnet
 #
 # Additional information:
-# * If you use this compose for different Libra Networks, you will need remove the db volume first.
-# * Libra's testnet produces approximately 3 GB worth of chain data per day, so be patient while
+# * If you use this compose for different Diem Networks, you will need remove the db volume first.
+# * Diem's testnet produces approximately 3 GB worth of chain data per day, so be patient while
 # starting for the first time. As a sanity check, enter the container and check the increasing size
 # of the db:
 #   * `docker exec -it $CONTAINER_ID /bin/bash`

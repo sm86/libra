@@ -5,18 +5,18 @@
 // register blessed as a preburn entity
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 
 fun main(account: &signer) {
-    LibraAccount::create_designated_dealer<Coin1>(
+    DiemAccount::create_designated_dealer<Coin1>(
         account,
         {{dd}},
         {{dd::auth_key}},
         x"",
         false,
     );
-    LibraAccount::tiered_mint<Coin1>(
+    DiemAccount::tiered_mint<Coin1>(
         account,
         {{dd}},
         600,
@@ -32,17 +32,17 @@ fun main(account: &signer) {
 //! gas-currency: Coin1
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
-use 0x1::LibraAccount;
+use 0x1::Diem;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    let old_market_cap = Libra::market_cap<Coin1>();
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
+    let old_market_cap = Diem::market_cap<Coin1>();
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
     // send the coins to the preburn area. market cap should not be affected, but the preburn
     // bucket should increase in size by 100
-    LibraAccount::preburn<Coin1>(account, &with_cap, 100);
-    assert(Libra::market_cap<Coin1>() == old_market_cap, 8002);
-    assert(Libra::preburn_value<Coin1>() == 100, 8003);
-    LibraAccount::restore_withdraw_capability(with_cap);
+    DiemAccount::preburn<Coin1>(account, &with_cap, 100);
+    assert(Diem::market_cap<Coin1>() == old_market_cap, 8002);
+    assert(Diem::preburn_value<Coin1>() == 100, 8003);
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 
@@ -53,10 +53,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer)  {
-    LibraAccount::cancel_burn<Coin1>(account, {{dd}})
+    DiemAccount::cancel_burn<Coin1>(account, {{dd}})
 }
 }
 // check: CancelBurnEvent
@@ -68,17 +68,17 @@ fun main(account: &signer)  {
 //! gas-currency: Coin1
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
-use 0x1::LibraAccount;
+use 0x1::Diem;
+use 0x1::DiemAccount;
 fun main(account: &signer) {
-    let old_market_cap = Libra::market_cap<Coin1>();
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
+    let old_market_cap = Diem::market_cap<Coin1>();
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
     // send the coins to the preburn area. market cap should not be affected, but the preburn
     // bucket should increase in size by 100
-    LibraAccount::preburn<Coin1>(account, &with_cap, 100);
-    assert(Libra::market_cap<Coin1>() == old_market_cap, 8002);
-    assert(Libra::preburn_value<Coin1>() == 100, 8003);
-    LibraAccount::restore_withdraw_capability(with_cap);
+    DiemAccount::preburn<Coin1>(account, &with_cap, 100);
+    assert(Diem::market_cap<Coin1>() == old_market_cap, 8002);
+    assert(Diem::preburn_value<Coin1>() == 100, 8003);
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 // check: PreburnEvent
@@ -90,12 +90,12 @@ fun main(account: &signer) {
 //! gas-currency: Coin1
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
         // Preburn area already occupied, aborts
-        LibraAccount::preburn<Coin1>(account, &with_cap, 200);
-        LibraAccount::restore_withdraw_capability(with_cap);
+        DiemAccount::preburn<Coin1>(account, &with_cap, 200);
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(ABORTED { code: 769,"
@@ -105,13 +105,13 @@ script {
 //! sender: blessed
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    let old_market_cap = Libra::market_cap<Coin1>();
+    let old_market_cap = Diem::market_cap<Coin1>();
     // do the burn. the market cap should now decrease, and the preburn area should be empty
-    Libra::burn<Coin1>(account, {{dd}});
-    assert(Libra::market_cap<Coin1>() == old_market_cap - 100, 8004);
-    assert(Libra::preburn_value<Coin1>() == 0, 8005);
+    Diem::burn<Coin1>(account, {{dd}});
+    assert(Diem::market_cap<Coin1>() == old_market_cap - 100, 8004);
+    assert(Diem::preburn_value<Coin1>() == 0, 8005);
     }
 }
 
@@ -124,12 +124,12 @@ fun main(account: &signer) {
 //! gas-currency: Coin1
 script {
     use 0x1::Coin1::Coin1;
-    // use 0x1::Libra;
-    use 0x1::LibraAccount;
+    // use 0x1::Diem;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::preburn<Coin1>(account, &with_cap, 501);
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::preburn<Coin1>(account, &with_cap, 501);
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(ABORTED { code: 1288,"
@@ -139,9 +139,9 @@ script {
 //! sender: blessed
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    Libra::burn<Coin1>(account, {{default}});
+    Diem::burn<Coin1>(account, {{default}});
 }
 }
 // check: "Keep(ABORTED { code: 517,"
@@ -150,9 +150,9 @@ fun main(account: &signer) {
 //! new-transaction
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    Libra::burn<Coin1>(account, {{default}});
+    Diem::burn<Coin1>(account, {{default}});
 }
 }
 // check: "Keep(ABORTED { code: 4,"
@@ -161,9 +161,9 @@ fun main(account: &signer) {
 //! new-transaction
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    Libra::destroy_zero(Libra::cancel_burn<Coin1>(account, {{dd}}));
+    Diem::destroy_zero(Diem::cancel_burn<Coin1>(account, {{dd}}));
 }
 }
 // check: "Keep(ABORTED { code: 4,"
@@ -172,10 +172,10 @@ fun main(account: &signer) {
 //! new-transaction
 script {
 use 0x1::Coin1::Coin1;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    let coin = Libra::zero<Coin1>();
-    Libra::preburn_to<Coin1>(account, coin)
+    let coin = Diem::zero<Coin1>();
+    Diem::preburn_to<Coin1>(account, coin)
 }
 }
 // check: "Keep(ABORTED { code: 517,"
@@ -183,10 +183,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::LBR::LBR;
 fun main(account: &signer) {
-    LibraAccount::create_designated_dealer<LBR>(
+    DiemAccount::create_designated_dealer<LBR>(
         account,
         {{baddd}},
         {{baddd::auth_key}},
@@ -219,15 +219,15 @@ module Holder {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::Libra;
+use 0x1::Diem;
 use 0x1::Coin1::Coin1;
 use {{default}}::Holder;
 fun main(account: &signer) {
     let u64_max = 18446744073709551615;
     Holder::hold(
         account,
-        Libra::mint<Coin1>(account, u64_max),
-        Libra::mint<Coin1>(account, u64_max)
+        Diem::mint<Coin1>(account, u64_max),
+        Diem::mint<Coin1>(account, u64_max)
     );
 }
 }
@@ -237,13 +237,13 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: dd
 script {
-use 0x1::Libra::{Self, Libra};
+use 0x1::Diem::{Self, Diem};
 use 0x1::Coin1::Coin1;
 use {{default}}::Holder;
 fun main(account: &signer) {
-    let (coin1_tmp, coin2) = Holder::get<Libra<Coin1>>({{blessed}});
-    Libra::preburn_to(account, coin1_tmp);
-    Libra::preburn_to(account, coin2);
+    let (coin1_tmp, coin2) = Holder::get<Diem<Coin1>>({{blessed}});
+    Diem::preburn_to(account, coin1_tmp);
+    Diem::preburn_to(account, coin2);
 }
 }
 // check: "Keep(ABORTED { code: 769,"
@@ -252,11 +252,11 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: dd
 script {
-use 0x1::Libra;
+use 0x1::Diem;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    let coin = Libra::zero<Coin1>();
-    Libra::preburn_to(account, coin);
+    let coin = Diem::zero<Coin1>();
+    Diem::preburn_to(account, coin);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -265,22 +265,22 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::Libra;
+use 0x1::Diem;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    Libra::burn<Coin1>(account, {{dd}});
+    Diem::burn<Coin1>(account, {{dd}});
 }
 }
 // check: "Keep(ABORTED { code: 1025,"
 
 //! new-transaction
 script {
-use 0x1::Libra;
+use 0x1::Diem;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    Libra::publish_burn_capability(
+    Diem::publish_burn_capability(
         account,
-        Libra::remove_burn_capability<Coin1>(account)
+        Diem::remove_burn_capability<Coin1>(account)
     );
 }
 }

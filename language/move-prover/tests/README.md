@@ -1,7 +1,7 @@
 # Tests for Move Prover
 
 This directory contains the tests for Move Prover. The tests are defined by the `.move` files in this tree,
-as well as all the `.move` files in the [Libra framework](../../stdlib).
+as well as all the `.move` files in the [Diem framework](../../stdlib).
 
 *Note*: in order to run these tests locally, you must have installed tools and setup a few environment variables.
 See [`../doc/user/install.md`](../doc/user/install.md) for details. If the environment variables for

@@ -18,10 +18,10 @@ fun main() {}
 //! sender: diemroot
 // Change option to CustomModule
 script {
-use 0x1::LibraTransactionPublishingOption;
+use 0x1::DiemTransactionPublishingOption;
 
 fun main(config: &signer) {
-    LibraTransactionPublishingOption::set_open_module(config, false)
+    DiemTransactionPublishingOption::set_open_module(config, false)
 }
 }
 // check: "Keep(EXECUTED)"
@@ -37,13 +37,13 @@ fun main(config: &signer) {
 address 0x1 {
 module COIN {
     use 0x1::FixedPoint32;
-    use 0x1::Libra;
+    use 0x1::Diem;
 
     struct COIN { }
 
     public fun initialize(lr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
-        Libra::register_SCS_currency<COIN>(
+        Diem::register_SCS_currency<COIN>(
             lr_account,
             tc_account,
             FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
@@ -79,15 +79,15 @@ fun main(lr_account: &signer, tc_account: &signer) {
 //! sender: blessed
 //! gas-currency: COIN
 script {
-use 0x1::Libra;
+use 0x1::Diem;
 use 0x1::COIN::COIN;
 use 0x1::FixedPoint32;
 fun main(account: &signer) {
-    assert(Libra::approx_lbr_for_value<COIN>(10) == 5, 1);
-    assert(Libra::scaling_factor<COIN>() == 1000000, 2);
-    assert(Libra::fractional_part<COIN>() == 100, 3);
-    Libra::update_lbr_exchange_rate<COIN>(account, FixedPoint32::create_from_rational(1, 3));
-    assert(Libra::approx_lbr_for_value<COIN>(10) == 3, 4);
+    assert(Diem::approx_lbr_for_value<COIN>(10) == 5, 1);
+    assert(Diem::scaling_factor<COIN>() == 1000000, 2);
+    assert(Diem::fractional_part<COIN>() == 100, 3);
+    Diem::update_lbr_exchange_rate<COIN>(account, FixedPoint32::create_from_rational(1, 3));
+    assert(Diem::approx_lbr_for_value<COIN>(10) == 3, 4);
 }
 }
 // check: ToLBRExchangeRateUpdateEvent
@@ -96,25 +96,25 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::COIN::COIN;
-use 0x1::Libra;
+use 0x1::Diem;
 fun main(account: &signer) {
-    let prev_mcap3 = Libra::market_cap<COIN>();
-    LibraAccount::create_designated_dealer<COIN>(
+    let prev_mcap3 = Diem::market_cap<COIN>();
+    DiemAccount::create_designated_dealer<COIN>(
         account,
         {{dd}},
         {{dd::auth_key}},
         x"",
         false,
     );
-    LibraAccount::tiered_mint<COIN>(
+    DiemAccount::tiered_mint<COIN>(
         account,
         {{dd}},
         10000,
         0,
     );
-    assert(Libra::market_cap<COIN>() - prev_mcap3 == 10000, 8);
+    assert(Diem::market_cap<COIN>() - prev_mcap3 == 10000, 8);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -122,10 +122,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: bob
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::COIN::COIN;
 fun main(account: &signer) {
-    LibraAccount::add_currency<COIN>(account);
+    DiemAccount::add_currency<COIN>(account);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -133,18 +133,18 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: dd
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::COIN::COIN;
 fun main(account: &signer) {
-    let with_cap = LibraAccount::extract_withdraw_capability(account);
-    LibraAccount::pay_from<COIN>(
+    let with_cap = DiemAccount::extract_withdraw_capability(account);
+    DiemAccount::pay_from<COIN>(
         &with_cap,
         {{bob}},
         10000,
         x"",
         x""
     );
-    LibraAccount::restore_withdraw_capability(with_cap);
+    DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
 // check: "Keep(EXECUTED)"

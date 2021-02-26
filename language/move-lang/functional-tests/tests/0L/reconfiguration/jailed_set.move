@@ -46,7 +46,7 @@ script {
     use 0x1::Stats;
     use 0x1::Vector;
     use 0x1::Cases;
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
 
     fun main(vm: &signer) {
         let voters = Vector::singleton<address>({{alice}});
@@ -61,7 +61,7 @@ script {
         assert(Cases::get_case(vm, {{eve}}, 0, 15) == 3, 7357120203021000);
         assert(Cases::get_case(vm, {{frank}}, 0, 15) == 4, 7357120203031000);
 
-        let jailed = LibraSystem::get_jailed_set(vm, 0, 15);
+        let jailed = DiemSystem::get_jailed_set(vm, 0, 15);
         assert(Vector::length<address>(&jailed) == 5, 7357120203041000);
     }
 }

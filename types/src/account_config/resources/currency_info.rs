@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -35,7 +35,7 @@ pub struct CurrencyInfoResource {
 }
 
 impl MoveResource for CurrencyInfoResource {
-    const MODULE_NAME: &'static str = "Libra";
+    const MODULE_NAME: &'static str = "Diem";
     const STRUCT_NAME: &'static str = "CurrencyInfo";
 }
 

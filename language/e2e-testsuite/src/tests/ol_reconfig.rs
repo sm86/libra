@@ -34,7 +34,7 @@ fn reconfig_bulk_update_test () {
   // Register account data for diem root
   let diem_root_data = AccountData::with_account(
       diem_root, 1_000_000_000_000,
-      from_currency_code_string(LBR_NAME).unwrap(), sequence_number, AccountRoleSpecifier::LibraRoot);
+      from_currency_code_string(LBR_NAME).unwrap(), sequence_number, AccountRoleSpecifier::DiemRoot);
   executor.add_account_data(&diem_root_data);
 
   let names = vec!["alice", "bob", "carol", "sha", "ram"];

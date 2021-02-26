@@ -23,9 +23,9 @@ module Holder {
 
 //! new-transaction
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(sender: &signer) {
-        LibraAccount::initialize(sender, x"00000000000000000000000000000000");
+        DiemAccount::initialize(sender, x"00000000000000000000000000000000");
     }
 }
 // check: "Keep(ABORTED { code: 1,"
@@ -34,11 +34,11 @@ script {
 //! sender: bob
 script {
     use 0x1::LBR::LBR;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<LBR>(&with_cap, {{bob}}, 10, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<LBR>(&with_cap, {{bob}}, 10, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -47,11 +47,11 @@ script {
 //! sender: bob
 script {
     use 0x1::LBR::LBR;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<LBR>(&with_cap, {{abby}}, 10, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<LBR>(&with_cap, {{abby}}, 10, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(ABORTED { code: 4357,"
@@ -60,11 +60,11 @@ script {
 //! sender: bob
 script {
     use 0x1::Coin1::Coin1;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<Coin1>(&with_cap, {{abby}}, 10, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<Coin1>(&with_cap, {{abby}}, 10, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(ABORTED { code: 4869,"
@@ -73,11 +73,11 @@ script {
 //! sender: bob
 script {
     use 0x1::LBR::LBR;
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<LBR>(&with_cap, {{doris}}, 10, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<LBR>(&with_cap, {{doris}}, 10, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(ABORTED { code: 4615,"
@@ -85,27 +85,27 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     fun main(account: &signer) {
-        let rot_cap = LibraAccount::extract_key_rotation_capability(account);
-        LibraAccount::rotate_authentication_key(&rot_cap, x"123abc");
-        LibraAccount::restore_key_rotation_capability(rot_cap);
+        let rot_cap = DiemAccount::extract_key_rotation_capability(account);
+        DiemAccount::rotate_authentication_key(&rot_cap, x"123abc");
+        DiemAccount::restore_key_rotation_capability(rot_cap);
     }
 }
 // check: "Keep(ABORTED { code: 2055,"
 
 //! new-transaction
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use {{default}}::Holder;
     fun main(account: &signer) {
         Holder::hold(
             account,
-            LibraAccount::extract_key_rotation_capability(account)
+            DiemAccount::extract_key_rotation_capability(account)
         );
         Holder::hold(
             account,
-            LibraAccount::extract_key_rotation_capability(account)
+            DiemAccount::extract_key_rotation_capability(account)
         );
     }
 }
@@ -113,21 +113,21 @@ script {
 
 //! new-transaction
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::Signer;
     fun main(sender: &signer) {
-        let cap = LibraAccount::extract_key_rotation_capability(sender);
+        let cap = DiemAccount::extract_key_rotation_capability(sender);
         assert(
-            *LibraAccount::key_rotation_capability_address(&cap) == Signer::address_of(sender), 0
+            *DiemAccount::key_rotation_capability_address(&cap) == Signer::address_of(sender), 0
         );
-        LibraAccount::restore_key_rotation_capability(cap);
-        let with_cap = LibraAccount::extract_withdraw_capability(sender);
+        DiemAccount::restore_key_rotation_capability(cap);
+        let with_cap = DiemAccount::extract_withdraw_capability(sender);
 
         assert(
-            *LibraAccount::withdraw_capability_address(&with_cap) == Signer::address_of(sender),
+            *DiemAccount::withdraw_capability_address(&with_cap) == Signer::address_of(sender),
             0
         );
-        LibraAccount::restore_withdraw_capability(with_cap);
+        DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
 // check: "Keep(EXECUTED)"
@@ -135,13 +135,13 @@ script {
 //! new-transaction
 //! sender: bob
 script {
-    use 0x1::LibraAccount;
+    use 0x1::DiemAccount;
     use 0x1::LBR::LBR;
     fun main(account: &signer) {
-        let with_cap = LibraAccount::extract_withdraw_capability(account);
-        LibraAccount::pay_from<LBR>(&with_cap, {{alice}}, 10000, x"", x"");
-        LibraAccount::restore_withdraw_capability(with_cap);
-        assert(LibraAccount::balance<LBR>({{alice}}) == 10000, 60)
+        let with_cap = DiemAccount::extract_withdraw_capability(account);
+        DiemAccount::pay_from<LBR>(&with_cap, {{alice}}, 10000, x"", x"");
+        DiemAccount::restore_withdraw_capability(with_cap);
+        assert(DiemAccount::balance<LBR>({{alice}}) == 10000, 60)
     }
 }
 // check: "Keep(EXECUTED)"
@@ -162,36 +162,36 @@ stdlib_script::create_parent_vasp_account
 
 //! new-transaction
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main() {
-    LibraAccount::sequence_number(0x1);
+    DiemAccount::sequence_number(0x1);
 }
 }
 // check: "Keep(ABORTED { code: 5,"
 
 //! new-transaction
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main() {
-    LibraAccount::authentication_key(0x1);
+    DiemAccount::authentication_key(0x1);
 }
 }
 // check: "Keep(ABORTED { code: 5,"
 
 //! new-transaction
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main() {
-    LibraAccount::delegated_key_rotation_capability(0x1);
+    DiemAccount::delegated_key_rotation_capability(0x1);
 }
 }
 // check: "Keep(ABORTED { code: 5,"
 
 //! new-transaction
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 fun main() {
-    LibraAccount::delegated_withdraw_capability(0x1);
+    DiemAccount::delegated_withdraw_capability(0x1);
 }
 }
 // check: "Keep(ABORTED { code: 5,"

@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common;
@@ -201,7 +201,7 @@ import com.novi.serde.Bytes;
             self.out,
             r#"
 /**
- * Build a Libra {{@link org.diem.types.Script}} from a structured value {{@link ScriptCall}}.
+ * Build a Diem {{@link org.diem.types.Script}} from a structured value {{@link ScriptCall}}.
  *
  * @param call {{@link ScriptCall}} value to encode.
  * @return Encoded script.
@@ -218,7 +218,7 @@ public static Script encode_script(ScriptCall call) {{
             self.out,
             r#"
 /**
- * Try to recognize a Libra {{@link org.diem.types.Script}} and convert it into a structured value {{@code ScriptCall}}.
+ * Try to recognize a Diem {{@link org.diem.types.Script}} and convert it into a structured value {{@code ScriptCall}}.
  *
  * @param script {{@link org.diem.types.Script}} values to decode.
  * @return Decoded {{@link ScriptCall}} value.

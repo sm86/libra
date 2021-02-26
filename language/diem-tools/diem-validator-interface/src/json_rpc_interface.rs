@@ -1,7 +1,7 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::LibraValidatorInterface;
+use crate::DiemValidatorInterface;
 use anyhow::{bail, Result};
 use diem_json_rpc_client::{JsonRpcBatch, JsonRpcClient, JsonRpcResponse};
 use diem_types::{
@@ -32,7 +32,7 @@ impl JsonRpcDebuggerInterface {
     }
 }
 
-impl LibraValidatorInterface for JsonRpcDebuggerInterface {
+impl DiemValidatorInterface for JsonRpcDebuggerInterface {
     fn get_account_state_by_version(
         &self,
         account: AccountAddress,

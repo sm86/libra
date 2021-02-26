@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use language_e2e_tests::{
@@ -151,7 +151,7 @@ fn validator_batch_remove() {
     // Make sure both validators are removed from the validator set.
     assert!(executor
         .try_exec(
-            "LibraSystem",
+            "DiemSystem",
             "remove_validator",
             vec![],
             vec![
@@ -163,7 +163,7 @@ fn validator_batch_remove() {
         .is_err());
     assert!(executor
         .try_exec(
-            "LibraSystem",
+            "DiemSystem",
             "remove_validator",
             vec![],
             vec![
@@ -214,7 +214,7 @@ fn halt_network() {
         &TransactionStatus::Discard(StatusCode::UNKNOWN_SCRIPT)
     );
 
-    // LibraRoot can still send transaction
+    // DiemRoot can still send transaction
     executor.execute_and_apply(
         diem_root_account
             .transaction()

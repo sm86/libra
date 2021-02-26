@@ -97,11 +97,11 @@ script {
 script {
     use 0x1::Vector;
     use 0x1::Stats;
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     
 
     fun main(vm: &signer) {
-        assert(LibraSystem::validator_set_size() == 6, 7357180101011000);
+        assert(DiemSystem::validator_set_size() == 6, 7357180101011000);
 
         let voters = Vector::empty<address>();
         Vector::push_back<address>(&mut voters, {{alice}});
@@ -256,11 +256,11 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
-    use 0x1::LibraConfig;
+    use 0x1::DiemSystem;
+    use 0x1::DiemConfig;
     fun main(_account: &signer) {
-        assert(LibraSystem::validator_set_size() == 6, 7357180103011000);
-        assert(LibraConfig::get_current_epoch() == 3, 7357180103021000);
+        assert(DiemSystem::validator_set_size() == 6, 7357180103011000);
+        assert(DiemConfig::get_current_epoch() == 3, 7357180103021000);
     }
 }
 // check: EXECUTED

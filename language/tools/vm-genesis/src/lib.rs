@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
@@ -309,7 +309,7 @@ fn create_and_initialize_main_accounts(
         session,
         log_context,
         root_diem_root_address,
-        "LibraAccount",
+        "DiemAccount",
         "epilogue",
         vec![lbr_ty.clone()],
         vec![
@@ -508,7 +508,7 @@ fn create_and_initialize_owners_operators(
             session,
             log_context,
             diem_root_address,
-            "LibraSystem",
+            "DiemSystem",
             "add_validator",
             vec![],
             vec![
@@ -554,7 +554,7 @@ fn reconfigure(session: &mut Session<StateViewCache>, log_context: &impl LogCont
         session,
         log_context,
         account_config::diem_root_address(),
-        "LibraConfig",
+        "DiemConfig",
         "emit_genesis_reconfiguration_event",
         vec![],
         vec![],
@@ -563,7 +563,7 @@ fn reconfigure(session: &mut Session<StateViewCache>, log_context: &impl LogCont
 
 /// Verify the consistency of the genesis `WriteSet`
 fn verify_genesis_write_set(events: &[ContractEvent]) {
-    // (1) first event is account creation event for LibraRoot
+    // (1) first event is account creation event for DiemRoot
     let create_diem_root_event = &events[0];
     assert_eq!(
         *create_diem_root_event.key(),

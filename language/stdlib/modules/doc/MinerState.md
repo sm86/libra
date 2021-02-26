@@ -36,7 +36,7 @@
 <b>use</b> <a href="FullnodeState.md#0x1_FullnodeState">0x1::FullnodeState</a>;
 <b>use</b> <a href="Globals.md#0x1_Globals">0x1::Globals</a>;
 <b>use</b> <a href="Hash.md#0x1_Hash">0x1::Hash</a>;
-<b>use</b> <a href="LibraConfig.md#0x1_LibraConfig">0x1::LibraConfig</a>;
+<b>use</b> <a href="DiemConfig.md#0x1_DiemConfig">0x1::DiemConfig</a>;
 <b>use</b> <a href="Signer.md#0x1_Signer">0x1::Signer</a>;
 <b>use</b> <a href="Testnet.md#0x1_StagingNet">0x1::StagingNet</a>;
 <b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;
@@ -206,7 +206,7 @@
   // In rustland the vm_genesis creates a <a href="Signer.md#0x1_Signer">Signer</a> for the miner. So the SENDER is not the same and the <a href="Signer.md#0x1_Signer">Signer</a>.
 
   //TODO: Previously in OLv3 is_genesis() returned <b>true</b>. How <b>to</b> check that this is part of genesis? is_genesis returns <b>false</b> here.
-  // <b>assert</b>(<a href="LibraTimestamp.md#0x1_LibraTimestamp_is_genesis">LibraTimestamp::is_genesis</a>(), 130101024010);
+  // <b>assert</b>(<a href="DiemTimestamp.md#0x1_DiemTimestamp_is_genesis">DiemTimestamp::is_genesis</a>(), 130101024010);
   <a href="MinerState.md#0x1_MinerState_init_miner_state">init_miner_state</a>(miner_sig, &challenge, &solution);
 
   // TODO: Move this elsewhere?
@@ -311,7 +311,7 @@
   <a href="MinerState.md#0x1_MinerState_verify_and_update_state">verify_and_update_state</a>(miner_addr, proof, <b>true</b>);
 
   // TODO: This should not increment for validators in set.
-  // Including <a href="LibraSystem.md#0x1_LibraSystem_is_validator">LibraSystem::is_validator</a> causes a dependency cycling
+  // Including <a href="DiemSystem.md#0x1_DiemSystem_is_validator">DiemSystem::is_validator</a> causes a dependency cycling
   <a href="FullnodeState.md#0x1_FullnodeState_inc_proof">FullnodeState::inc_proof</a>(miner_sign);
 }
 </code></pre>
@@ -365,7 +365,7 @@
     miner_history.count_proofs_in_epoch = 1
   };
 
-  miner_history.latest_epoch_mining = <a href="LibraConfig.md#0x1_LibraConfig_get_current_epoch">LibraConfig::get_current_epoch</a>();
+  miner_history.latest_epoch_mining = <a href="DiemConfig.md#0x1_DiemConfig_get_current_epoch">DiemConfig::get_current_epoch</a>();
 }
 </code></pre>
 
@@ -405,7 +405,7 @@
 
   // Update statistics.
   <b>if</b> (passed) {
-      <b>let</b> this_epoch = <a href="LibraConfig.md#0x1_LibraConfig_get_current_epoch">LibraConfig::get_current_epoch</a>();
+      <b>let</b> this_epoch = <a href="DiemConfig.md#0x1_DiemConfig_get_current_epoch">DiemConfig::get_current_epoch</a>();
       miner_history.latest_epoch_mining = this_epoch;
 
       miner_history.epochs_validating_and_mining = miner_history.epochs_validating_and_mining + 1u64;
@@ -478,7 +478,7 @@
 
   // Update the statistics.
   <b>let</b> miner_history= borrow_global_mut&lt;<a href="MinerState.md#0x1_MinerState_MinerProofHistory">MinerProofHistory</a>&gt;(miner_addr);
-  <b>let</b> this_epoch = <a href="LibraConfig.md#0x1_LibraConfig_get_current_epoch">LibraConfig::get_current_epoch</a>();
+  <b>let</b> this_epoch = <a href="DiemConfig.md#0x1_DiemConfig_get_current_epoch">DiemConfig::get_current_epoch</a>();
   miner_history.latest_epoch_mining = this_epoch;
 
   // Return its weight
@@ -552,8 +552,8 @@
   // NOTE Only <a href="Signer.md#0x1_Signer">Signer</a> can <b>update</b> own state.
   // Should only happen once.
   <b>assert</b>(!<b>exists</b>&lt;<a href="MinerState.md#0x1_MinerState_MinerProofHistory">MinerProofHistory</a>&gt;(<a href="Signer.md#0x1_Signer_address_of">Signer::address_of</a>(miner_sig)), 130112011021);
-  // <a href="LibraAccount.md#0x1_LibraAccount">LibraAccount</a> calls this.
-  // Exception is <a href="LibraAccount.md#0x1_LibraAccount">LibraAccount</a> which can simulate a <a href="Signer.md#0x1_Signer">Signer</a>.
+  // <a href="DiemAccount.md#0x1_DiemAccount">DiemAccount</a> calls this.
+  // Exception is <a href="DiemAccount.md#0x1_DiemAccount">DiemAccount</a> which can simulate a <a href="Signer.md#0x1_Signer">Signer</a>.
   // Initialize <a href="MinerState.md#0x1_MinerState_MinerProofHistory">MinerProofHistory</a> object and give <b>to</b> miner account
   move_to&lt;<a href="MinerState.md#0x1_MinerState_MinerProofHistory">MinerProofHistory</a>&gt;(miner_sig, <a href="MinerState.md#0x1_MinerState_MinerProofHistory">MinerProofHistory</a>{
     previous_proof_hash: <a href="Vector.md#0x1_Vector_empty">Vector::empty</a>(),
@@ -576,7 +576,7 @@
   // Subsidy::queue_fullnode_subisdy(<a href="Signer.md#0x1_Signer_address_of">Signer::address_of</a>(miner_sig));
   //also add the miner <b>to</b> validator universe
   //TODO: #254 ValidatorUniverse::add_validators need <b>to</b> check permission.
-  // Note: this should be in <a href="LibraAccount.md#0x1_LibraAccount">LibraAccount</a> but causes cyclic dependency.
+  // Note: this should be in <a href="DiemAccount.md#0x1_DiemAccount">DiemAccount</a> but causes cyclic dependency.
   <a href="ValidatorUniverse.md#0x1_ValidatorUniverse_add_validator">ValidatorUniverse::add_validator</a>(miner_sig);
   <a href="FullnodeState.md#0x1_FullnodeState_val_init">FullnodeState::val_init</a>(miner_sig);
   <a href="FullnodeState.md#0x1_FullnodeState_inc_proof">FullnodeState::inc_proof</a>(miner_sig);

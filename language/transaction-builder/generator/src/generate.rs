@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 //! # Code generator for Move script builders
@@ -109,7 +109,7 @@ fn main() {
         Some(dir) => dir,
     };
 
-    // Libra types
+    // Diem types
     if let Some(registry_file) = options.with_diem_types {
         let installer: Box<dyn serdegen::SourceInstaller<Error = Box<dyn std::error::Error>>> =
             match options.language {

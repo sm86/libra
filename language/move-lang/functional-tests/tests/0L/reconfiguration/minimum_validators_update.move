@@ -16,11 +16,11 @@
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(DiemSystem::validator_set_size() == 4, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
     }
 }
 // check: EXECUTED
@@ -29,10 +29,10 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180103);
+        assert(DiemSystem::validator_set_size() == 4, 7357000180103);
     }
 }
 
@@ -75,11 +75,11 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180104);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180105);        
+        assert(DiemSystem::validator_set_size() == 4, 7357000180104);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180105);        
     }
 }
 //check: EXECUTED

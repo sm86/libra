@@ -32,7 +32,7 @@ The `--signers 0xf` part indicates which account address(es) have signed off on 
 
 ## Adding new modules via `move_src`
 
-By default, the CLI compiles and includes all files from the Move standard diemry and Libra Framework. New modules can be added to the `move_src` directory (or a directory of your choosing specified via `--move-src`. The `move run` command will compile and publish each module source file in this directory before running the given script.
+By default, the CLI compiles and includes all files from the Move standard diemry and Diem Framework. New modules can be added to the `move_src` directory (or a directory of your choosing specified via `--move-src`. The `move run` command will compile and publish each module source file in this directory before running the given script.
 
 Try saving this code in `move_src/Test.move`:
 
@@ -149,9 +149,9 @@ resource 00000000::Test::Resource {
 ```
 
 
-## Using the CLI with Libra modules and genesis state
+## Using the CLI with Diem modules and genesis state
 
-Take a look at `tests/testsuite/liba_smoke/args.txt`. This test uses the CLI to run a fairly realistic Libra genesis setup and a few basic transactions. Running
+Take a look at `tests/testsuite/liba_smoke/args.txt`. This test uses the CLI to run a fairly realistic Diem genesis setup and a few basic transactions. Running
 
 ```
 λ NO_MOVE_CLEAN=1 cargo xtest diem_smoke

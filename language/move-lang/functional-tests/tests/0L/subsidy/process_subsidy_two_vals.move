@@ -41,7 +41,7 @@ script {
   use 0x1::Vector;
   use 0x1::Stats;
   use 0x1::GAS::GAS;
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::Cases;
 
   fun main(vm: &signer) {
@@ -57,10 +57,10 @@ script {
       i = i + 1;
     };
 
-    assert(LibraAccount::balance<GAS>({{alice}}) == 1, 7357190102011000);
-    assert(LibraAccount::balance<GAS>({{bob}}) == 1, 7357190102021000);
-    assert(LibraAccount::balance<GAS>({{carol}}) == 1, 7357190102031000);
-    assert(LibraAccount::balance<GAS>({{dave}}) == 1, 7357190102041000);
+    assert(DiemAccount::balance<GAS>({{alice}}) == 1, 7357190102011000);
+    assert(DiemAccount::balance<GAS>({{bob}}) == 1, 7357190102021000);
+    assert(DiemAccount::balance<GAS>({{carol}}) == 1, 7357190102031000);
+    assert(DiemAccount::balance<GAS>({{dave}}) == 1, 7357190102041000);
 
     assert(Cases::get_case(vm, {{alice}}, 0, 15) == 1, 7357190102051000);
     assert(Cases::get_case(vm, {{bob}}, 0, 15) == 4, 7357190102061000);
@@ -76,18 +76,18 @@ script {
 script {
   use 0x1::Subsidy;
   use 0x1::GAS::GAS;
-  use 0x1::LibraAccount;
-  use 0x1::LibraSystem;
+  use 0x1::DiemAccount;
+  use 0x1::DiemSystem;
   use 0x1::Debug::print;
 
   fun main(vm: &signer) {
-    let (validators, fee_ratios) = LibraSystem::get_fee_ratio(vm, 0, 15);
+    let (validators, fee_ratios) = DiemSystem::get_fee_ratio(vm, 0, 15);
     Subsidy::process_subsidy(vm, 100, &validators, &fee_ratios);
-    print(&LibraAccount::balance<GAS>({{alice}}));
-    assert(LibraAccount::balance<GAS>({{alice}}) == 51, 7357190102091000);
-    assert(LibraAccount::balance<GAS>({{bob}}) == 1, 7357190102101000);
-    assert(LibraAccount::balance<GAS>({{carol}}) == 51, 7357190102111000);
-    assert(LibraAccount::balance<GAS>({{dave}}) == 1, 7357190102121000);
+    print(&DiemAccount::balance<GAS>({{alice}}));
+    assert(DiemAccount::balance<GAS>({{alice}}) == 51, 7357190102091000);
+    assert(DiemAccount::balance<GAS>({{bob}}) == 1, 7357190102101000);
+    assert(DiemAccount::balance<GAS>({{carol}}) == 51, 7357190102111000);
+    assert(DiemAccount::balance<GAS>({{dave}}) == 1, 7357190102121000);
 
   }
 }

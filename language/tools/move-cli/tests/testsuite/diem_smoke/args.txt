@@ -1,4 +1,4 @@
-# Smoke test that runs a mock of Libra genesis and tries a few basic transactions
+# Smoke test that runs a mock of Diem genesis and tries a few basic transactions
 
 # Publish stdlib modules
 publish ../../../../../stdlib/modules

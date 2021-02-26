@@ -27,11 +27,11 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
   fun main() {
-    let alice_balance = LibraAccount::balance<GAS>({{alice}});
-    let bob_balance = LibraAccount::balance<GAS>({{bob}});
+    let alice_balance = DiemAccount::balance<GAS>({{alice}});
+    let bob_balance = DiemAccount::balance<GAS>({{bob}});
     assert(alice_balance==1000000, 1);
     assert(bob_balance == 10000, 2);
     }
@@ -61,11 +61,11 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   use 0x1::GAS::GAS;
   use 0x1::Debug::print;
   fun main(_vm: &signer) {
-    let ending_balance = LibraAccount::balance<GAS>({{alice}});
+    let ending_balance = DiemAccount::balance<GAS>({{alice}});
     print(&ending_balance);
     assert(ending_balance < 1000000, 7357003);
     assert(ending_balance == 950001, 7357004);

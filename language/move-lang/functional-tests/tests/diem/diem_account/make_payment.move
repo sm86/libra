@@ -4,10 +4,10 @@
 //! new-transaction
 //! sender: diemroot
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::make_payment<Coin1>(
+    DiemAccount::make_payment<Coin1>(
         {{alice}},
         {{bob}},
         100,

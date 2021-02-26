@@ -4,10 +4,10 @@
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<Coin1>(
         account, 0x0, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -16,10 +16,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: diemroot
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::Coin1::Coin1;
 fun main(account: &signer) {
-    LibraAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<Coin1>(
         account, 0x0, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -28,10 +28,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::LBR::LBR;
 fun main(account: &signer) {
-    LibraAccount::create_parent_vasp_account<LBR>(
+    DiemAccount::create_parent_vasp_account<LBR>(
         account, 0x1, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -40,10 +40,10 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: diemroot
 script {
-use 0x1::LibraAccount;
+use 0x1::DiemAccount;
 use 0x1::LBR::LBR;
 fun main(account: &signer) {
-    LibraAccount::create_parent_vasp_account<LBR>(
+    DiemAccount::create_parent_vasp_account<LBR>(
         account, 0x1, x"00000000000000000000000000000000", x"", false);
 }
 }

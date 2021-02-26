@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
@@ -29,7 +29,7 @@ pub const STAGED_EXTENSION: &str = "mv";
 fn main() {
     let cli = App::new("stdlib")
         .name("Move standard diemry")
-        .author("The Libra Core Contributors")
+        .author("The Diem Core Contributors")
         .arg(
             Arg::with_name("no-doc")
                 .long("no-doc")

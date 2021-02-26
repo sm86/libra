@@ -18,12 +18,12 @@
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 5, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180103);
+        assert(DiemSystem::validator_set_size() == 5, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180103);
     }
 }
 // check: EXECUTED
@@ -33,12 +33,12 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     fun main(_account: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 5, 7357000180104);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180105);
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180106);
+        assert(DiemSystem::validator_set_size() == 5, 7357000180104);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180105);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180106);
     }
 }
 //check: EXECUTED
@@ -84,11 +84,11 @@ script {
 //! sender: diemroot
 script {
     
-    use 0x1::LibraSystem;
-    use 0x1::LibraConfig;
+    use 0x1::DiemSystem;
+    use 0x1::DiemConfig;
     fun main(_account: &signer) {
-        assert(LibraSystem::validator_set_size() == 5, 7357180103011000);
-        assert(LibraConfig::get_current_epoch() == 2, 7357180103021000);
+        assert(DiemSystem::validator_set_size() == 5, 7357180103011000);
+        assert(DiemConfig::get_current_epoch() == 2, 7357180103021000);
     }
 }
 // check: EXECUTED

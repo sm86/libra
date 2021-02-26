@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use language_e2e_tests::{
@@ -7,7 +7,7 @@ use language_e2e_tests::{
     executor::FakeExecutor,
 };
 use diem_types::vm_status::{KeptVMStatus, StatusCode, VMStatus};
-use diem_vm::{data_cache::StateViewCache, transaction_metadata::TransactionMetadata, LibraVM};
+use diem_vm::{data_cache::StateViewCache, transaction_metadata::TransactionMetadata, DiemVM};
 use move_core_types::gas_schedule::{GasAlgebra, GasPrice, GasUnits};
 use move_vm_runtime::logging::NoContextLog;
 use move_vm_types::gas_schedule::zero_cost_schedule;
@@ -19,7 +19,7 @@ fn failed_transaction_cleanup_test() {
     fake_executor.add_account_data(&sender);
 
     let log_context = NoContextLog::new();
-    let diem_vm = LibraVM::new(fake_executor.get_state_view());
+    let diem_vm = DiemVM::new(fake_executor.get_state_view());
     let data_cache = StateViewCache::new(fake_executor.get_state_view());
 
     let mut txn_data = TransactionMetadata::default();

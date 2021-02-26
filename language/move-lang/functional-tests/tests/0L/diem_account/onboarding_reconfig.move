@@ -1,4 +1,4 @@
-// Module to test bulk validator updates function in LibraSystem.move
+// Module to test bulk validator updates function in DiemSystem.move
 //! account: alice, 1000000, 0, validator
 //! account: bob, 1000000, 0, validator
 //! account: carol, 1000000, 0, validator
@@ -8,7 +8,7 @@
 //! new-transaction
 //! sender: alice
 script {
-  use 0x1::LibraAccount;
+  use 0x1::DiemAccount;
   // use 0x1::GAS::GAS;
   use 0x1::ValidatorConfig;
   use 0x1::TestFixtures;
@@ -29,7 +29,7 @@ script {
     let epochs_since_creation = 10;
     MinerState::test_helper_set_rate_limit(sender_addr, epochs_since_creation);
 
-    LibraAccount::create_validator_account_with_proof(
+    DiemAccount::create_validator_account_with_proof(
         sender,
         &challenge,
         &solution,
@@ -51,7 +51,7 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::Reconfigure;
     use 0x1::Vector;
     use 0x1::MinerState;
@@ -59,10 +59,10 @@ script {
   
     fun main(vm: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180103);
-        assert(LibraSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B) == false, 7357000180103);
+        assert(DiemSystem::validator_set_size() == 4, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180103);
+        assert(DiemSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B) == false, 7357000180103);
 
         // Mock everyone being a CASE 1
         let voters = Vector::empty<address>();
@@ -95,16 +95,16 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::ValidatorUniverse;
     use 0x1::Vector;
     fun main(vm: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
-        assert(!LibraSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B), 7357000180103);
+        assert(DiemSystem::validator_set_size() == 4, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(!DiemSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B), 7357000180103);
         let len = Vector::length<address>(&ValidatorUniverse::get_eligible_validators(vm));
-        assert(LibraSystem::validator_set_size() == (len-1), 7357000180104);
+        assert(DiemSystem::validator_set_size() == (len-1), 7357000180104);
       }
 }
 // check: EXECUTED
@@ -114,7 +114,7 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::Reconfigure;
     use 0x1::Vector;
     use 0x1::MinerState;
@@ -122,10 +122,10 @@ script {
   
     fun main(vm: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 4, 7357000180101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000180102);
-        assert(LibraSystem::is_validator({{bob}}) == true, 7357000180103);
-        assert(LibraSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B) == false, 7357000180103);
+        assert(DiemSystem::validator_set_size() == 4, 7357000180101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000180102);
+        assert(DiemSystem::is_validator({{bob}}) == true, 7357000180103);
+        assert(DiemSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B) == false, 7357000180103);
 
         // Mock everyone being a CASE 1
         let voters = Vector::empty<address>();
@@ -158,16 +158,16 @@ script {
 //! new-transaction
 //! sender: diemroot
 script {
-    use 0x1::LibraSystem;
+    use 0x1::DiemSystem;
     use 0x1::ValidatorUniverse;
     use 0x1::Vector;
     fun main(vm: &signer) {
         // Tests on initial size of validators 
-        assert(LibraSystem::validator_set_size() == 5, 7357000200101);
-        assert(LibraSystem::is_validator({{alice}}) == true, 7357000200102);
-        assert(LibraSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B), 7357000200103);
+        assert(DiemSystem::validator_set_size() == 5, 7357000200101);
+        assert(DiemSystem::is_validator({{alice}}) == true, 7357000200102);
+        assert(DiemSystem::is_validator(0x3DC18D1CF61FAAC6AC70E3A63F062E4B), 7357000200103);
         let len = Vector::length<address>(&ValidatorUniverse::get_eligible_validators(vm));
-        assert(LibraSystem::validator_set_size() == len, 7357000200104);
+        assert(DiemSystem::validator_set_size() == len, 7357000200104);
       }
 }
 // check: EXECUTED

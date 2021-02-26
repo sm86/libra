@@ -1,4 +1,4 @@
-// Copyright (c) The Libra Core Contributors
+// Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -8,7 +8,7 @@ use crate::{
         ChildVASP, Credential, CurrencyInfoResource, DesignatedDealer, FreezingBit, ParentVASP,
         PreburnResource, ACCOUNT_RECEIVED_EVENT_PATH, ACCOUNT_SENT_EVENT_PATH,
     },
-    block_metadata::{LibraBlockResource, NEW_BLOCK_EVENT_PATH},
+    block_metadata::{DiemBlockResource, NEW_BLOCK_EVENT_PATH},
     event::EventHandle,
     diem_timestamp::DiemTimestampResource,
     on_chain_config::{
@@ -79,8 +79,8 @@ impl AccountState {
         self.get_resource(&ConfigurationResource::resource_path())
     }
 
-    pub fn get_diem_timestamp_resource(&self) -> Result<Option<LibraTimestampResource>> {
-        self.get_resource(&LibraTimestampResource::resource_path())
+    pub fn get_diem_timestamp_resource(&self) -> Result<Option<DiemTimestampResource>> {
+        self.get_resource(&DiemTimestampResource::resource_path())
     }
 
     pub fn get_validator_config_resource(&self) -> Result<Option<ValidatorConfigResource>> {
@@ -136,8 +136,8 @@ impl AccountState {
         self.get_resource(&ValidatorSet::CONFIG_ID.access_path().path)
     }
 
-    pub fn get_diem_version(&self) -> Result<Option<LibraVersion>> {
-        self.get_resource(&LibraVersion::CONFIG_ID.access_path().path)
+    pub fn get_diem_version(&self) -> Result<Option<DiemVersion>> {
+        self.get_resource(&DiemVersion::CONFIG_ID.access_path().path)
     }
 
     pub fn get_vm_publishing_option(&self) -> Result<Option<VMPublishingOption>> {
@@ -168,8 +168,8 @@ impl AccountState {
         }
     }
 
-    pub fn get_diem_block_resource(&self) -> Result<Option<LibraBlockResource>> {
-        self.get_resource(&LibraBlockResource::resource_path())
+    pub fn get_diem_block_resource(&self) -> Result<Option<DiemBlockResource>> {
+        self.get_resource(&DiemBlockResource::resource_path())
     }
 
     // for upgrade
@@ -246,7 +246,7 @@ impl fmt::Debug for AccountState {
             f,
             "{{ \n \
              AccountResource {{ {} }} \n \
-             LibraTimestamp {{ {} }} \n \
+             DiemTimestamp {{ {} }} \n \
              ValidatorConfig {{ {} }} \n \
              ValidatorSet {{ {} }} \n \
              }}",
