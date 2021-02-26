@@ -26,5 +26,5 @@ rand = "0.7.3"
 fuzzing = ["diem-crypto/fuzzing"]
 
 [[bench]]
-name = "lcs_bench"
+name = "bcs_bench"
 harness = false

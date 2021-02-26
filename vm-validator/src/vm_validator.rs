@@ -10,7 +10,7 @@ use diem_types::{
     on_chain_config::{DiemVersion, OnChainConfigPayload, VMConfig, VMPublishingOption},
     transaction::{SignedTransaction, VMValidatorResult},
 };
-use diem_vm::DiemVMValidator;
+use diem_vm::VMValidator;
 use scratchpad::SparseMerkleTree;
 use std::{convert::TryFrom, sync::Arc};
 use storage_interface::{state_view::VerifiedStateView, DbReader};

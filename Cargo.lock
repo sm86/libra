@@ -17,11 +17,11 @@ dependencies = [
  "anyhow",
  "codespan-reporting",
  "datatest-stable",
- "heck",
  "diem-canonical-serialization",
  "diem-temppath",
  "diem-types",
  "diem-workspace-hack",
+ "heck",
  "log",
  "move-core-types",
  "move-prover",
@@ -293,13 +293,6 @@ dependencies = [
  "backup-service",
  "byteorder",
  "bytes",
- "dirs 3.0.1",
- "executor",
- "executor-test-helpers",
- "executor-types",
- "futures 0.3.6",
- "hex 0.4.2",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -313,6 +306,13 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "dirs 3.0.1",
+ "executor",
+ "executor-test-helpers",
+ "executor-types",
+ "futures 0.3.6",
+ "hex 0.4.2",
+ "itertools 0.9.0",
  "once_cell",
  "proptest",
  "rand 0.7.3",
@@ -333,8 +333,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bytes",
- "futures 0.3.6",
- "hyper",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -344,6 +342,8 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "diemdb",
+ "futures 0.3.6",
+ "hyper",
  "once_cell",
  "reqwest",
  "serde",
@@ -500,9 +500,9 @@ dependencies = [
 name = "bounded-executor"
 version = "0.1.0"
 dependencies = [
+ "diem-workspace-hack",
  "futures 0.3.6",
  "futures-semaphore",
- "diem-workspace-hack",
  "tokio",
 ]
 
@@ -550,11 +550,11 @@ dependencies = [
  "codespan",
  "codespan-reporting",
  "datatest-stable",
- "ir-to-bytecode",
- "itertools 0.9.0",
  "diem-temppath",
  "diem-types",
  "diem-workspace-hack",
+ "ir-to-bytecode",
+ "itertools 0.9.0",
  "log",
  "move-core-types",
  "num 0.3.0",
@@ -585,9 +585,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "borrow-graph",
- "invalid-mutations",
  "diem-types",
  "diem-workspace-hack",
+ "invalid-mutations",
  "mirai-annotations",
  "move-core-types",
  "petgraph",
@@ -600,9 +600,9 @@ version = "0.1.0"
 dependencies = [
  "bytecode-verifier",
  "compiled-stdlib",
- "invalid-mutations",
  "diem-types",
  "diem-workspace-hack",
+ "invalid-mutations",
  "move-core-types",
  "petgraph",
  "proptest",
@@ -695,11 +695,11 @@ name = "channel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "futures 0.3.6",
  "diem-infallible",
  "diem-metrics",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "tokio",
 ]
 
@@ -767,8 +767,6 @@ dependencies = [
  "compiled-stdlib",
  "compiler",
  "crash-handler",
- "generate-key",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -780,6 +778,8 @@ dependencies = [
  "diem-types",
  "diem-wallet",
  "diem-workspace-hack",
+ "generate-key",
+ "hex 0.4.2",
  "num-traits",
  "once_cell",
  "proptest",
@@ -822,13 +822,6 @@ dependencies = [
  "chrono",
  "consensus-types",
  "debug-interface",
- "flate2",
- "futures 0.3.6",
- "generate-key",
- "hex 0.4.2",
- "itertools 0.9.0",
- "k8s-openapi",
- "kube",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -849,6 +842,13 @@ dependencies = [
  "diem-trace",
  "diem-types",
  "diem-workspace-hack",
+ "flate2",
+ "futures 0.3.6",
+ "generate-key",
+ "hex 0.4.2",
+ "itertools 0.9.0",
+ "k8s-openapi",
+ "kube",
  "network",
  "network-builder",
  "num_cpus",
@@ -932,11 +932,11 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bytecode-verifier",
- "include_dir",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-types",
  "diem-workspace-hack",
+ "include_dir",
  "once_cell",
  "sha2 0.9.1",
  "stdlib",
@@ -951,10 +951,10 @@ dependencies = [
  "bytecode-source-map",
  "bytecode-verifier",
  "compiled-stdlib",
- "ir-to-bytecode",
  "diem-canonical-serialization",
  "diem-types",
  "diem-workspace-hack",
+ "ir-to-bytecode",
  "move-ir-types",
  "serde_json",
  "structopt 0.3.18",
@@ -972,13 +972,6 @@ dependencies = [
  "channel",
  "consensus-types",
  "crash-handler",
- "execution-correctness",
- "executor",
- "executor-test-helpers",
- "executor-types",
- "fail",
- "futures 0.3.6",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -992,6 +985,13 @@ dependencies = [
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "execution-correctness",
+ "executor",
+ "executor-test-helpers",
+ "executor-types",
+ "fail",
+ "futures 0.3.6",
+ "itertools 0.9.0",
  "mirai-annotations",
  "network",
  "num-derive",
@@ -1019,13 +1019,13 @@ name = "consensus-types"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "executor-types",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-crypto-derive",
  "diem-infallible",
  "diem-types",
  "diem-workspace-hack",
+ "executor-types",
  "mirai-annotations",
  "proptest",
  "serde",
@@ -1322,7 +1322,6 @@ name = "db-bootstrapper"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "executor",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-temppath",
@@ -1330,6 +1329,7 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
  "storage-interface",
  "structopt 0.3.18",
 ]
@@ -1355,6 +1355,1040 @@ dependencies = [
  "anyhow",
  "diem-workspace-hack",
  "regex",
+]
+
+[[package]]
+name = "diem-bitvec"
+version = "0.1.0"
+dependencies = [
+ "diem-canonical-serialization",
+ "diem-proptest-helpers",
+ "diem-workspace-hack",
+ "proptest",
+ "proptest-derive",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
+name = "diem-canonical-serialization"
+version = "0.1.0"
+dependencies = [
+ "criterion",
+ "diem-crypto",
+ "diem-crypto-derive",
+ "diem-workspace-hack",
+ "proptest",
+ "proptest-derive",
+ "rand 0.7.3",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-config"
+version = "0.1.0"
+dependencies = [
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-crypto-derive",
+ "diem-global-constants",
+ "diem-logger",
+ "diem-network-address",
+ "diem-network-address-encryption",
+ "diem-secure-storage",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
+ "get_if_addrs",
+ "log",
+ "mirai-annotations",
+ "rand 0.7.3",
+ "serde",
+ "serde_yaml",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-crypto"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "anyhow",
+ "bitvec",
+ "byteorder",
+ "bytes",
+ "criterion",
+ "curve25519-dalek 3.0.0 (git+https://github.com/novifinancial/curve25519-dalek.git?branch=fiat3)",
+ "curve25519-dalek 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "diem-canonical-serialization",
+ "diem-crypto-derive",
+ "diem-nibble",
+ "diem-workspace-hack",
+ "digest 0.9.0",
+ "ed25519-dalek 1.0.0 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat4)",
+ "ed25519-dalek 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hex 0.4.2",
+ "hkdf",
+ "mirai-annotations",
+ "once_cell",
+ "proptest",
+ "proptest-derive",
+ "rand 0.7.3",
+ "rand_core 0.5.1",
+ "ripemd160",
+ "serde",
+ "serde-name",
+ "serde_bytes",
+ "serde_json",
+ "sha2 0.9.1",
+ "sha3 0.9.1",
+ "short-hex-str",
+ "static_assertions",
+ "thiserror",
+ "tiny-keccak",
+ "trybuild",
+ "x25519-dalek 1.0.1 (git+https://github.com/novifinancial/x25519-dalek.git?branch=fiat3)",
+ "x25519-dalek 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "diem-crypto-derive"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-workspace-hack",
+ "proc-macro2 1.0.24",
+ "quote 1.0.7",
+ "syn 1.0.42",
+]
+
+[[package]]
+name = "diem-dev"
+version = "0.1.0"
+dependencies = [
+ "bindgen",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-types",
+ "diem-workspace-hack",
+ "libc",
+ "move-core-types",
+ "rand 0.7.3",
+ "static_assertions",
+ "transaction-builder",
+]
+
+[[package]]
+name = "diem-documentation-tool"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-workspace-hack",
+ "once_cell",
+ "regex",
+ "serde",
+ "serde-generate",
+ "serde-reflection",
+ "serde_yaml",
+ "structopt 0.3.18",
+ "tempfile",
+]
+
+[[package]]
+name = "diem-faucet"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-infallible",
+ "diem-json-rpc-client",
+ "diem-logger",
+ "diem-types",
+ "diem-workspace-hack",
+ "generate-key",
+ "hex 0.4.2",
+ "move-core-types",
+ "reqwest",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "structopt 0.3.18",
+ "tempfile",
+ "tokio",
+ "transaction-builder-generated",
+ "warp",
+]
+
+[[package]]
+name = "diem-fuzz"
+version = "0.1.0"
+dependencies = [
+ "diem-fuzzer",
+ "diem-workspace-hack",
+ "libfuzzer-sys",
+ "once_cell",
+]
+
+[[package]]
+name = "diem-fuzzer"
+version = "0.1.0"
+dependencies = [
+ "accumulator",
+ "anyhow",
+ "byteorder",
+ "consensus",
+ "consensus-types",
+ "datatest-stable",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-jellyfish-merkle",
+ "diem-json-rpc",
+ "diem-mempool",
+ "diem-proptest-helpers",
+ "diem-secure-json-rpc",
+ "diem-types",
+ "diem-vault-client",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "executor-types",
+ "hex 0.4.2",
+ "language-e2e-tests",
+ "move-core-types",
+ "move-vm-types",
+ "network",
+ "once_cell",
+ "proptest",
+ "proptest-derive",
+ "rand 0.7.3",
+ "rusty-fork",
+ "safety-rules",
+ "serde_json",
+ "sha-1 0.9.1",
+ "state-synchronizer",
+ "stats_alloc",
+ "storage-interface",
+ "structopt 0.3.18",
+ "ureq",
+ "vm",
+]
+
+[[package]]
+name = "diem-genesis-tool"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "consensus-types",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-global-constants",
+ "diem-management",
+ "diem-network-address",
+ "diem-network-address-encryption",
+ "diem-secure-json-rpc",
+ "diem-secure-storage",
+ "diem-secure-time",
+ "diem-temppath",
+ "diem-types",
+ "diem-vm",
+ "diem-wallet",
+ "diem-workspace-hack",
+ "diemdb",
+ "dirs 2.0.2",
+ "executor",
+ "generate-key",
+ "hex 0.4.2",
+ "rand 0.7.3",
+ "rustyline",
+ "serde",
+ "serde_json",
+ "storage-interface",
+ "structopt 0.3.18",
+ "thiserror",
+ "toml",
+ "transaction-builder",
+ "vm-genesis",
+]
+
+[[package]]
+name = "diem-github-client"
+version = "0.1.0"
+dependencies = [
+ "base64 0.13.0",
+ "diem-crypto",
+ "diem-workspace-hack",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "ureq",
+]
+
+[[package]]
+name = "diem-global-constants"
+version = "0.1.0"
+
+[[package]]
+name = "diem-infallible"
+version = "0.1.0"
+dependencies = [
+ "diem-workspace-hack",
+]
+
+[[package]]
+name = "diem-jellyfish-merkle"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "byteorder",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-crypto-derive",
+ "diem-infallible",
+ "diem-nibble",
+ "diem-types",
+ "diem-workspace-hack",
+ "mirai-annotations",
+ "num-derive",
+ "num-traits",
+ "proptest",
+ "proptest-derive",
+ "rand 0.7.3",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-json-rpc"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "compiled-stdlib",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-genesis-tool",
+ "diem-json-rpc-client",
+ "diem-json-rpc-types",
+ "diem-logger",
+ "diem-mempool",
+ "diem-metrics",
+ "diem-node",
+ "diem-proptest-helpers",
+ "diem-temppath",
+ "diem-trace",
+ "diem-types",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "executor-types",
+ "fail",
+ "futures 0.3.6",
+ "generate-key",
+ "hex 0.4.2",
+ "hyper",
+ "move-core-types",
+ "move-vm-types",
+ "network",
+ "once_cell",
+ "proptest",
+ "rand 0.7.3",
+ "reqwest",
+ "scratchpad",
+ "serde",
+ "serde_json",
+ "storage-interface",
+ "tokio",
+ "transaction-builder-generated",
+ "vm-genesis",
+ "vm-validator",
+ "warp",
+]
+
+[[package]]
+name = "diem-json-rpc-client"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-json-rpc-types",
+ "diem-types",
+ "diem-workspace-hack",
+ "hex 0.4.2",
+ "reqwest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "diem-json-rpc-types"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "compiled-stdlib",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-types",
+ "diem-workspace-hack",
+ "hex 0.4.2",
+ "move-core-types",
+ "move-explain",
+ "serde",
+ "serde_json",
+ "transaction-builder",
+]
+
+[[package]]
+name = "diem-key-manager"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-config",
+ "diem-crypto",
+ "diem-genesis-tool",
+ "diem-global-constants",
+ "diem-json-rpc",
+ "diem-logger",
+ "diem-network-address",
+ "diem-secure-json-rpc",
+ "diem-secure-push-metrics",
+ "diem-secure-storage",
+ "diem-secure-time",
+ "diem-types",
+ "diem-vm",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "executor-test-helpers",
+ "executor-types",
+ "futures 0.3.6",
+ "once_cell",
+ "rand 0.7.3",
+ "serde",
+ "storage-interface",
+ "thiserror",
+ "tokio",
+ "transaction-builder-generated",
+ "vm-validator",
+]
+
+[[package]]
+name = "diem-log-derive"
+version = "0.1.0"
+dependencies = [
+ "diem-workspace-hack",
+ "proc-macro2 1.0.24",
+ "quote 1.0.7",
+ "syn 1.0.42",
+]
+
+[[package]]
+name = "diem-logger"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "diem-infallible",
+ "diem-log-derive",
+ "diem-workspace-hack",
+ "erased-serde",
+ "hex 0.4.2",
+ "hostname",
+ "once_cell",
+ "prometheus",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "diem-management"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-global-constants",
+ "diem-network-address",
+ "diem-network-address-encryption",
+ "diem-secure-json-rpc",
+ "diem-secure-storage",
+ "diem-secure-time",
+ "diem-temppath",
+ "diem-types",
+ "diem-vm",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "generate-key",
+ "hex 0.4.2",
+ "serde",
+ "serde_yaml",
+ "storage-interface",
+ "structopt 0.3.18",
+ "thiserror",
+ "toml",
+ "transaction-builder",
+ "vm-genesis",
+]
+
+[[package]]
+name = "diem-mempool"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bounded-executor",
+ "channel",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-infallible",
+ "diem-logger",
+ "diem-metrics",
+ "diem-network-address",
+ "diem-proptest-helpers",
+ "diem-trace",
+ "diem-types",
+ "diem-workspace-hack",
+ "fail",
+ "futures 0.3.6",
+ "itertools 0.9.0",
+ "mirai-annotations",
+ "netcore",
+ "network",
+ "once_cell",
+ "proptest",
+ "rand 0.7.3",
+ "serde",
+ "serde_json",
+ "storage-interface",
+ "storage-service",
+ "subscription-service",
+ "tokio",
+ "vm-validator",
+]
+
+[[package]]
+name = "diem-metrics"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "assert_approx_eq",
+ "diem-logger",
+ "diem-metrics-core",
+ "diem-workspace-hack",
+ "futures 0.3.6",
+ "hyper",
+ "once_cell",
+ "prometheus",
+ "rusty-fork",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "diem-metrics-core"
+version = "0.1.0"
+dependencies = [
+ "diem-workspace-hack",
+ "prometheus",
+]
+
+[[package]]
+name = "diem-network-address"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-workspace-hack",
+ "move-core-types",
+ "proptest",
+ "proptest-derive",
+ "serde",
+ "serde_bytes",
+ "static_assertions",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-network-address-encryption"
+version = "0.1.0"
+dependencies = [
+ "base64 0.13.0",
+ "diem-canonical-serialization",
+ "diem-global-constants",
+ "diem-infallible",
+ "diem-logger",
+ "diem-network-address",
+ "diem-secure-storage",
+ "diem-workspace-hack",
+ "move-core-types",
+ "rand 0.7.3",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-nibble"
+version = "0.1.0"
+dependencies = [
+ "diem-workspace-hack",
+ "proptest",
+ "serde",
+]
+
+[[package]]
+name = "diem-node"
+version = "0.1.0"
+dependencies = [
+ "backup-service",
+ "consensus",
+ "crash-handler",
+ "debug-interface",
+ "diem-config",
+ "diem-crypto",
+ "diem-genesis-tool",
+ "diem-json-rpc",
+ "diem-logger",
+ "diem-mempool",
+ "diem-metrics",
+ "diem-secure-storage",
+ "diem-temppath",
+ "diem-trace",
+ "diem-types",
+ "diem-vm",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "executor-types",
+ "fail",
+ "futures 0.3.6",
+ "jemallocator",
+ "network-builder",
+ "state-synchronizer",
+ "storage-client",
+ "storage-interface",
+ "storage-service",
+ "structopt 0.3.18",
+ "subscription-service",
+ "tokio",
+]
+
+[[package]]
+name = "diem-operational-tool"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-global-constants",
+ "diem-management",
+ "diem-network-address",
+ "diem-network-address-encryption",
+ "diem-secure-json-rpc",
+ "diem-secure-storage",
+ "diem-secure-time",
+ "diem-temppath",
+ "diem-types",
+ "diem-vm",
+ "diem-workspace-hack",
+ "diemdb",
+ "executor",
+ "generate-key",
+ "hex 0.4.2",
+ "serde",
+ "serde_json",
+ "storage-interface",
+ "structopt 0.3.18",
+ "thiserror",
+ "toml",
+ "transaction-builder",
+ "vm-genesis",
+]
+
+[[package]]
+name = "diem-proptest-helpers"
+version = "0.1.0"
+dependencies = [
+ "crossbeam",
+ "diem-workspace-hack",
+ "proptest",
+ "proptest-derive",
+]
+
+[[package]]
+name = "diem-retrier"
+version = "0.1.0"
+dependencies = [
+ "diem-logger",
+ "diem-workspace-hack",
+ "tokio",
+]
+
+[[package]]
+name = "diem-secure-json-rpc"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-config",
+ "diem-crypto",
+ "diem-json-rpc",
+ "diem-proptest-helpers",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
+ "diemdb",
+ "futures 0.3.6",
+ "hex 0.4.2",
+ "proptest",
+ "serde",
+ "serde_json",
+ "storage-interface",
+ "thiserror",
+ "tokio",
+ "ureq",
+ "vm-validator",
+]
+
+[[package]]
+name = "diem-secure-net"
+version = "0.1.0"
+dependencies = [
+ "diem-config",
+ "diem-logger",
+ "diem-secure-push-metrics",
+ "diem-workspace-hack",
+ "once_cell",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-secure-push-metrics"
+version = "0.1.0"
+dependencies = [
+ "diem-logger",
+ "diem-metrics-core",
+ "diem-workspace-hack",
+ "ureq",
+]
+
+[[package]]
+name = "diem-secure-storage"
+version = "0.1.0"
+dependencies = [
+ "base64 0.13.0",
+ "chrono",
+ "consensus-types",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-crypto-derive",
+ "diem-github-client",
+ "diem-global-constants",
+ "diem-infallible",
+ "diem-logger",
+ "diem-secure-time",
+ "diem-temppath",
+ "diem-types",
+ "diem-vault-client",
+ "diem-workspace-hack",
+ "enum_dispatch",
+ "rand 0.7.3",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-secure-time"
+version = "0.1.0"
+dependencies = [
+ "diem-infallible",
+ "diem-workspace-hack",
+]
+
+[[package]]
+name = "diem-state-view"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-crypto",
+ "diem-types",
+ "diem-workspace-hack",
+]
+
+[[package]]
+name = "diem-storage-inspector"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-crypto",
+ "diem-logger",
+ "diem-types",
+ "diem-workspace-hack",
+ "diemdb",
+ "storage-interface",
+ "structopt 0.3.18",
+ "tempfile",
+ "transaction-builder",
+]
+
+[[package]]
+name = "diem-swarm"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ctrlc",
+ "debug-interface",
+ "diem-config",
+ "diem-genesis-tool",
+ "diem-logger",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
+ "reqwest",
+ "structopt 0.3.18",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-temppath"
+version = "0.1.0"
+dependencies = [
+ "diem-workspace-hack",
+ "hex 0.4.2",
+ "rand 0.7.3",
+]
+
+[[package]]
+name = "diem-trace"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "diem-logger",
+ "diem-metrics",
+ "diem-workspace-hack",
+ "once_cell",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "structopt 0.3.18",
+ "tokio",
+]
+
+[[package]]
+name = "diem-transaction-replay"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "compiled-stdlib",
+ "diem-canonical-serialization",
+ "diem-state-view",
+ "diem-types",
+ "diem-validator-interface",
+ "diem-vm",
+ "diem-workspace-hack",
+ "diemdb",
+ "difference",
+ "move-core-types",
+ "move-lang",
+ "move-vm-runtime",
+ "move-vm-test-utils",
+ "move-vm-types",
+ "resource-viewer",
+ "stdlib",
+ "structopt 0.3.18",
+ "vm",
+ "vm-genesis",
+]
+
+[[package]]
+name = "diem-types"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bytes",
+ "chrono",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-crypto-derive",
+ "diem-infallible",
+ "diem-network-address",
+ "diem-proptest-helpers",
+ "diem-workspace-hack",
+ "hex 0.4.2",
+ "itertools 0.9.0",
+ "mirai-annotations",
+ "move-core-types",
+ "once_cell",
+ "proptest",
+ "proptest-derive",
+ "radix_trie",
+ "rand 0.7.3",
+ "regex",
+ "serde",
+ "serde_bytes",
+ "serde_json",
+ "thiserror",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "diem-validator-interface"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-json-rpc-client",
+ "diem-state-view",
+ "diem-types",
+ "diem-workspace-hack",
+ "diemdb",
+ "reqwest",
+ "scratchpad",
+ "storage-interface",
+]
+
+[[package]]
+name = "diem-vault-client"
+version = "0.1.0"
+dependencies = [
+ "base64 0.13.0",
+ "chrono",
+ "diem-crypto",
+ "diem-proptest-helpers",
+ "diem-types",
+ "diem-workspace-hack",
+ "native-tls",
+ "once_cell",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "ureq",
+]
+
+[[package]]
+name = "diem-vm"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-logger",
+ "diem-metrics",
+ "diem-state-view",
+ "diem-trace",
+ "diem-types",
+ "diem-workspace-hack",
+ "fail",
+ "mirai-annotations",
+ "move-core-types",
+ "move-vm-runtime",
+ "move-vm-types",
+ "once_cell",
+ "proptest",
+ "rayon",
+ "serde",
+ "serde_json",
+ "stdlib",
+ "transaction-builder",
+ "vm",
+]
+
+[[package]]
+name = "diem-wallet"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "byteorder",
+ "diem-crypto",
+ "diem-global-constants",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
+ "ed25519-dalek 1.0.0 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat4)",
+ "ed25519-dalek 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hex 0.4.2",
+ "hmac 0.9.0",
+ "mirai-annotations",
+ "pbkdf2",
+ "rand 0.7.3",
+ "serde",
+ "sha2 0.9.1",
+ "thiserror",
+]
+
+[[package]]
+name = "diem-workspace-hack"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "cc",
+ "log",
+ "memchr",
+ "num-traits",
+ "petgraph",
+ "serde",
+ "sha-1 0.9.1",
+ "subtle",
+ "syn 1.0.42",
+]
+
+[[package]]
+name = "diem-writeset-generator"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "diem-canonical-serialization",
+ "diem-types",
+ "diem-workspace-hack",
+ "handlebars",
+ "move-lang",
+ "serde",
+ "serde_json",
+ "stdlib",
+ "structopt 0.3.18",
+ "tempfile",
+]
+
+[[package]]
+name = "diemdb"
+version = "0.1.0"
+dependencies = [
+ "accumulator",
+ "anyhow",
+ "arc-swap",
+ "byteorder",
+ "diem-canonical-serialization",
+ "diem-crypto",
+ "diem-infallible",
+ "diem-jellyfish-merkle",
+ "diem-logger",
+ "diem-metrics",
+ "diem-proptest-helpers",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
+ "itertools 0.9.0",
+ "num-derive",
+ "num-traits",
+ "num-variants",
+ "once_cell",
+ "proptest",
+ "proptest-derive",
+ "rand 0.7.3",
+ "schemadb",
+ "serde",
+ "storage-interface",
+ "thiserror",
 ]
 
 [[package]]
@@ -1460,9 +2494,9 @@ dependencies = [
  "bytecode-source-map",
  "bytecode-verifier",
  "colored",
- "ir-to-bytecode-syntax",
  "diem-types",
  "diem-workspace-hack",
+ "ir-to-bytecode-syntax",
  "move-core-types",
  "move-coverage",
  "move-ir-types",
@@ -1485,9 +2519,9 @@ dependencies = [
  "codespan",
  "codespan-reporting",
  "datatest-stable",
- "itertools 0.9.0",
  "diem-temppath",
  "diem-workspace-hack",
+ "itertools 0.9.0",
  "log",
  "move-prover",
  "num 0.3.0",
@@ -1626,9 +2660,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "consensus-types",
- "executor",
- "executor-test-helpers",
- "executor-types",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -1642,6 +2673,9 @@ dependencies = [
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "executor",
+ "executor-test-helpers",
+ "executor-types",
  "rand 0.7.3",
  "serde",
  "storage-client",
@@ -1657,10 +2691,6 @@ dependencies = [
  "compiled-stdlib",
  "compiler",
  "consensus-types",
- "executor-test-helpers",
- "executor-types",
- "fail",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -1676,6 +2706,10 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor-test-helpers",
+ "executor-types",
+ "fail",
+ "itertools 0.9.0",
  "move-core-types",
  "once_cell",
  "proptest",
@@ -1692,9 +2726,6 @@ dependencies = [
 name = "executor-benchmark"
 version = "0.1.0"
 dependencies = [
- "executor",
- "executor-types",
- "itertools 0.9.0",
  "diem-config",
  "diem-crypto",
  "diem-genesis-tool",
@@ -1704,6 +2735,9 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
+ "executor-types",
+ "itertools 0.9.0",
  "rand 0.7.3",
  "rayon",
  "storage-client",
@@ -1718,8 +2752,6 @@ name = "executor-test-helpers"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "executor",
- "executor-types",
  "diem-config",
  "diem-crypto",
  "diem-genesis-tool",
@@ -1728,6 +2760,8 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
+ "executor-types",
  "rand 0.7.3",
  "storage-interface",
  "storage-service",
@@ -1851,16 +2885,16 @@ dependencies = [
  "bytecode-verifier",
  "compiled-stdlib",
  "datatest-stable",
- "difference",
- "hex 0.4.2",
- "itertools 0.9.0",
- "language-e2e-tests",
  "diem-config",
  "diem-crypto",
  "diem-state-view",
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "difference",
+ "hex 0.4.2",
+ "itertools 0.9.0",
+ "language-e2e-tests",
  "mirai-annotations",
  "move-core-types",
  "once_cell",
@@ -1942,8 +2976,8 @@ dependencies = [
 name = "futures-semaphore"
 version = "0.1.0"
 dependencies = [
- "futures 0.3.6",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "tokio",
 ]
 
@@ -2514,10 +3548,10 @@ dependencies = [
  "bytecode-verifier",
  "compiled-stdlib",
  "datatest-stable",
- "functional-tests",
- "ir-to-bytecode",
  "diem-types",
  "diem-workspace-hack",
+ "functional-tests",
+ "ir-to-bytecode",
  "move-ir-types",
  "vm",
 ]
@@ -2530,9 +3564,9 @@ dependencies = [
  "bytecode-source-map",
  "codespan",
  "codespan-reporting",
- "ir-to-bytecode-syntax",
  "diem-types",
  "diem-workspace-hack",
+ "ir-to-bytecode-syntax",
  "log",
  "move-core-types",
  "move-ir-types",
@@ -2546,9 +3580,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "codespan",
- "hex 0.4.2",
  "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "move-core-types",
  "move-ir-types",
 ]
@@ -2692,12 +3726,12 @@ dependencies = [
  "anyhow",
  "bytecode-verifier",
  "criterion",
- "language-e2e-tests",
  "diem-proptest-helpers",
  "diem-state-view",
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "language-e2e-tests",
  "move-core-types",
  "move-lang",
  "move-vm-runtime",
@@ -2713,8 +3747,6 @@ dependencies = [
  "anyhow",
  "compiled-stdlib",
  "compiler",
- "hex 0.4.2",
- "include_dir",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -2723,6 +3755,8 @@ dependencies = [
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "hex 0.4.2",
+ "include_dir",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -2742,8 +3776,6 @@ dependencies = [
  "bytecode-verifier",
  "compiled-stdlib",
  "compiler",
- "hex 0.4.2",
- "language-e2e-tests",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-logger",
@@ -2751,6 +3783,8 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diem-writeset-generator",
+ "hex 0.4.2",
+ "language-e2e-tests",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -2797,1040 +3831,6 @@ checksum = "f2b111a074963af1d37a139918ac6d49ad1d0d5e47f72fd55388619691a7d753"
 dependencies = [
  "cc",
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "diem-bitvec"
-version = "0.1.0"
-dependencies = [
- "diem-canonical-serialization",
- "diem-proptest-helpers",
- "diem-workspace-hack",
- "proptest",
- "proptest-derive",
- "serde",
- "serde_bytes",
-]
-
-[[package]]
-name = "diem-canonical-serialization"
-version = "0.1.0"
-dependencies = [
- "criterion",
- "diem-crypto",
- "diem-crypto-derive",
- "diem-workspace-hack",
- "proptest",
- "proptest-derive",
- "rand 0.7.3",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "diem-config"
-version = "0.1.0"
-dependencies = [
- "get_if_addrs",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-crypto-derive",
- "diem-global-constants",
- "diem-logger",
- "diem-network-address",
- "diem-network-address-encryption",
- "diem-secure-storage",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
- "log",
- "mirai-annotations",
- "rand 0.7.3",
- "serde",
- "serde_yaml",
- "thiserror",
-]
-
-[[package]]
-name = "diem-crypto"
-version = "0.1.0"
-dependencies = [
- "aes-gcm",
- "anyhow",
- "bitvec",
- "byteorder",
- "bytes",
- "criterion",
- "curve25519-dalek 3.0.0 (git+https://github.com/novifinancial/curve25519-dalek.git?branch=fiat3)",
- "curve25519-dalek 3.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "digest 0.9.0",
- "ed25519-dalek 1.0.0 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat4)",
- "ed25519-dalek 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "hex 0.4.2",
- "hkdf",
- "diem-canonical-serialization",
- "diem-crypto-derive",
- "diem-nibble",
- "diem-workspace-hack",
- "mirai-annotations",
- "once_cell",
- "proptest",
- "proptest-derive",
- "rand 0.7.3",
- "rand_core 0.5.1",
- "ripemd160",
- "serde",
- "serde-name",
- "serde_bytes",
- "serde_json",
- "sha2 0.9.1",
- "sha3 0.9.1",
- "short-hex-str",
- "static_assertions",
- "thiserror",
- "tiny-keccak",
- "trybuild",
- "x25519-dalek 1.0.1 (git+https://github.com/novifinancial/x25519-dalek.git?branch=fiat3)",
- "x25519-dalek 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "diem-crypto-derive"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "diem-workspace-hack",
- "proc-macro2 1.0.24",
- "quote 1.0.7",
- "syn 1.0.42",
-]
-
-[[package]]
-name = "diem-dev"
-version = "0.1.0"
-dependencies = [
- "bindgen",
- "libc",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-types",
- "diem-workspace-hack",
- "move-core-types",
- "rand 0.7.3",
- "static_assertions",
- "transaction-builder",
-]
-
-[[package]]
-name = "diem-documentation-tool"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "diem-workspace-hack",
- "once_cell",
- "regex",
- "serde",
- "serde-generate",
- "serde-reflection",
- "serde_yaml",
- "structopt 0.3.18",
- "tempfile",
-]
-
-[[package]]
-name = "diem-faucet"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "generate-key",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-infallible",
- "diem-json-rpc-client",
- "diem-logger",
- "diem-types",
- "diem-workspace-hack",
- "move-core-types",
- "reqwest",
- "serde",
- "serde_derive",
- "serde_json",
- "structopt 0.3.18",
- "tempfile",
- "tokio",
- "transaction-builder-generated",
- "warp",
-]
-
-[[package]]
-name = "diem-fuzz"
-version = "0.1.0"
-dependencies = [
- "libfuzzer-sys",
- "diem-fuzzer",
- "diem-workspace-hack",
- "once_cell",
-]
-
-[[package]]
-name = "diem-fuzzer"
-version = "0.1.0"
-dependencies = [
- "accumulator",
- "anyhow",
- "byteorder",
- "consensus",
- "consensus-types",
- "datatest-stable",
- "executor",
- "executor-types",
- "hex 0.4.2",
- "language-e2e-tests",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-jellyfish-merkle",
- "diem-json-rpc",
- "diem-mempool",
- "diem-proptest-helpers",
- "diem-secure-json-rpc",
- "diem-types",
- "diem-vault-client",
- "diem-workspace-hack",
- "diemdb",
- "move-core-types",
- "move-vm-types",
- "network",
- "once_cell",
- "proptest",
- "proptest-derive",
- "rand 0.7.3",
- "rusty-fork",
- "safety-rules",
- "serde_json",
- "sha-1 0.9.1",
- "state-synchronizer",
- "stats_alloc",
- "storage-interface",
- "structopt 0.3.18",
- "ureq",
- "vm",
-]
-
-[[package]]
-name = "diem-genesis-tool"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "consensus-types",
- "dirs 2.0.2",
- "executor",
- "generate-key",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-global-constants",
- "diem-management",
- "diem-network-address",
- "diem-network-address-encryption",
- "diem-secure-json-rpc",
- "diem-secure-storage",
- "diem-secure-time",
- "diem-temppath",
- "diem-types",
- "diem-vm",
- "diem-wallet",
- "diem-workspace-hack",
- "diemdb",
- "rand 0.7.3",
- "rustyline",
- "serde",
- "serde_json",
- "storage-interface",
- "structopt 0.3.18",
- "thiserror",
- "toml",
- "transaction-builder",
- "vm-genesis",
-]
-
-[[package]]
-name = "diem-github-client"
-version = "0.1.0"
-dependencies = [
- "base64 0.13.0",
- "diem-crypto",
- "diem-workspace-hack",
- "serde",
- "serde_json",
- "thiserror",
- "ureq",
-]
-
-[[package]]
-name = "diem-global-constants"
-version = "0.1.0"
-
-[[package]]
-name = "diem-infallible"
-version = "0.1.0"
-dependencies = [
- "diem-workspace-hack",
-]
-
-[[package]]
-name = "diem-jellyfish-merkle"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "byteorder",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-crypto-derive",
- "diem-infallible",
- "diem-nibble",
- "diem-types",
- "diem-workspace-hack",
- "mirai-annotations",
- "num-derive",
- "num-traits",
- "proptest",
- "proptest-derive",
- "rand 0.7.3",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "diem-json-rpc"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "compiled-stdlib",
- "executor",
- "executor-types",
- "fail",
- "futures 0.3.6",
- "generate-key",
- "hex 0.4.2",
- "hyper",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-genesis-tool",
- "diem-json-rpc-client",
- "diem-json-rpc-types",
- "diem-logger",
- "diem-mempool",
- "diem-metrics",
- "diem-node",
- "diem-proptest-helpers",
- "diem-temppath",
- "diem-trace",
- "diem-types",
- "diem-workspace-hack",
- "diemdb",
- "move-core-types",
- "move-vm-types",
- "network",
- "once_cell",
- "proptest",
- "rand 0.7.3",
- "reqwest",
- "scratchpad",
- "serde",
- "serde_json",
- "storage-interface",
- "tokio",
- "transaction-builder-generated",
- "vm-genesis",
- "vm-validator",
- "warp",
-]
-
-[[package]]
-name = "diem-json-rpc-client"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-json-rpc-types",
- "diem-types",
- "diem-workspace-hack",
- "reqwest",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "diem-json-rpc-types"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "compiled-stdlib",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-types",
- "diem-workspace-hack",
- "move-core-types",
- "move-explain",
- "serde",
- "serde_json",
- "transaction-builder",
-]
-
-[[package]]
-name = "diem-key-manager"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "executor",
- "executor-test-helpers",
- "executor-types",
- "futures 0.3.6",
- "diem-config",
- "diem-crypto",
- "diem-genesis-tool",
- "diem-global-constants",
- "diem-json-rpc",
- "diem-logger",
- "diem-network-address",
- "diem-secure-json-rpc",
- "diem-secure-push-metrics",
- "diem-secure-storage",
- "diem-secure-time",
- "diem-types",
- "diem-vm",
- "diem-workspace-hack",
- "diemdb",
- "once_cell",
- "rand 0.7.3",
- "serde",
- "storage-interface",
- "thiserror",
- "tokio",
- "transaction-builder-generated",
- "vm-validator",
-]
-
-[[package]]
-name = "diem-log-derive"
-version = "0.1.0"
-dependencies = [
- "diem-workspace-hack",
- "proc-macro2 1.0.24",
- "quote 1.0.7",
- "syn 1.0.42",
-]
-
-[[package]]
-name = "diem-logger"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "erased-serde",
- "hex 0.4.2",
- "hostname",
- "diem-infallible",
- "diem-log-derive",
- "diem-workspace-hack",
- "once_cell",
- "prometheus",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "diem-management"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "executor",
- "generate-key",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-global-constants",
- "diem-network-address",
- "diem-network-address-encryption",
- "diem-secure-json-rpc",
- "diem-secure-storage",
- "diem-secure-time",
- "diem-temppath",
- "diem-types",
- "diem-vm",
- "diem-workspace-hack",
- "diemdb",
- "serde",
- "serde_yaml",
- "storage-interface",
- "structopt 0.3.18",
- "thiserror",
- "toml",
- "transaction-builder",
- "vm-genesis",
-]
-
-[[package]]
-name = "diem-mempool"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bounded-executor",
- "channel",
- "fail",
- "futures 0.3.6",
- "itertools 0.9.0",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-infallible",
- "diem-logger",
- "diem-metrics",
- "diem-network-address",
- "diem-proptest-helpers",
- "diem-trace",
- "diem-types",
- "diem-workspace-hack",
- "mirai-annotations",
- "netcore",
- "network",
- "once_cell",
- "proptest",
- "rand 0.7.3",
- "serde",
- "serde_json",
- "storage-interface",
- "storage-service",
- "subscription-service",
- "tokio",
- "vm-validator",
-]
-
-[[package]]
-name = "diem-metrics"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "assert_approx_eq",
- "futures 0.3.6",
- "hyper",
- "diem-logger",
- "diem-metrics-core",
- "diem-workspace-hack",
- "once_cell",
- "prometheus",
- "rusty-fork",
- "serde_json",
- "tokio",
-]
-
-[[package]]
-name = "diem-metrics-core"
-version = "0.1.0"
-dependencies = [
- "diem-workspace-hack",
- "prometheus",
-]
-
-[[package]]
-name = "diem-network-address"
-version = "0.1.0"
-dependencies = [
- "aes-gcm",
- "anyhow",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-workspace-hack",
- "move-core-types",
- "proptest",
- "proptest-derive",
- "serde",
- "serde_bytes",
- "static_assertions",
- "thiserror",
-]
-
-[[package]]
-name = "diem-network-address-encryption"
-version = "0.1.0"
-dependencies = [
- "base64 0.13.0",
- "diem-canonical-serialization",
- "diem-global-constants",
- "diem-infallible",
- "diem-logger",
- "diem-network-address",
- "diem-secure-storage",
- "diem-workspace-hack",
- "move-core-types",
- "rand 0.7.3",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "diem-nibble"
-version = "0.1.0"
-dependencies = [
- "diem-workspace-hack",
- "proptest",
- "serde",
-]
-
-[[package]]
-name = "diem-node"
-version = "0.1.0"
-dependencies = [
- "backup-service",
- "consensus",
- "crash-handler",
- "debug-interface",
- "executor",
- "executor-types",
- "fail",
- "futures 0.3.6",
- "jemallocator",
- "diem-config",
- "diem-crypto",
- "diem-genesis-tool",
- "diem-json-rpc",
- "diem-logger",
- "diem-mempool",
- "diem-metrics",
- "diem-secure-storage",
- "diem-temppath",
- "diem-trace",
- "diem-types",
- "diem-vm",
- "diem-workspace-hack",
- "diemdb",
- "network-builder",
- "state-synchronizer",
- "storage-client",
- "storage-interface",
- "storage-service",
- "structopt 0.3.18",
- "subscription-service",
- "tokio",
-]
-
-[[package]]
-name = "diem-operational-tool"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "executor",
- "generate-key",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-global-constants",
- "diem-management",
- "diem-network-address",
- "diem-network-address-encryption",
- "diem-secure-json-rpc",
- "diem-secure-storage",
- "diem-secure-time",
- "diem-temppath",
- "diem-types",
- "diem-vm",
- "diem-workspace-hack",
- "diemdb",
- "serde",
- "serde_json",
- "storage-interface",
- "structopt 0.3.18",
- "thiserror",
- "toml",
- "transaction-builder",
- "vm-genesis",
-]
-
-[[package]]
-name = "diem-proptest-helpers"
-version = "0.1.0"
-dependencies = [
- "crossbeam",
- "diem-workspace-hack",
- "proptest",
- "proptest-derive",
-]
-
-[[package]]
-name = "diem-retrier"
-version = "0.1.0"
-dependencies = [
- "diem-logger",
- "diem-workspace-hack",
- "tokio",
-]
-
-[[package]]
-name = "diem-secure-json-rpc"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "futures 0.3.6",
- "hex 0.4.2",
- "diem-canonical-serialization",
- "diem-config",
- "diem-crypto",
- "diem-json-rpc",
- "diem-proptest-helpers",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
- "diemdb",
- "proptest",
- "serde",
- "serde_json",
- "storage-interface",
- "thiserror",
- "tokio",
- "ureq",
- "vm-validator",
-]
-
-[[package]]
-name = "diem-secure-net"
-version = "0.1.0"
-dependencies = [
- "diem-config",
- "diem-logger",
- "diem-secure-push-metrics",
- "diem-workspace-hack",
- "once_cell",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "diem-secure-push-metrics"
-version = "0.1.0"
-dependencies = [
- "diem-logger",
- "diem-metrics-core",
- "diem-workspace-hack",
- "ureq",
-]
-
-[[package]]
-name = "diem-secure-storage"
-version = "0.1.0"
-dependencies = [
- "base64 0.13.0",
- "chrono",
- "consensus-types",
- "enum_dispatch",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-crypto-derive",
- "diem-github-client",
- "diem-global-constants",
- "diem-infallible",
- "diem-logger",
- "diem-secure-time",
- "diem-temppath",
- "diem-types",
- "diem-vault-client",
- "diem-workspace-hack",
- "rand 0.7.3",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
-name = "diem-secure-time"
-version = "0.1.0"
-dependencies = [
- "diem-infallible",
- "diem-workspace-hack",
-]
-
-[[package]]
-name = "diem-state-view"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "diem-crypto",
- "diem-types",
- "diem-workspace-hack",
-]
-
-[[package]]
-name = "diem-storage-inspector"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "diem-crypto",
- "diem-logger",
- "diem-types",
- "diem-workspace-hack",
- "diemdb",
- "storage-interface",
- "structopt 0.3.18",
- "tempfile",
- "transaction-builder",
-]
-
-[[package]]
-name = "diem-swarm"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "ctrlc",
- "debug-interface",
- "diem-config",
- "diem-genesis-tool",
- "diem-logger",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
- "reqwest",
- "structopt 0.3.18",
- "thiserror",
-]
-
-[[package]]
-name = "diem-temppath"
-version = "0.1.0"
-dependencies = [
- "hex 0.4.2",
- "diem-workspace-hack",
- "rand 0.7.3",
-]
-
-[[package]]
-name = "diem-trace"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "chrono",
- "diem-logger",
- "diem-metrics",
- "diem-workspace-hack",
- "once_cell",
- "reqwest",
- "serde",
- "serde_json",
- "structopt 0.3.18",
- "tokio",
-]
-
-[[package]]
-name = "diem-transaction-replay"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "compiled-stdlib",
- "difference",
- "diem-canonical-serialization",
- "diem-state-view",
- "diem-types",
- "diem-validator-interface",
- "diem-vm",
- "diem-workspace-hack",
- "diemdb",
- "move-core-types",
- "move-lang",
- "move-vm-runtime",
- "move-vm-test-utils",
- "move-vm-types",
- "resource-viewer",
- "stdlib",
- "structopt 0.3.18",
- "vm",
- "vm-genesis",
-]
-
-[[package]]
-name = "diem-types"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bytes",
- "chrono",
- "hex 0.4.2",
- "itertools 0.9.0",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-crypto-derive",
- "diem-infallible",
- "diem-network-address",
- "diem-proptest-helpers",
- "diem-workspace-hack",
- "mirai-annotations",
- "move-core-types",
- "once_cell",
- "proptest",
- "proptest-derive",
- "radix_trie",
- "rand 0.7.3",
- "regex",
- "serde",
- "serde_bytes",
- "serde_json",
- "thiserror",
- "tiny-keccak",
-]
-
-[[package]]
-name = "diem-validator-interface"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "diem-canonical-serialization",
- "diem-json-rpc-client",
- "diem-state-view",
- "diem-types",
- "diem-workspace-hack",
- "diemdb",
- "reqwest",
- "scratchpad",
- "storage-interface",
-]
-
-[[package]]
-name = "diem-vault-client"
-version = "0.1.0"
-dependencies = [
- "base64 0.13.0",
- "chrono",
- "diem-crypto",
- "diem-proptest-helpers",
- "diem-types",
- "diem-workspace-hack",
- "native-tls",
- "once_cell",
- "proptest",
- "serde",
- "serde_json",
- "thiserror",
- "ureq",
-]
-
-[[package]]
-name = "diem-vm"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "fail",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-logger",
- "diem-metrics",
- "diem-state-view",
- "diem-trace",
- "diem-types",
- "diem-workspace-hack",
- "mirai-annotations",
- "move-core-types",
- "move-vm-runtime",
- "move-vm-types",
- "once_cell",
- "proptest",
- "rayon",
- "serde",
- "serde_json",
- "stdlib",
- "transaction-builder",
- "vm",
-]
-
-[[package]]
-name = "diem-wallet"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "byteorder",
- "ed25519-dalek 1.0.0 (git+https://github.com/novifinancial/ed25519-dalek.git?branch=fiat4)",
- "ed25519-dalek 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "hex 0.4.2",
- "hmac 0.9.0",
- "diem-crypto",
- "diem-global-constants",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
- "mirai-annotations",
- "pbkdf2",
- "rand 0.7.3",
- "serde",
- "sha2 0.9.1",
- "thiserror",
-]
-
-[[package]]
-name = "diem-workspace-hack"
-version = "0.1.0"
-dependencies = [
- "bytes",
- "cc",
- "log",
- "memchr",
- "num-traits",
- "petgraph",
- "serde",
- "sha-1 0.9.1",
- "subtle",
- "syn 1.0.42",
-]
-
-[[package]]
-name = "diem-writeset-generator"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "handlebars",
- "diem-canonical-serialization",
- "diem-types",
- "diem-workspace-hack",
- "move-lang",
- "serde",
- "serde_json",
- "stdlib",
- "structopt 0.3.18",
- "tempfile",
-]
-
-[[package]]
-name = "diemdb"
-version = "0.1.0"
-dependencies = [
- "accumulator",
- "anyhow",
- "arc-swap",
- "byteorder",
- "itertools 0.9.0",
- "diem-canonical-serialization",
- "diem-crypto",
- "diem-infallible",
- "diem-jellyfish-merkle",
- "diem-logger",
- "diem-metrics",
- "diem-proptest-helpers",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
- "num-derive",
- "num-traits",
- "num-variants",
- "once_cell",
- "proptest",
- "proptest-derive",
- "rand 0.7.3",
- "schemadb",
- "serde",
- "storage-interface",
- "thiserror",
 ]
 
 [[package]]
@@ -3884,8 +3884,8 @@ name = "many-keys-stress-test"
 version = "0.1.0"
 dependencies = [
  "channel",
- "futures 0.3.6",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "structopt 0.3.18",
 ]
 
@@ -3948,9 +3948,9 @@ name = "memsocket"
 version = "0.1.0"
 dependencies = [
  "bytes",
- "futures 0.3.6",
  "diem-infallible",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "once_cell",
 ]
 
@@ -3982,10 +3982,6 @@ dependencies = [
  "cli",
  "compiled-stdlib",
  "criterion",
- "dirs 2.0.2",
- "glob",
- "gumdrop",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -3998,6 +3994,10 @@ dependencies = [
  "diem-types",
  "diem-wallet",
  "diemdb",
+ "dirs 2.0.2",
+ "glob",
+ "gumdrop",
+ "hex 0.4.2",
  "move-core-types",
  "once_cell",
  "regex",
@@ -4100,9 +4100,9 @@ name = "module-generation"
 version = "0.1.0"
 dependencies = [
  "bytecode-verifier",
- "ir-to-bytecode",
  "diem-types",
  "diem-workspace-hack",
+ "ir-to-bytecode",
  "move-core-types",
  "move-ir-types",
  "rand 0.7.3",
@@ -4116,14 +4116,14 @@ dependencies = [
  "anyhow",
  "compiled-stdlib",
  "datatest-stable",
- "difference",
- "disassembler",
- "errmapgen",
  "diem-canonical-serialization",
  "diem-state-view",
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "difference",
+ "disassembler",
+ "errmapgen",
  "move-core-types",
  "move-lang",
  "move-vm-runtime",
@@ -4140,11 +4140,11 @@ name = "move-core-types"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-crypto-derive",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "mirai-annotations",
  "once_cell",
  "proptest",
@@ -4184,9 +4184,9 @@ name = "move-explain"
 version = "0.1.0"
 dependencies = [
  "compiled-stdlib",
- "errmapgen",
  "diem-canonical-serialization",
  "diem-workspace-hack",
+ "errmapgen",
  "move-core-types",
  "structopt 0.3.18",
 ]
@@ -4197,9 +4197,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "codespan",
- "hex 0.4.2",
  "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "move-core-types",
  "once_cell",
  "serde",
@@ -4216,12 +4216,12 @@ dependencies = [
  "codespan",
  "codespan-reporting",
  "datatest-stable",
- "difference",
- "hex 0.4.2",
- "ir-to-bytecode",
  "diem-canonical-serialization",
  "diem-types",
  "diem-workspace-hack",
+ "difference",
+ "hex 0.4.2",
+ "ir-to-bytecode",
  "move-core-types",
  "move-ir-types",
  "petgraph",
@@ -4238,9 +4238,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "datatest-stable",
- "functional-tests",
  "diem-types",
  "diem-workspace-hack",
+ "functional-tests",
  "move-lang",
  "tempfile",
 ]
@@ -4258,15 +4258,15 @@ dependencies = [
  "codespan",
  "codespan-reporting",
  "datatest-stable",
+ "diem-temppath",
+ "diem-types",
+ "diem-workspace-hack",
  "docgen",
  "errmapgen",
  "futures 0.3.6",
  "handlebars",
  "hex 0.4.2",
  "itertools 0.9.0",
- "diem-temppath",
- "diem-types",
- "diem-workspace-hack",
  "log",
  "move-ir-types",
  "move-lang",
@@ -4305,11 +4305,11 @@ dependencies = [
 name = "move-vm-natives"
 version = "0.1.0"
 dependencies = [
- "hex 0.4.2",
  "diem-crypto",
  "diem-global-constants",
  "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "mirai-annotations",
  "move-core-types",
  "move-vm-types",
@@ -4326,14 +4326,14 @@ dependencies = [
  "anyhow",
  "bytecode-verifier",
  "compiler",
- "fail",
- "hex 0.4.2",
  "diem-crypto",
  "diem-infallible",
  "diem-logger",
  "diem-state-view",
  "diem-types",
  "diem-workspace-hack",
+ "fail",
+ "hex 0.4.2",
  "mirai-annotations",
  "move-core-types",
  "move-lang",
@@ -4430,11 +4430,11 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "bytes",
- "futures 0.3.6",
  "diem-logger",
  "diem-network-address",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "memsocket",
  "pin-project",
  "serde",
@@ -4449,9 +4449,6 @@ dependencies = [
  "bytes",
  "channel",
  "criterion",
- "futures 0.3.6",
- "futures-util",
- "hex 0.4.2",
  "diem-bitvec",
  "diem-canonical-serialization",
  "diem-config",
@@ -4464,6 +4461,9 @@ dependencies = [
  "diem-proptest-helpers",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
+ "futures-util",
+ "hex 0.4.2",
  "memsocket",
  "netcore",
  "network-builder",
@@ -4491,7 +4491,6 @@ name = "network-builder"
 version = "0.1.0"
 dependencies = [
  "channel",
- "futures 0.3.6",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -4503,6 +4502,7 @@ dependencies = [
  "diem-secure-storage",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "netcore",
  "network",
  "network-simple-onchain-discovery",
@@ -4520,7 +4520,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "channel",
- "futures 0.3.6",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -4530,6 +4529,7 @@ dependencies = [
  "diem-network-address-encryption",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "move-core-types",
  "network",
  "once_cell",
@@ -5584,11 +5584,11 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "compiled-stdlib",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-state-view",
  "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -5912,11 +5912,11 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 name = "scratchpad"
 version = "0.1.0"
 dependencies = [
- "itertools 0.9.0",
  "diem-crypto",
  "diem-infallible",
  "diem-types",
  "diem-workspace-hack",
+ "itertools 0.9.0",
  "proptest",
 ]
 
@@ -5958,9 +5958,6 @@ name = "seed-peer-generator"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "executor",
- "generate-key",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -5973,6 +5970,9 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
+ "generate-key",
+ "hex 0.4.2",
  "rand 0.7.3",
  "serde_yaml",
  "storage-interface",
@@ -6248,8 +6248,8 @@ checksum = "7fdf1b9db47230893d76faad238fd6097fd6d6a9245cd7a4d90dbd639536bbd2"
 name = "short-hex-str"
 version = "0.1.0"
 dependencies = [
- "hex 0.4.2",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "mirai-annotations",
  "proptest",
  "serde",
@@ -6322,8 +6322,6 @@ dependencies = [
  "backup-cli",
  "cli",
  "debug-interface",
- "generate-key",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -6346,6 +6344,8 @@ dependencies = [
  "diem-types",
  "diem-vault-client",
  "diem-workspace-hack",
+ "generate-key",
+ "hex 0.4.2",
  "num 0.3.0",
  "num-traits",
  "once_cell",
@@ -6360,13 +6360,13 @@ dependencies = [
 name = "socket-bench-server"
 version = "0.1.0"
 dependencies = [
- "futures 0.3.6",
  "diem-config",
  "diem-crypto",
  "diem-logger",
  "diem-network-address",
  "diem-types",
  "diem-workspace-hack",
+ "futures 0.3.6",
  "memsocket",
  "netcore",
  "network",
@@ -6398,9 +6398,9 @@ dependencies = [
  "codespan",
  "codespan-reporting",
  "datatest-stable",
- "itertools 0.9.0",
  "diem-types",
  "diem-workspace-hack",
+ "itertools 0.9.0",
  "log",
  "move-core-types",
  "move-ir-types",
@@ -6436,12 +6436,6 @@ dependencies = [
  "bytes",
  "channel",
  "compiled-stdlib",
- "executor",
- "executor-test-helpers",
- "executor-types",
- "fail",
- "futures 0.3.6",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -6457,6 +6451,12 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
+ "executor-test-helpers",
+ "executor-types",
+ "fail",
+ "futures 0.3.6",
+ "itertools 0.9.0",
  "memsocket",
  "netcore",
  "network",
@@ -6586,13 +6586,13 @@ name = "storage-interface"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-secure-net",
  "diem-state-view",
  "diem-types",
  "diem-workspace-hack",
+ "itertools 0.9.0",
  "move-core-types",
  "scratchpad",
  "serde",
@@ -6605,8 +6605,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "futures 0.3.6",
- "itertools 0.9.0",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -6617,6 +6615,8 @@ dependencies = [
  "diem-types",
  "diem-workspace-hack",
  "diemdb",
+ "futures 0.3.6",
+ "itertools 0.9.0",
  "proptest",
  "rand 0.7.3",
  "storage-client",
@@ -6628,9 +6628,9 @@ dependencies = [
 name = "stream-ratelimiter"
 version = "0.1.0"
 dependencies = [
+ "diem-workspace-hack",
  "futures 0.3.6",
  "futures-semaphore",
- "diem-workspace-hack",
  "pin-project",
  "tokio",
 ]
@@ -6719,11 +6719,11 @@ checksum = "171758edb47aa306a78dfa4ab9aeb5167405bd4e3dc2b64e88f6a84bbe98bd63"
 name = "swiss-knife"
 version = "0.1.0"
 dependencies = [
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-crypto",
  "diem-types",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "move-core-types",
  "rand 0.7.3",
  "serde",
@@ -6838,16 +6838,16 @@ version = "0.1.0"
 dependencies = [
  "bytecode-verifier",
  "crossbeam-channel",
- "getrandom 0.2.0",
- "hex 0.4.2",
- "itertools 0.9.0",
- "language-e2e-tests",
  "diem-config",
  "diem-logger",
  "diem-state-view",
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "getrandom 0.2.0",
+ "hex 0.4.2",
+ "itertools 0.9.0",
+ "language-e2e-tests",
  "mirai-annotations",
  "module-generation",
  "move-core-types",
@@ -7211,10 +7211,10 @@ name = "transaction-builder-generator"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "heck",
  "diem-canonical-serialization",
  "diem-types",
  "diem-workspace-hack",
+ "heck",
  "move-core-types",
  "regex",
  "serde-generate",
@@ -7471,7 +7471,6 @@ dependencies = [
  "anyhow",
  "bytecode-verifier",
  "compiled-stdlib",
- "hex 0.4.2",
  "diem-canonical-serialization",
  "diem-config",
  "diem-crypto",
@@ -7481,6 +7480,7 @@ dependencies = [
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
+ "hex 0.4.2",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
@@ -7498,9 +7498,6 @@ name = "vm-validator"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "executor",
- "executor-test-helpers",
- "fail",
  "diem-config",
  "diem-crypto",
  "diem-state-view",
@@ -7509,6 +7506,9 @@ dependencies = [
  "diem-vm",
  "diem-workspace-hack",
  "diemdb",
+ "executor",
+ "executor-test-helpers",
+ "fail",
  "move-core-types",
  "rand 0.7.3",
  "scratchpad",
@@ -7760,11 +7760,11 @@ dependencies = [
  "anyhow",
  "chrono",
  "colored-diff",
+ "diem-workspace-hack",
  "env_logger",
  "glob",
  "guppy",
  "indoc",
- "diem-workspace-hack",
  "log",
  "serde",
  "serde_json",
@@ -7778,8 +7778,8 @@ dependencies = [
 name = "x-core"
 version = "0.1.0"
 dependencies = [
- "guppy",
  "diem-workspace-hack",
+ "guppy",
  "once_cell",
  "rental",
  "serde",
@@ -7790,8 +7790,8 @@ dependencies = [
 name = "x-lint"
 version = "0.1.0"
 dependencies = [
- "guppy",
  "diem-workspace-hack",
+ "guppy",
  "once_cell",
  "serde",
  "toml",

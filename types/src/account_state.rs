@@ -10,9 +10,9 @@ use crate::{
     },
     block_metadata::{LibraBlockResource, NEW_BLOCK_EVENT_PATH},
     event::EventHandle,
-    diem_timestamp::LibraTimestampResource,
+    diem_timestamp::DiemTimestampResource,
     on_chain_config::{
-        ConfigurationResource, LibraVersion, OnChainConfig, RegisteredCurrencies,
+        ConfigurationResource, DiemVersion, OnChainConfig, RegisteredCurrencies,
         VMPublishingOption, ValidatorSet,
     },
     upgrade_payload::UpgradePayloadResource,
