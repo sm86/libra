@@ -12,8 +12,8 @@ def main() -> None:
     token = diem.TypeTag__Struct(
         value=diem.StructTag(
             address=diem.AccountAddress.from_bytes(b"\x00" * 15 + b"\x01"),
-            module=diem.Identifier("LBR"),
-            name=diem.Identifier("LBR"),
+            module=diem.Identifier("XDX"),
+            name=diem.Identifier("XDX"),
             type_params=[],
         )
     )

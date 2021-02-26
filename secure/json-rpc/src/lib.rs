@@ -10,11 +10,11 @@
 //! provides a simpler and (hopefully) more secure implementation with fewer dependencies.
 #![forbid(unsafe_code)]
 
-use hex::FromHexError;
 use diem_types::{
     account_address::AccountAddress, account_state::AccountState,
     account_state_blob::AccountStateBlob, transaction::SignedTransaction,
 };
+use hex::FromHexError;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::{convert::TryFrom, env, io};
@@ -385,7 +385,6 @@ impl From<&Vec<u8>> for Bytes {
 mod test {
     use super::*;
     use anyhow::Result;
-    use futures::{channel::mpsc::channel, StreamExt};
     use diem_config::utils;
     use diem_crypto::HashValue;
     use diem_json_rpc::test_bootstrap;
@@ -402,6 +401,7 @@ mod test {
         transaction::{TransactionListWithProof, TransactionWithProof, Version},
     };
     use diemdb::errors::DiemDbError::NotFound;
+    use futures::{channel::mpsc::channel, StreamExt};
     use std::{collections::BTreeMap, sync::Arc};
     use storage_interface::{DbReader, Order, StartupInfo, TreeState};
     use tokio::runtime::Runtime;

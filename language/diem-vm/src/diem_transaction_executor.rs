@@ -4,17 +4,16 @@
 use crate::{
     counters::*,
     data_cache::StateViewCache,
-    errors::expect_only_successful_execution,
     diem_vm::{
         charge_global_write_gas_usage, get_currency_info, get_transaction_output,
         txn_effects_to_writeset_and_events_cached, DiemVMImpl, DiemVMInternals,
     },
+    errors::expect_only_successful_execution,
     logging::AdapterLogSchema,
     system_module_names::*,
     transaction_metadata::TransactionMetadata,
     txn_effects_to_writeset_and_events, VMExecutor,
 };
-use fail::fail_point;
 use diem_logger::prelude::*;
 use diem_state_view::StateView;
 use diem_trace::prelude::*;
@@ -28,12 +27,13 @@ use diem_types::{
     vm_status::{KeptVMStatus, StatusCode, VMStatus},
     write_set::{WriteSet, WriteSetMut},
 };
+use fail::fail_point;
 use move_core_types::{
     account_address::AccountAddress,
     gas_schedule::{CostTable, GasAlgebra, GasCarrier, GasUnits},
     identifier::IdentStr,
 };
-use move_vm_runtime::{logging::LogContext, session::Session, data_cache::RemoteCache,};
+use move_vm_runtime::{data_cache::RemoteCache, logging::LogContext, session::Session};
 use move_vm_types::{
     gas_schedule::{zero_cost_schedule, CostStrategy},
     values::Value,
@@ -198,7 +198,7 @@ impl DiemVM {
                 )
                 .map_err(|e| e.into_vm_status())?;
 
-            charge_global_write_gas_usage(cost_strategy, &session)?;
+            charge_global_write_gas_usage(cost_strategy, &session, &txn_data.sender())?;
 
             cost_strategy.disable_metering();
             self.success_transaction_cleanup(
@@ -261,7 +261,7 @@ impl DiemVM {
             )
             .map_err(|e| e.into_vm_status())?;
 
-        charge_global_write_gas_usage(cost_strategy, &session)?;
+        charge_global_write_gas_usage(cost_strategy, &session, &txn_data.sender())?;
 
         self.success_transaction_cleanup(
             session,
@@ -447,37 +447,27 @@ impl DiemVM {
         let mut cost_strategy = CostStrategy::system(&gas_schedule, GasUnits::new(0));
         let mut session = self.0.new_session(remote_cache);
 
-        if let Ok((round, timestamp, previous_vote, proposer)) = block_metadata.clone().into_inner() {
-            let args = vec![
-                Value::transaction_argument_signer_reference(txn_data.sender),
-                Value::u64(round),
-                Value::u64(timestamp),
-                Value::vector_address(previous_vote),
-                Value::address(proposer),
-            ];
-            session
-                .execute_function(
-                    &LIBRA_BLOCK_MODULE,
-                    &BLOCK_PROLOGUE,
-                    vec![],
-                    args,
-                    txn_data.sender,
-                    &mut cost_strategy,
-                    log_context,
-                )
-                .or_else(|e| {
-                    expect_only_successful_execution(e, BLOCK_PROLOGUE.as_str(), log_context)
-                })?
-        } else {
-            return Err(VMStatus::Error(StatusCode::MALFORMED));
-        };
-
-        // Consensus checking for oracle outcome
-        self.0.tick_oracle_consensus(&mut session, block_metadata.clone(), &txn_data, &mut cost_strategy, log_context)?;
-        
-        // Apply upgrade for Upgrade oracle
-        self.0.apply_stdlib_upgrade(&mut session, &remote_cache, block_metadata.clone(), &txn_data, &mut cost_strategy, log_context)?;
-
+        let (round, timestamp, previous_vote, proposer) = block_metadata.into_inner();
+        let args = vec![
+            Value::transaction_argument_signer_reference(txn_data.sender),
+            Value::u64(round),
+            Value::u64(timestamp),
+            Value::vector_address(previous_vote),
+            Value::address(proposer),
+        ];
+        session
+            .execute_function(
+                &DIEM_BLOCK_MODULE,
+                &BLOCK_PROLOGUE,
+                vec![],
+                args,
+                txn_data.sender,
+                &mut cost_strategy,
+                log_context,
+            )
+            .or_else(|e| {
+                expect_only_successful_execution(e, BLOCK_PROLOGUE.as_str(), log_context)
+            })?;
         SYSTEM_TRANSACTIONS_EXECUTED.inc();
 
         let output = get_transaction_output(
@@ -510,9 +500,7 @@ impl DiemVM {
             .0
             .run_writeset_prologue(&mut session, &txn_data, log_context)
         {
-            // Switch any error from the prologue to a reject
-            debug_assert_eq!(e.status_code(), StatusCode::REJECTED_WRITE_SET);
-            return Ok((e, discard_error_output(StatusCode::REJECTED_WRITE_SET)));
+            return Ok(discard_error_vm_status(e));
         };
 
         let change_set = match txn.payload() {
@@ -632,6 +620,9 @@ impl DiemVM {
 
         let signature_verified_block: Vec<Result<PreprocessedTransaction, VMStatus>>;
         {
+            // Verify the signatures of all the transactions in parallel.
+            // This is time consuming so don't wait and do the checking
+            // sequentially while executing the transactions.
             signature_verified_block = transactions
                 .into_par_iter()
                 .map(preprocess_transaction)
@@ -741,6 +732,10 @@ impl DiemVM {
     }
 }
 
+/// Check the signature (if any) of a transaction. If the signature is OK, the result
+/// is a PreprocessedTransaction, where a user transaction is translated to a
+/// SignatureCheckedTransaction and also categorized into either a UserTransaction
+/// or a WriteSet transaction.
 fn preprocess_transaction(txn: Transaction) -> Result<PreprocessedTransaction, VMStatus> {
     Ok(match txn {
         Transaction::BlockMetadata(b) => PreprocessedTransaction::BlockPrologue(b),
@@ -766,8 +761,9 @@ fn is_reconfiguration(vm_output: &TransactionOutput) -> bool {
         .any(|event| *event.key() == new_epoch_event_key)
 }
 
-/// Transactions divided by transaction flow.
-/// Transaction flows are different across different types of transactions.
+/// Transactions after signature checking:
+/// Waypoints and BlockPrologues are not signed and are unaffected by signature checking,
+/// but a user transaction or writeset transaction is transformed to a SignatureCheckedTransaction.
 #[derive(Debug)]
 enum PreprocessedTransaction {
     UserTransaction(Box<SignatureCheckedTransaction>),
@@ -833,7 +829,6 @@ fn convert_txn_args(args: &[TransactionArgument]) -> Vec<Value> {
             TransactionArgument::Address(a) => Value::address(*a),
             TransactionArgument::Bool(b) => Value::bool(*b),
             TransactionArgument::U8Vector(v) => Value::vector_u8(v.clone()),
-            TransactionArgument::AddressVector(v) => Value::vector_address(v.clone())
         })
         .collect()
 }

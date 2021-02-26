@@ -41,8 +41,8 @@ stdlib_script::create_validator_account
 //! execute-as: alex
 script {
 use 0x1::ValidatorConfig;
-fun main(lr_account: &signer, alex_signer: &signer) {
-    ValidatorConfig::publish(alex_signer, lr_account, b"alex");
+fun main(dr_account: &signer, alex_signer: &signer) {
+    ValidatorConfig::publish(alex_signer, dr_account, b"alex");
 }
 }
 // check: "Discard(INVALID_WRITE_SET)"

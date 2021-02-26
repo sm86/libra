@@ -108,7 +108,7 @@ The script hash has an invalid length
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_initialize">initialize</a>(lr_account: &signer, script_allow_list: vector&lt;vector&lt;u8&gt;&gt;, module_publishing_allowed: bool)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_initialize">initialize</a>(dr_account: &signer, script_allow_list: vector&lt;vector&lt;u8&gt;&gt;, module_publishing_allowed: bool)
 </code></pre>
 
 
@@ -118,15 +118,15 @@ The script hash has an invalid length
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_initialize">initialize</a>(
-    lr_account: &signer,
+    dr_account: &signer,
     script_allow_list: vector&lt;vector&lt;u8&gt;&gt;,
     module_publishing_allowed: bool,
 ) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
 
     <a href="DiemConfig.md#0x1_DiemConfig_publish_new_config">DiemConfig::publish_new_config</a>(
-        lr_account,
+        dr_account,
         <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a> {
             script_allow_list, module_publishing_allowed
         }
@@ -145,7 +145,7 @@ The script hash has an invalid length
 Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">DiemTimestamp::AbortsIfNotGenesis</a>;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigAbortsIf">DiemConfig::PublishNewConfigAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigEnsures">DiemConfig::PublishNewConfigEnsures</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt; {
@@ -256,7 +256,7 @@ Check if a sender can publish a module
 Add <code>new_hash</code> to the list of script hashes that is allowed to be executed by the network.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_add_to_script_allow_list">add_to_script_allow_list</a>(lr_account: &signer, new_hash: vector&lt;u8&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_add_to_script_allow_list">add_to_script_allow_list</a>(dr_account: &signer, new_hash: vector&lt;u8&gt;)
 </code></pre>
 
 
@@ -265,8 +265,8 @@ Add <code>new_hash</code> to the list of script hashes that is allowed to be exe
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_add_to_script_allow_list">add_to_script_allow_list</a>(lr_account: &signer, new_hash: vector&lt;u8&gt;) {
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_add_to_script_allow_list">add_to_script_allow_list</a>(dr_account: &signer, new_hash: vector&lt;u8&gt;) {
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
 
     <b>assert</b>(<a href="Vector.md#0x1_Vector_length">Vector::length</a>(&new_hash) == <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_SCRIPT_HASH_LENGTH">SCRIPT_HASH_LENGTH</a>, <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_EINVALID_SCRIPT_HASH">EINVALID_SCRIPT_HASH</a>));
 
@@ -276,7 +276,7 @@ Add <code>new_hash</code> to the list of script hashes that is allowed to be exe
     };
     <a href="Vector.md#0x1_Vector_push_back">Vector::push_back</a>(&<b>mut</b> publish_option.script_allow_list, new_hash);
 
-    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(lr_account, publish_option);
+    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(dr_account, publish_option);
 }
 </code></pre>
 
@@ -291,13 +291,13 @@ Add <code>new_hash</code> to the list of script hashes that is allowed to be exe
 Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <a name="0x1_DiemTransactionPublishingOption_allow_list$8"></a>
 <b>let</b> allow_list = <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;().script_allow_list;
 <b>aborts_if</b> <a href="Vector.md#0x1_Vector_length">Vector::length</a>(new_hash) != <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_SCRIPT_HASH_LENGTH">SCRIPT_HASH_LENGTH</a> <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>;
 <b>aborts_if</b> <a href="Vector.md#0x1_Vector_spec_contains">Vector::spec_contains</a>(allow_list, new_hash) <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_AbortsIfNotPublished">DiemConfig::AbortsIfNotPublished</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;;
-<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: lr_account};
+<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: dr_account};
 </code></pre>
 
 
@@ -311,7 +311,7 @@ Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 Allow the execution of arbitrary script or not.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_script">set_open_script</a>(lr_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_script">set_open_script</a>(dr_account: &signer)
 </code></pre>
 
 
@@ -320,12 +320,12 @@ Allow the execution of arbitrary script or not.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_script">set_open_script</a>(lr_account: &signer) {
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_script">set_open_script</a>(dr_account: &signer) {
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
     <b>let</b> publish_option = <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;();
 
     publish_option.script_allow_list = <a href="Vector.md#0x1_Vector_empty">Vector::empty</a>();
-    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(lr_account, publish_option);
+    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(dr_account, publish_option);
 }
 </code></pre>
 
@@ -340,9 +340,9 @@ Allow the execution of arbitrary script or not.
 Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_AbortsIfNotPublished">DiemConfig::AbortsIfNotPublished</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;;
-<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: lr_account};
+<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: dr_account};
 </code></pre>
 
 
@@ -356,7 +356,7 @@ Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 Allow module publishing from arbitrary sender or not.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_module">set_open_module</a>(lr_account: &signer, open_module: bool)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_module">set_open_module</a>(dr_account: &signer, open_module: bool)
 </code></pre>
 
 
@@ -365,13 +365,13 @@ Allow module publishing from arbitrary sender or not.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_module">set_open_module</a>(lr_account: &signer, open_module: bool) {
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_set_open_module">set_open_module</a>(dr_account: &signer, open_module: bool) {
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
 
     <b>let</b> publish_option = <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;();
 
     publish_option.module_publishing_allowed = open_module;
-    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(lr_account, publish_option);
+    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;(dr_account, publish_option);
 }
 </code></pre>
 
@@ -386,9 +386,9 @@ Allow module publishing from arbitrary sender or not.
 Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_AbortsIfNotPublished">DiemConfig::AbortsIfNotPublished</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;;
-<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: lr_account};
+<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;{account: dr_account};
 </code></pre>
 
 
@@ -426,8 +426,8 @@ DiemTransactionPublishingOption config [[H11]][PERMISSION]
 
 <pre><code><b>schema</b> <a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption_DiemVersionRemainsSame">DiemVersionRemainsSame</a> {
     <b>ensures</b> <b>old</b>(<a href="DiemConfig.md#0x1_DiemConfig_spec_is_published">DiemConfig::spec_is_published</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;()) ==&gt;
-        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()) ==
-            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()));
+        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()) ==
+            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemTransactionPublishingOption.md#0x1_DiemTransactionPublishingOption">DiemTransactionPublishingOption</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()));
 }
 </code></pre>
 
@@ -463,6 +463,6 @@ DiemTransactionPublishingOption config [[H11]][PERMISSION]
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

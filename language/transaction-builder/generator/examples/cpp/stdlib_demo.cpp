@@ -11,8 +11,8 @@ using namespace diem_types;
 int main() {
     auto token = TypeTag{TypeTag::Struct{StructTag{
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-        {"LBR"},
-        {"LBR"},
+        {"XDX"},
+        {"XDX"},
         {},
     }}};
     auto payee = AccountAddress{0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22,

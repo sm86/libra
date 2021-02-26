@@ -7,7 +7,7 @@
 [PROVER]: https://github.com/diem/diem/blob/master/language/move-prover/doc/user/prover-guide.md
 [BOOGIE]: https://github.com/boogie-org/boogie
 [Z3]: https://github.com/Z3Prover/z3
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
 
 The Diem framework comes with an exhaustive formal specification of modules and transaction scripts.
 The specifications are formally verified against the Move implementation, with the verification enabled in
@@ -72,6 +72,6 @@ At this point, the Diem framework is specified to the following extent:
 - Most Module functions called directly or indirectly via a transaction script are specified. Note that
   some Module code which is not called this way may not yet be fully specified. Also some functions might
   not be individually specified, but still verified in the context they are used from other functions.
-- A crosscut regards *access control* as defined by [LIP-2][ACCESS_CONTROL] has been systematically specified.
+- A crosscut regards *access control* as defined by [DIP-2][ACCESS_CONTROL] has been systematically specified.
 - Some aspects of the framework have been abstracted out in the current release and are not verified; most
   notably, Event generation has not been specified and verified.

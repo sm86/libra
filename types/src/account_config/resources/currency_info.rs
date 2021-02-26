@@ -3,9 +3,7 @@
 
 use crate::{
     access_path::AccessPath,
-    account_config::constants::{
-        diem_root_address, type_tag_for_currency_code, CORE_CODE_ADDRESS,
-    },
+    account_config::constants::{diem_root_address, type_tag_for_currency_code, CORE_CODE_ADDRESS},
     event::EventHandle,
 };
 use anyhow::Result;
@@ -21,7 +19,7 @@ use serde::{Deserialize, Serialize};
 pub struct CurrencyInfoResource {
     total_value: u128,
     preburn_value: u64,
-    to_lbr_exchange_rate: u64,
+    to_xdx_exchange_rate: u64,
     is_synthetic: bool,
     scaling_factor: u64,
     fractional_part: u64,
@@ -43,7 +41,7 @@ impl CurrencyInfoResource {
     pub fn new(
         total_value: u128,
         preburn_value: u64,
-        to_lbr_exchange_rate: u64,
+        to_xdx_exchange_rate: u64,
         is_synthetic: bool,
         scaling_factor: u64,
         fractional_part: u64,
@@ -58,7 +56,7 @@ impl CurrencyInfoResource {
         Self {
             total_value,
             preburn_value,
-            to_lbr_exchange_rate,
+            to_xdx_exchange_rate,
             is_synthetic,
             scaling_factor,
             fractional_part,
@@ -95,10 +93,10 @@ impl CurrencyInfoResource {
     pub fn exchange_rate(&self) -> f32 {
         // Exchange rates are represented as 32|32 fixed-point numbers on-chain, so we divide by the scaling
         // factor (2^32) of the number to arrive at the floating point representation of the number.
-        (self.to_lbr_exchange_rate as f32) / 2f32.powf(32f32)
+        (self.to_xdx_exchange_rate as f32) / 2f32.powf(32f32)
     }
 
-    pub fn convert_to_lbr(&self, amount: u64) -> u64 {
+    pub fn convert_to_xdx(&self, amount: u64) -> u64 {
         (self.exchange_rate() * (amount as f32)) as u64
     }
 
@@ -116,7 +114,7 @@ impl CurrencyInfoResource {
             diem_root_address(),
             CurrencyInfoResource::struct_tag_for(currency_code),
         );
-        AccessPath::resource_access_path(&resource_key)
+        AccessPath::resource_access_path(resource_key)
     }
 
     pub fn try_from_bytes(bytes: &[u8]) -> Result<Self> {

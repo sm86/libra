@@ -13,13 +13,13 @@ use criterion::{
     criterion_group, criterion_main, AxisScale, Bencher, Criterion, ParameterizedBenchmark,
     PlotConfiguration, Throughput,
 };
+use diem_types::PeerId;
 use futures::{
     channel::mpsc,
     executor::block_on,
     sink::SinkExt,
     stream::{FuturesUnordered, StreamExt},
 };
-use diem_types::PeerId;
 use network::protocols::{network::Event, rpc::error::RpcError};
 use network_builder::dummy::{setup_network, DummyMsg, DummyNetworkSender};
 use std::time::Duration;

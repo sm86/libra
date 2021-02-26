@@ -141,7 +141,7 @@ impl VMValidator for DiemVMValidator {
 
         let account_role = get_account_role(txn_sender, &data_cache);
         let normalized_gas_price = match get_currency_info(&currency_code, &data_cache) {
-            Ok(info) => info.convert_to_lbr(gas_price),
+            Ok(info) => info.convert_to_xdx(gas_price),
             Err(err) => {
                 return VMValidatorResult::new(
                     Some(err.status_code()),

@@ -17,15 +17,11 @@ This module defines a struct storing the metadata of the block and new block eve
     -  [Initialization](#@Initialization_2)
 
 
-<pre><code><b>use</b> <a href="AutoPay.md#0x1_AutoPay">0x1::AutoPay</a>;
-<b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
+<pre><code><b>use</b> <a href="CoreAddresses.md#0x1_CoreAddresses">0x1::CoreAddresses</a>;
 <b>use</b> <a href="DiemSystem.md#0x1_DiemSystem">0x1::DiemSystem</a>;
 <b>use</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp">0x1::DiemTimestamp</a>;
-<b>use</b> <a href="Epoch.md#0x1_Epoch">0x1::Epoch</a>;
 <b>use</b> <a href="Errors.md#0x1_Errors">0x1::Errors</a>;
 <b>use</b> <a href="Event.md#0x1_Event">0x1::Event</a>;
-<b>use</b> <a href="Reconfigure.md#0x1_Reconfigure">0x1::Reconfigure</a>;
-<b>use</b> <a href="Stats.md#0x1_Stats">0x1::Stats</a>;
 </code></pre>
 
 
@@ -203,7 +199,7 @@ Helper function to determine whether this module has been initialized.
 
 
 <pre><code><b>fun</b> <a href="DiemBlock.md#0x1_DiemBlock_is_initialized">is_initialized</a>(): bool {
-    <b>exists</b>&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>())
+    <b>exists</b>&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>())
 }
 </code></pre>
 
@@ -244,18 +240,8 @@ The runtime always runs this before executing the transactions in a block.
         proposer == <a href="CoreAddresses.md#0x1_CoreAddresses_VM_RESERVED_ADDRESS">CoreAddresses::VM_RESERVED_ADDRESS</a>() || <a href="DiemSystem.md#0x1_DiemSystem_is_validator">DiemSystem::is_validator</a>(proposer),
         <a href="Errors.md#0x1_Errors_requires_address">Errors::requires_address</a>(<a href="DiemBlock.md#0x1_DiemBlock_EVM_OR_VALIDATOR">EVM_OR_VALIDATOR</a>)
     );
-    //////// 0L ////////
-    // increment stats
-    <a href="Stats.md#0x1_Stats_process_set_votes">Stats::process_set_votes</a>(vm, &previous_block_votes);
-    <a href="Stats.md#0x1_Stats_inc_prop">Stats::inc_prop</a>(vm, *&proposer);
 
-    <b>if</b> (<a href="AutoPay.md#0x1_AutoPay_tick">AutoPay::tick</a>(vm)){
-        <a href="AutoPay.md#0x1_AutoPay_process_autopay">AutoPay::process_autopay</a>(vm);
-    };
-
-    ///////////////////
-
-    <b>let</b> block_metadata_ref = borrow_global_mut&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>());
+    <b>let</b> block_metadata_ref = borrow_global_mut&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>());
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_update_global_time">DiemTimestamp::update_global_time</a>(vm, proposer, timestamp);
     block_metadata_ref.height = block_metadata_ref.height + 1;
     <a href="Event.md#0x1_Event_emit_event">Event::emit_event</a>&lt;<a href="DiemBlock.md#0x1_DiemBlock_NewBlockEvent">NewBlockEvent</a>&gt;(
@@ -267,13 +253,6 @@ The runtime always runs this before executing the transactions in a block.
             time_microseconds: timestamp,
         }
     );
-
-     //////// 0L ////////
-    // reconfigure
-    <b>if</b> (<a href="Epoch.md#0x1_Epoch_epoch_finished">Epoch::epoch_finished</a>()) {
-      // TODO: We don't need <b>to</b> pass block height <b>to</b> ReconfigureOL. It should <b>use</b> the <a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>. But there's a circular reference there when we try.
-      <a href="Reconfigure.md#0x1_Reconfigure_reconfigure">Reconfigure::reconfigure</a>(vm, <a href="DiemBlock.md#0x1_DiemBlock_get_current_block_height">get_current_block_height</a>());
-    }
 }
 </code></pre>
 
@@ -323,7 +302,7 @@ Get the current block height
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemBlock.md#0x1_DiemBlock_get_current_block_height">get_current_block_height</a>(): u64 <b>acquires</b> <a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a> {
     <b>assert</b>(<a href="DiemBlock.md#0x1_DiemBlock_is_initialized">is_initialized</a>(), <a href="Errors.md#0x1_Errors_not_published">Errors::not_published</a>(<a href="DiemBlock.md#0x1_DiemBlock_EBLOCK_METADATA">EBLOCK_METADATA</a>));
-    borrow_global&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()).height
+    borrow_global&lt;<a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a>&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()).height
 }
 </code></pre>
 
@@ -341,6 +320,8 @@ Get the current block height
 
 ### Initialization
 
+This implies that <code><a href="DiemBlock.md#0x1_DiemBlock_BlockMetadata">BlockMetadata</a></code> is published after initialization and stays published
+ever after
 
 
 <pre><code><b>invariant</b> [<b>global</b>] <a href="DiemTimestamp.md#0x1_DiemTimestamp_is_operating">DiemTimestamp::is_operating</a>() ==&gt; <a href="DiemBlock.md#0x1_DiemBlock_is_initialized">is_initialized</a>();
@@ -348,6 +329,6 @@ Get the current block height
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

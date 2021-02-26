@@ -3,7 +3,7 @@
 
 use crate::common::Round;
 use diem_crypto::ed25519::Ed25519Signature;
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use diem_types::validator_signer::ValidatorSigner;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};

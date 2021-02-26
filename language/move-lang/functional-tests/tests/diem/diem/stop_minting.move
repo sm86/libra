@@ -29,12 +29,12 @@ module COIN {
 
     struct COIN { }
 
-    public fun initialize(lr_account: &signer, tc_account: &signer) {
+    public fun initialize(dr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
         Diem::register_SCS_currency<COIN>(
-            lr_account,
+            dr_account,
             tc_account,
-            FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
+            FixedPoint32::create_from_rational(1, 2), // exchange rate to XDX
             1000000, // scaling_factor = 10^6
             100,     // fractional_part = 10^2
             b"COIN",
@@ -54,8 +54,8 @@ module COIN {
 script {
 use 0x1::TransactionFee;
 use 0x1::COIN::{Self, COIN};
-fun main(lr_account: &signer, tc_account: &signer) {
-    COIN::initialize(lr_account, tc_account);
+fun main(dr_account: &signer, tc_account: &signer) {
+    COIN::initialize(dr_account, tc_account);
     TransactionFee::add_txn_fee_currency<COIN>(tc_account);
 }
 }
@@ -67,15 +67,15 @@ fun main(lr_account: &signer, tc_account: &signer) {
 //! sender: blessed
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::COIN::COIN;
 use 0x1::Diem;
 
 // register dd(1|2) as a preburner
 fun main(account: &signer) {
-    let prev_mcap1 = Diem::market_cap<Coin1>();
+    let prev_mcap1 = Diem::market_cap<XUS>();
     let prev_mcap2 = Diem::market_cap<COIN>();
-    DiemAccount::create_designated_dealer<Coin1>(
+    DiemAccount::create_designated_dealer<XUS>(
         account,
         {{dd1}},
         {{dd1::auth_key}},
@@ -89,7 +89,7 @@ fun main(account: &signer) {
         x"",
         false,
     );
-    DiemAccount::tiered_mint<Coin1>(
+    DiemAccount::tiered_mint<XUS>(
         account,
         {{dd1}},
         10,
@@ -101,7 +101,7 @@ fun main(account: &signer) {
         100,
         0,
     );
-    assert(Diem::market_cap<Coin1>() - prev_mcap1 == 10, 7);
+    assert(Diem::market_cap<XUS>() - prev_mcap1 == 10, 7);
     assert(Diem::market_cap<COIN>() - prev_mcap2 == 100, 8);
 }
 }
@@ -110,13 +110,13 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: dd1
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 
 // do some preburning
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::preburn<Coin1>(account, &with_cap, 10);
+    DiemAccount::preburn<XUS>(account, &with_cap, 10);
     DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
@@ -143,15 +143,15 @@ fun main(account: &signer) {
 //! sender: blessed
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::COIN::COIN;
 
 fun main(account: &signer) {
-    let prev_mcap1 = Diem::market_cap<Coin1>();
+    let prev_mcap1 = Diem::market_cap<XUS>();
     let prev_mcap2 = Diem::market_cap<COIN>();
-    Diem::burn<Coin1>(account, {{dd1}});
+    Diem::burn<XUS>(account, {{dd1}});
     Diem::burn<COIN>(account, {{dd2}});
-    assert(prev_mcap1 - Diem::market_cap<Coin1>() == 10, 9);
+    assert(prev_mcap1 - Diem::market_cap<XUS>() == 10, 9);
     assert(prev_mcap2 - Diem::market_cap<COIN>() == 100, 10);
 }
 }
@@ -162,11 +162,11 @@ fun main(account: &signer) {
 //! sender: blessed
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 
 fun main(account: &signer) {
-    Diem::update_minting_ability<Coin1>(account, false);
-    let coin = Diem::mint<Coin1>(account, 10); // will abort here
+    Diem::update_minting_ability<XUS>(account, false);
+    let coin = Diem::mint<XUS>(account, 10); // will abort here
     Diem::destroy_zero(coin);
 }
 }

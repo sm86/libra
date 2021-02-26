@@ -19,7 +19,7 @@ services:
     validator:
         # Note this image currently does not support this, will update to the appropriate minimum
         # version shortly
-        image: diem/validator:master_f53da21f
+        image: libra/validator:master_f53da21f
         networks:
             shared:
                 ipv4_address: 172.16.1.3

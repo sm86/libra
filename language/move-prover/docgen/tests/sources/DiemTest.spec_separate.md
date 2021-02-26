@@ -17,7 +17,7 @@ minting and burning of coins.
 -  [Struct `BurnEvent`](#0x1_DiemTest_BurnEvent)
 -  [Struct `PreburnEvent`](#0x1_DiemTest_PreburnEvent)
 -  [Struct `CancelBurnEvent`](#0x1_DiemTest_CancelBurnEvent)
--  [Struct `ToLBRExchangeRateUpdateEvent`](#0x1_DiemTest_ToLBRExchangeRateUpdateEvent)
+-  [Struct `ToXDXExchangeRateUpdateEvent`](#0x1_DiemTest_ToXDXExchangeRateUpdateEvent)
 -  [Resource `CurrencyInfo`](#0x1_DiemTest_CurrencyInfo)
 -  [Resource `Preburn`](#0x1_DiemTest_Preburn)
 -  [Constants](#@Constants_0)
@@ -47,16 +47,16 @@ minting and burning of coins.
 -  [Function `register_currency`](#0x1_DiemTest_register_currency)
 -  [Function `register_SCS_currency`](#0x1_DiemTest_register_SCS_currency)
 -  [Function `market_cap`](#0x1_DiemTest_market_cap)
--  [Function `approx_lbr_for_value`](#0x1_DiemTest_approx_lbr_for_value)
--  [Function `approx_lbr_for_coin`](#0x1_DiemTest_approx_lbr_for_coin)
+-  [Function `approx_xdx_for_value`](#0x1_DiemTest_approx_xdx_for_value)
+-  [Function `approx_xdx_for_coin`](#0x1_DiemTest_approx_xdx_for_coin)
 -  [Function `is_currency`](#0x1_DiemTest_is_currency)
 -  [Function `is_SCS_currency`](#0x1_DiemTest_is_SCS_currency)
 -  [Function `is_synthetic_currency`](#0x1_DiemTest_is_synthetic_currency)
 -  [Function `scaling_factor`](#0x1_DiemTest_scaling_factor)
 -  [Function `fractional_part`](#0x1_DiemTest_fractional_part)
 -  [Function `currency_code`](#0x1_DiemTest_currency_code)
--  [Function `update_lbr_exchange_rate`](#0x1_DiemTest_update_lbr_exchange_rate)
--  [Function `lbr_exchange_rate`](#0x1_DiemTest_lbr_exchange_rate)
+-  [Function `update_xdx_exchange_rate`](#0x1_DiemTest_update_xdx_exchange_rate)
+-  [Function `xdx_exchange_rate`](#0x1_DiemTest_xdx_exchange_rate)
 -  [Function `update_minting_ability`](#0x1_DiemTest_update_minting_ability)
 -  [Function `assert_is_currency`](#0x1_DiemTest_assert_is_currency)
 -  [Function `assert_is_SCS_currency`](#0x1_DiemTest_assert_is_SCS_currency)
@@ -82,9 +82,9 @@ minting and burning of coins.
 
 
 <pre><code><b>use</b> <a href="">0x1::CoreAddresses</a>;
+<b>use</b> <a href="">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="">0x1::Event</a>;
 <b>use</b> <a href="">0x1::FixedPoint32</a>;
-<b>use</b> <a href="">0x1::DiemTimestamp</a>;
 <b>use</b> <a href="">0x1::RegisteredCurrencies</a>;
 <b>use</b> <a href="">0x1::Roles</a>;
 <b>use</b> <a href="">0x1::Signer</a>;
@@ -159,7 +159,7 @@ published under the <code><a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURREN
 The <code><a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a></code> resource defines a capability to allow minting
 of coins of <code>CoinType</code> currency by the holder of this capability.
 This capability is held only either by the <code><a href="_TREASURY_COMPLIANCE_ADDRESS">CoreAddresses::TREASURY_COMPLIANCE_ADDRESS</a>()</code>
-account or the <code>0x1::LBR</code> module (and <code><a href="_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()</code> in testnet).
+account or the <code>0x1::XDX</code> module (and <code><a href="_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()</code> in testnet).
 
 
 <pre><code><b>resource</b> <b>struct</b> <a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a>&lt;CoinType&gt;
@@ -189,7 +189,7 @@ account or the <code>0x1::LBR</code> module (and <code><a href="_LIBRA_ROOT_ADDR
 
 The <code><a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a></code> resource defines a capability to allow coins
 of <code>CoinType</code> currency to be burned by the holder of the
-and the <code>0x1::LBR</code> module (and <code><a href="_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()</code> in testnet).
+and the <code>0x1::XDX</code> module (and <code><a href="_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()</code> in testnet).
 
 
 <pre><code><b>resource</b> <b>struct</b> <a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a>&lt;CoinType&gt;
@@ -218,7 +218,7 @@ and the <code>0x1::LBR</code> module (and <code><a href="_LIBRA_ROOT_ADDRESS">Co
 ## Struct `MintEvent`
 
 The <code>CurrencyRegistrationCapability</code> is a singleton resource
-published under the <code><a href="_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()</code> and grants
+published under the <code><a href="_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()</code> and grants
 the capability to the <code>0x1::Diem</code> module to add currencies to the
 <code><a href="">0x1::RegisteredCurrencies</a></code> on-chain config.
 A <code><a href="DiemTest.md#0x1_DiemTest_MintEvent">MintEvent</a></code> is emitted every time a Diem coin is minted. This
@@ -248,7 +248,7 @@ minted, and that is defined in the <code>currency_code</code> field of the
 <code>currency_code: vector&lt;u8&gt;</code>
 </dt>
 <dd>
- ASCII encoded symbol for the coin type (e.g., "LBR")
+ ASCII encoded symbol for the coin type (e.g., "XDX")
 </dd>
 </dl>
 
@@ -289,7 +289,7 @@ for that currency.
 <code>currency_code: vector&lt;u8&gt;</code>
 </dt>
 <dd>
- ASCII encoded symbol for the coin type (e.g., "LBR")
+ ASCII encoded symbol for the coin type (e.g., "XDX")
 </dd>
 <dt>
 <code>preburn_address: address</code>
@@ -331,7 +331,7 @@ the account at the address <code>preburn_address</code>.
 <code>currency_code: vector&lt;u8&gt;</code>
 </dt>
 <dd>
- ASCII encoded symbol for the coin type (e.g., "LBR")
+ ASCII encoded symbol for the coin type (e.g., "XDX")
 </dd>
 <dt>
 <code>preburn_address: address</code>
@@ -374,7 +374,7 @@ preburn, but not burned). The currency of the funds is given by the
 <code>currency_code: vector&lt;u8&gt;</code>
 </dt>
 <dd>
- ASCII encoded symbol for the coin type (e.g., "LBR")
+ ASCII encoded symbol for the coin type (e.g., "XDX")
 </dd>
 <dt>
 <code>preburn_address: address</code>
@@ -387,15 +387,15 @@ preburn, but not burned). The currency of the funds is given by the
 
 </details>
 
-<a name="0x1_DiemTest_ToLBRExchangeRateUpdateEvent"></a>
+<a name="0x1_DiemTest_ToXDXExchangeRateUpdateEvent"></a>
 
-## Struct `ToLBRExchangeRateUpdateEvent`
+## Struct `ToXDXExchangeRateUpdateEvent`
 
-An <code><a href="DiemTest.md#0x1_DiemTest_ToLBRExchangeRateUpdateEvent">ToLBRExchangeRateUpdateEvent</a></code> is emitted every time the to-LBR exchange
+An <code><a href="DiemTest.md#0x1_DiemTest_ToXDXExchangeRateUpdateEvent">ToXDXExchangeRateUpdateEvent</a></code> is emitted every time the to-XDX exchange
 rate for the currency given by <code>currency_code</code> is updated.
 
 
-<pre><code><b>struct</b> <a href="DiemTest.md#0x1_DiemTest_ToLBRExchangeRateUpdateEvent">ToLBRExchangeRateUpdateEvent</a>
+<pre><code><b>struct</b> <a href="DiemTest.md#0x1_DiemTest_ToXDXExchangeRateUpdateEvent">ToXDXExchangeRateUpdateEvent</a>
 </code></pre>
 
 
@@ -412,11 +412,11 @@ rate for the currency given by <code>currency_code</code> is updated.
  The currency code of the currency whose exchange rate was updated.
 </dd>
 <dt>
-<code>new_to_lbr_exchange_rate: u64</code>
+<code>new_to_xdx_exchange_rate: u64</code>
 </dt>
 <dd>
- The new on-chain to-LBR exchange rate between the
- <code>currency_code</code> currency and LBR. Represented in conversion
+ The new on-chain to-XDX exchange rate between the
+ <code>currency_code</code> currency and XDX. Represented in conversion
  between the (on-chain) base-units for the currency and microdiem.
 </dd>
 </dl>
@@ -461,10 +461,10 @@ Unless they are specified otherwise the fields in this resource are immutable.
  Value of funds that are in the process of being burned.  Mutable.
 </dd>
 <dt>
-<code>to_lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a></code>
+<code>to_xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a></code>
 </dt>
 <dd>
- The (rough) exchange rate from <code>CoinType</code> to <code>LBR</code>. Mutable.
+ The (rough) exchange rate from <code>CoinType</code> to <code>XDX</code>. Mutable.
 </dd>
 <dt>
 <code>is_synthetic: bool</code>
@@ -472,7 +472,7 @@ Unless they are specified otherwise the fields in this resource are immutable.
 <dd>
  Holds whether or not this currency is synthetic (contributes to the
  off-chain reserve) or not. An example of such a synthetic
-currency would be the LBR.
+currency would be the XDX.
 </dd>
 <dt>
 <code>scaling_factor: u64</code>
@@ -480,7 +480,7 @@ currency would be the LBR.
 <dd>
  The scaling factor for the coin (i.e. the amount to multiply by
  to get to the human-readable representation for this currency).
- e.g. 10^6 for <code>Coin1</code>
+ e.g. 10^6 for <code>XUS</code>
 
  > TODO(wrwg): should the above be "to divide by"?
 </dd>
@@ -490,14 +490,14 @@ currency would be the LBR.
 <dd>
  The smallest fractional part (number of decimal places) to be
  used in the human-readable representation for the currency (e.g.
- 10^2 for <code>Coin1</code> cents)
+ 10^2 for <code>XUS</code> cents)
 </dd>
 <dt>
 <code>currency_code: vector&lt;u8&gt;</code>
 </dt>
 <dd>
  The code symbol for this <code>CoinType</code>. ASCII encoded.
- e.g. for "LBR" this is x"4C4252". No character limit.
+ e.g. for "XDX" this is x"4C4252". No character limit.
 </dd>
 <dt>
 <code>can_mint: bool</code>
@@ -535,7 +535,7 @@ currency would be the LBR.
  <code>CoinType</code>.
 </dd>
 <dt>
-<code>exchange_rate_update_events: <a href="_EventHandle">Event::EventHandle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_ToLBRExchangeRateUpdateEvent">DiemTest::ToLBRExchangeRateUpdateEvent</a>&gt;</code>
+<code>exchange_rate_update_events: <a href="_EventHandle">Event::EventHandle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_ToXDXExchangeRateUpdateEvent">DiemTest::ToXDXExchangeRateUpdateEvent</a>&gt;</code>
 </dt>
 <dd>
  Event stream for emiting exchange rate change events
@@ -612,11 +612,11 @@ Concurrent preburn requests are not allowed, only one request (in to_burn) can b
 
 
 
-<a name="0x1_DiemTest_EDOES_NOT_HAVE_LIBRA_ROOT_ROLE"></a>
+<a name="0x1_DiemTest_EDOES_NOT_HAVE_DIEM_ROOT_ROLE"></a>
 
 
 
-<pre><code><b>const</b> <a href="DiemTest.md#0x1_DiemTest_EDOES_NOT_HAVE_LIBRA_ROOT_ROLE">EDOES_NOT_HAVE_LIBRA_ROOT_ROLE</a>: u64 = 9;
+<pre><code><b>const</b> <a href="DiemTest.md#0x1_DiemTest_EDOES_NOT_HAVE_DIEM_ROOT_ROLE">EDOES_NOT_HAVE_DIEM_ROOT_ROLE</a>: u64 = 9;
 </code></pre>
 
 
@@ -695,7 +695,7 @@ the treacury compliance role.
 Initialization of the <code><a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a></code> module; initializes the set of
 registered currencies in the <code><a href="">0x1::RegisteredCurrencies</a></code> on-chain
 config, and publishes the <code>CurrencyRegistrationCapability</code> under the
-<code><a href="_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()</code>. This can only be called from genesis.
+<code><a href="_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()</code>. This can only be called from genesis.
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_initialize">initialize</a>(config_account: &signer)
@@ -713,7 +713,7 @@ config, and publishes the <code>CurrencyRegistrationCapability</code> under the
     <b>assert</b>(<a href="_is_genesis">DiemTimestamp::is_genesis</a>(), <a href="DiemTest.md#0x1_DiemTest_ENOT_GENESIS">ENOT_GENESIS</a>);
     // Operational constraint
     <b>assert</b>(
-        <a href="_address_of">Signer::address_of</a>(config_account) == <a href="_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>(),
+        <a href="_address_of">Signer::address_of</a>(config_account) == <a href="_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>(),
         <a href="DiemTest.md#0x1_DiemTest_EINVALID_SINGLETON_ADDRESS">EINVALID_SINGLETON_ADDRESS</a>
     );
     <a href="_initialize">RegisteredCurrencies::initialize</a>(config_account);
@@ -863,7 +863,7 @@ outstanding in the <code><a href="DiemTest.md#0x1_DiemTest_Preburn">Preburn</a><
 
 Mint a new <code><a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a></code> coin of <code>CoinType</code> currency worth <code>value</code>. The
 caller must have a reference to a <code><a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a>&lt;CoinType&gt;</code>. Only
-the treasury compliance account or the <code>0x1::LBR</code> module can acquire such a
+the treasury compliance account or the <code>0x1::XDX</code> module can acquire such a
 reference.
 
 
@@ -1397,7 +1397,7 @@ zero. Does not abort.
 and returns a new coin whose value is equal to the sum of the two inputs.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(coin1_tmp: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(xus: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;
 </code></pre>
 
 
@@ -1406,9 +1406,9 @@ and returns a new coin whose value is equal to the sum of the two inputs.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(coin1_tmp: <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;  {
-    <a href="DiemTest.md#0x1_DiemTest_deposit">deposit</a>(&<b>mut</b> coin1_tmp, coin2);
-    coin1_tmp
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(xus: <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;CoinType&gt;  {
+    <a href="DiemTest.md#0x1_DiemTest_deposit">deposit</a>(&<b>mut</b> xus, coin2);
+    xus
 }
 </code></pre>
 
@@ -1478,8 +1478,8 @@ a <code><a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a></co
 
 Register the type <code>CoinType</code> as a currency. Until the type is
 registered as a currency it cannot be used as a coin/currency unit in Diem.
-The passed-in <code>lr_account</code> must be a specific address (<code><a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()</code>) and
-<code>lr_account</code> must also have the correct <code><a href="DiemTest.md#0x1_DiemTest_RegisterNewCurrency">RegisterNewCurrency</a></code> capability.
+The passed-in <code>dr_account</code> must be a specific address (<code><a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()</code>) and
+<code>dr_account</code> must also have the correct <code><a href="DiemTest.md#0x1_DiemTest_RegisterNewCurrency">RegisterNewCurrency</a></code> capability.
 After the first registration of <code>CoinType</code> as a
 currency, additional attempts to register <code>CoinType</code> as a currency
 will abort.
@@ -1489,7 +1489,7 @@ adds the currency to the set of <code><a href="">RegisteredCurrencies</a></code>
 <code><a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a>&lt;CoinType&gt;</code> and <code><a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a>&lt;CoinType&gt;</code> resources.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(lr_account: &signer, to_lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, is_synthetic: bool, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;): (<a href="DiemTest.md#0x1_DiemTest_MintCapability">DiemTest::MintCapability</a>&lt;CoinType&gt;, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">DiemTest::BurnCapability</a>&lt;CoinType&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(dr_account: &signer, to_xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, is_synthetic: bool, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;): (<a href="DiemTest.md#0x1_DiemTest_MintCapability">DiemTest::MintCapability</a>&lt;CoinType&gt;, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">DiemTest::BurnCapability</a>&lt;CoinType&gt;)
 </code></pre>
 
 
@@ -1499,38 +1499,38 @@ adds the currency to the set of <code><a href="">RegisteredCurrencies</a></code>
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(
-    lr_account: &signer,
-    to_lbr_exchange_rate: <a href="">FixedPoint32</a>,
+    dr_account: &signer,
+    to_xdx_exchange_rate: <a href="">FixedPoint32</a>,
     is_synthetic: bool,
     scaling_factor: u64,
     fractional_part: u64,
     currency_code: vector&lt;u8&gt;,
 ): (<a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a>&lt;CoinType&gt;, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a>&lt;CoinType&gt;)
 {
-    <a href="_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+    <a href="_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
     // Operational constraint that it must be stored under a specific address.
     <b>assert</b>(
-        <a href="_address_of">Signer::address_of</a>(lr_account) == <a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>(),
+        <a href="_address_of">Signer::address_of</a>(dr_account) == <a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>(),
         <a href="DiemTest.md#0x1_DiemTest_EINVALID_SINGLETON_ADDRESS">EINVALID_SINGLETON_ADDRESS</a>
     );
 
-    move_to(lr_account, <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt; {
+    move_to(dr_account, <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt; {
         total_value: 0,
         preburn_value: 0,
-        to_lbr_exchange_rate,
+        to_xdx_exchange_rate,
         is_synthetic,
         scaling_factor,
         fractional_part,
         currency_code: <b>copy</b> currency_code,
         can_mint: <b>true</b>,
-        mint_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_MintEvent">MintEvent</a>&gt;(lr_account),
-        burn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_BurnEvent">BurnEvent</a>&gt;(lr_account),
-        preburn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_PreburnEvent">PreburnEvent</a>&gt;(lr_account),
-        cancel_burn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_CancelBurnEvent">CancelBurnEvent</a>&gt;(lr_account),
-        exchange_rate_update_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_ToLBRExchangeRateUpdateEvent">ToLBRExchangeRateUpdateEvent</a>&gt;(lr_account)
+        mint_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_MintEvent">MintEvent</a>&gt;(dr_account),
+        burn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_BurnEvent">BurnEvent</a>&gt;(dr_account),
+        preburn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_PreburnEvent">PreburnEvent</a>&gt;(dr_account),
+        cancel_burn_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_CancelBurnEvent">CancelBurnEvent</a>&gt;(dr_account),
+        exchange_rate_update_events: <a href="_new_event_handle">Event::new_event_handle</a>&lt;<a href="DiemTest.md#0x1_DiemTest_ToXDXExchangeRateUpdateEvent">ToXDXExchangeRateUpdateEvent</a>&gt;(dr_account)
     });
     <a href="_add_currency_code">RegisteredCurrencies::add_currency_code</a>(
-        lr_account,
+        dr_account,
         currency_code,
     );
     (<a href="DiemTest.md#0x1_DiemTest_MintCapability">MintCapability</a>&lt;CoinType&gt;{}, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">BurnCapability</a>&lt;CoinType&gt;{})
@@ -1553,7 +1553,7 @@ This code allows different currencies to have different treasury compliance
 accounts.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_SCS_currency">register_SCS_currency</a>&lt;CoinType&gt;(lr_account: &signer, tc_account: &signer, to_lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_SCS_currency">register_SCS_currency</a>&lt;CoinType&gt;(dr_account: &signer, tc_account: &signer, to_xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;)
 </code></pre>
 
 
@@ -1563,9 +1563,9 @@ accounts.
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_SCS_currency">register_SCS_currency</a>&lt;CoinType&gt;(
-    lr_account: &signer,
+    dr_account: &signer,
     tc_account: &signer,
-    to_lbr_exchange_rate: <a href="">FixedPoint32</a>,
+    to_xdx_exchange_rate: <a href="">FixedPoint32</a>,
     scaling_factor: u64,
     fractional_part: u64,
     currency_code: vector&lt;u8&gt;,
@@ -1573,8 +1573,8 @@ accounts.
     <a href="_assert_treasury_compliance">Roles::assert_treasury_compliance</a>(tc_account);
     <b>let</b> (mint_cap, burn_cap) =
         <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(
-            lr_account,
-            to_lbr_exchange_rate,
+            dr_account,
+            to_xdx_exchange_rate,
             <b>false</b>,   // is_synthetic
             scaling_factor,
             fractional_part,
@@ -1617,16 +1617,16 @@ Returns the total amount of currency minted of type <code>CoinType</code>.
 
 </details>
 
-<a name="0x1_DiemTest_approx_lbr_for_value"></a>
+<a name="0x1_DiemTest_approx_xdx_for_value"></a>
 
-## Function `approx_lbr_for_value`
+## Function `approx_xdx_for_value`
 
-Returns the value of the coin in the <code>FromCoinType</code> currency in LBR.
+Returns the value of the coin in the <code>FromCoinType</code> currency in XDX.
 This should only be used where a _rough_ approximation of the exchange
 rate is needed.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_value">approx_lbr_for_value</a>&lt;FromCoinType&gt;(from_value: u64): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_value">approx_xdx_for_value</a>&lt;FromCoinType&gt;(from_value: u64): u64
 </code></pre>
 
 
@@ -1635,10 +1635,10 @@ rate is needed.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_value">approx_lbr_for_value</a>&lt;FromCoinType&gt;(from_value: u64): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_value">approx_xdx_for_value</a>&lt;FromCoinType&gt;(from_value: u64): u64
 <b>acquires</b> <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a> {
-    <b>let</b> lbr_exchange_rate = <a href="DiemTest.md#0x1_DiemTest_lbr_exchange_rate">lbr_exchange_rate</a>&lt;FromCoinType&gt;();
-    <a href="_multiply_u64">FixedPoint32::multiply_u64</a>(from_value, lbr_exchange_rate)
+    <b>let</b> xdx_exchange_rate = <a href="DiemTest.md#0x1_DiemTest_xdx_exchange_rate">xdx_exchange_rate</a>&lt;FromCoinType&gt;();
+    <a href="_multiply_u64">FixedPoint32::multiply_u64</a>(from_value, xdx_exchange_rate)
 }
 </code></pre>
 
@@ -1646,16 +1646,16 @@ rate is needed.
 
 </details>
 
-<a name="0x1_DiemTest_approx_lbr_for_coin"></a>
+<a name="0x1_DiemTest_approx_xdx_for_coin"></a>
 
-## Function `approx_lbr_for_coin`
+## Function `approx_xdx_for_coin`
 
-Returns the value of the coin in the <code>FromCoinType</code> currency in LBR.
+Returns the value of the coin in the <code>FromCoinType</code> currency in XDX.
 This should only be used where a rough approximation of the exchange
 rate is needed.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_coin">approx_lbr_for_coin</a>&lt;FromCoinType&gt;(coin: &<a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;FromCoinType&gt;): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_coin">approx_xdx_for_coin</a>&lt;FromCoinType&gt;(coin: &<a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;FromCoinType&gt;): u64
 </code></pre>
 
 
@@ -1664,10 +1664,10 @@ rate is needed.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_coin">approx_lbr_for_coin</a>&lt;FromCoinType&gt;(coin: &<a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;FromCoinType&gt;): u64
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_coin">approx_xdx_for_coin</a>&lt;FromCoinType&gt;(coin: &<a href="DiemTest.md#0x1_DiemTest_Diem">Diem</a>&lt;FromCoinType&gt;): u64
 <b>acquires</b> <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a> {
     <b>let</b> from_value = <a href="DiemTest.md#0x1_DiemTest_value">value</a>(coin);
-    <a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_value">approx_lbr_for_value</a>&lt;FromCoinType&gt;(from_value)
+    <a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_value">approx_xdx_for_value</a>&lt;FromCoinType&gt;(from_value)
 }
 </code></pre>
 
@@ -1836,15 +1836,15 @@ its <code><a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a></code
 
 </details>
 
-<a name="0x1_DiemTest_update_lbr_exchange_rate"></a>
+<a name="0x1_DiemTest_update_xdx_exchange_rate"></a>
 
-## Function `update_lbr_exchange_rate`
+## Function `update_xdx_exchange_rate`
 
-Updates the <code>to_lbr_exchange_rate</code> held in the <code><a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a></code> for
-<code>FromCoinType</code> to the new passed-in <code>lbr_exchange_rate</code>.
+Updates the <code>to_xdx_exchange_rate</code> held in the <code><a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a></code> for
+<code>FromCoinType</code> to the new passed-in <code>xdx_exchange_rate</code>.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_update_lbr_exchange_rate">update_lbr_exchange_rate</a>&lt;FromCoinType&gt;(tr_account: &signer, lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_update_xdx_exchange_rate">update_xdx_exchange_rate</a>&lt;FromCoinType&gt;(tr_account: &signer, xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>)
 </code></pre>
 
 
@@ -1853,19 +1853,19 @@ Updates the <code>to_lbr_exchange_rate</code> held in the <code><a href="DiemTes
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_update_lbr_exchange_rate">update_lbr_exchange_rate</a>&lt;FromCoinType&gt;(
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_update_xdx_exchange_rate">update_xdx_exchange_rate</a>&lt;FromCoinType&gt;(
     tr_account: &signer,
-    lbr_exchange_rate: <a href="">FixedPoint32</a>
+    xdx_exchange_rate: <a href="">FixedPoint32</a>
 ) <b>acquires</b> <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a> {
     <b>assert</b>(<a href="_has_treasury_compliance_role">Roles::has_treasury_compliance_role</a>(tr_account), <a href="DiemTest.md#0x1_DiemTest_ENOT_TREASURY_COMPLIANCE">ENOT_TREASURY_COMPLIANCE</a>);
     <a href="DiemTest.md#0x1_DiemTest_assert_is_currency">assert_is_currency</a>&lt;FromCoinType&gt;();
     <b>let</b> currency_info = borrow_global_mut&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;FromCoinType&gt;&gt;(<a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>());
-    currency_info.to_lbr_exchange_rate = lbr_exchange_rate;
+    currency_info.to_xdx_exchange_rate = xdx_exchange_rate;
     <a href="_emit_event">Event::emit_event</a>(
         &<b>mut</b> currency_info.exchange_rate_update_events,
-        <a href="DiemTest.md#0x1_DiemTest_ToLBRExchangeRateUpdateEvent">ToLBRExchangeRateUpdateEvent</a> {
+        <a href="DiemTest.md#0x1_DiemTest_ToXDXExchangeRateUpdateEvent">ToXDXExchangeRateUpdateEvent</a> {
             currency_code: *&currency_info.currency_code,
-            new_to_lbr_exchange_rate: <a href="_get_raw_value">FixedPoint32::get_raw_value</a>(*&currency_info.to_lbr_exchange_rate),
+            new_to_xdx_exchange_rate: <a href="_get_raw_value">FixedPoint32::get_raw_value</a>(*&currency_info.to_xdx_exchange_rate),
         }
     );
 
@@ -1876,14 +1876,14 @@ Updates the <code>to_lbr_exchange_rate</code> held in the <code><a href="DiemTes
 
 </details>
 
-<a name="0x1_DiemTest_lbr_exchange_rate"></a>
+<a name="0x1_DiemTest_xdx_exchange_rate"></a>
 
-## Function `lbr_exchange_rate`
+## Function `xdx_exchange_rate`
 
-Returns the (rough) exchange rate between <code>CoinType</code> and <code>LBR</code>
+Returns the (rough) exchange rate between <code>CoinType</code> and <code>XDX</code>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_lbr_exchange_rate">lbr_exchange_rate</a>&lt;CoinType&gt;(): <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_xdx_exchange_rate">xdx_exchange_rate</a>&lt;CoinType&gt;(): <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>
 </code></pre>
 
 
@@ -1892,9 +1892,9 @@ Returns the (rough) exchange rate between <code>CoinType</code> and <code>LBR</c
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_lbr_exchange_rate">lbr_exchange_rate</a>&lt;CoinType&gt;(): <a href="">FixedPoint32</a>
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_xdx_exchange_rate">xdx_exchange_rate</a>&lt;CoinType&gt;(): <a href="">FixedPoint32</a>
 <b>acquires</b> <a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a> {
-    *&borrow_global&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()).to_lbr_exchange_rate
+    *&borrow_global&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()).to_xdx_exchange_rate
 }
 </code></pre>
 
@@ -2035,16 +2035,16 @@ Returns currency information.
 </code></pre>
 
 
-Specification version of <code><a href="DiemTest.md#0x1_DiemTest_approx_lbr_for_value">Self::approx_lbr_for_value</a></code>.
+Specification version of <code><a href="DiemTest.md#0x1_DiemTest_approx_xdx_for_value">Self::approx_xdx_for_value</a></code>.
 
 
-<a name="0x1_DiemTest_spec_approx_lbr_for_value"></a>
+<a name="0x1_DiemTest_spec_approx_xdx_for_value"></a>
 
 
-<pre><code><b>define</b> <a href="DiemTest.md#0x1_DiemTest_spec_approx_lbr_for_value">spec_approx_lbr_for_value</a>&lt;CoinType&gt;(value: num):  num {
+<pre><code><b>define</b> <a href="DiemTest.md#0x1_DiemTest_spec_approx_xdx_for_value">spec_approx_xdx_for_value</a>&lt;CoinType&gt;(value: num):  num {
     <a href="_spec_multiply_u64">FixedPoint32::spec_multiply_u64</a>(
         value,
-        <b>global</b>&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()).to_lbr_exchange_rate
+        <b>global</b>&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>()).to_xdx_exchange_rate
     )
 }
 <a name="0x1_DiemTest_spec_is_SCS_currency"></a>
@@ -2430,14 +2430,14 @@ Account for updating <code><a href="DiemTest.md#0x1_DiemTest_sum_of_coin_values"
 ### Function `join`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(coin1_tmp: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_join">join</a>&lt;CoinType&gt;(xus: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;, coin2: <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;): <a href="DiemTest.md#0x1_DiemTest_Diem">DiemTest::Diem</a>&lt;CoinType&gt;
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> coin1_tmp.value + coin2.value &gt; max_u64();
-<b>ensures</b> result.value == coin1_tmp.value + coin2.value;
+<pre><code><b>aborts_if</b> xus.value + coin2.value &gt; max_u64();
+<b>ensures</b> result.value == xus.value + coin2.value;
 </code></pre>
 
 
@@ -2463,15 +2463,15 @@ Account for updating <code><a href="DiemTest.md#0x1_DiemTest_sum_of_coin_values"
 ### Function `register_currency`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(lr_account: &signer, to_lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, is_synthetic: bool, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;): (<a href="DiemTest.md#0x1_DiemTest_MintCapability">DiemTest::MintCapability</a>&lt;CoinType&gt;, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">DiemTest::BurnCapability</a>&lt;CoinType&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_currency">register_currency</a>&lt;CoinType&gt;(dr_account: &signer, to_xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, is_synthetic: bool, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;): (<a href="DiemTest.md#0x1_DiemTest_MintCapability">DiemTest::MintCapability</a>&lt;CoinType&gt;, <a href="DiemTest.md#0x1_DiemTest_BurnCapability">DiemTest::BurnCapability</a>&lt;CoinType&gt;)
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<a href="_spec_has_diem_root_role_addr">Roles::spec_has_diem_root_role_addr</a>(<a href="_spec_address_of">Signer::spec_address_of</a>(lr_account));
-<b>aborts_if</b> <a href="_spec_address_of">Signer::spec_address_of</a>(lr_account) != <a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>();
-<b>aborts_if</b> <b>exists</b>&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_spec_address_of">Signer::spec_address_of</a>(lr_account));
+<pre><code><b>aborts_if</b> !<a href="_spec_has_diem_root_role_addr">Roles::spec_has_diem_root_role_addr</a>(<a href="_spec_address_of">Signer::spec_address_of</a>(dr_account));
+<b>aborts_if</b> <a href="_spec_address_of">Signer::spec_address_of</a>(dr_account) != <a href="_CURRENCY_INFO_ADDRESS">CoreAddresses::CURRENCY_INFO_ADDRESS</a>();
+<b>aborts_if</b> <b>exists</b>&lt;<a href="DiemTest.md#0x1_DiemTest_CurrencyInfo">CurrencyInfo</a>&lt;CoinType&gt;&gt;(<a href="_spec_address_of">Signer::spec_address_of</a>(dr_account));
 <b>aborts_if</b> <a href="DiemTest.md#0x1_DiemTest_spec_is_currency">spec_is_currency</a>&lt;CoinType&gt;();
 <b>include</b> <a href="_AddCurrencyCodeAbortsIf">RegisteredCurrencies::AddCurrencyCodeAbortsIf</a>;
 </code></pre>
@@ -2483,7 +2483,7 @@ Account for updating <code><a href="DiemTest.md#0x1_DiemTest_sum_of_coin_values"
 ### Function `register_SCS_currency`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_SCS_currency">register_SCS_currency</a>&lt;CoinType&gt;(lr_account: &signer, tc_account: &signer, to_lbr_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemTest.md#0x1_DiemTest_register_SCS_currency">register_SCS_currency</a>&lt;CoinType&gt;(dr_account: &signer, tc_account: &signer, to_xdx_exchange_rate: <a href="_FixedPoint32">FixedPoint32::FixedPoint32</a>, scaling_factor: u64, fractional_part: u64, currency_code: vector&lt;u8&gt;)
 </code></pre>
 
 

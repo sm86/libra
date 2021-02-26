@@ -32,12 +32,12 @@ module COIN {
 
     struct COIN { }
 
-    public fun initialize(lr_account: &signer, tc_account: &signer) {
+    public fun initialize(dr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
         Diem::register_SCS_currency<COIN>(
-            lr_account,
+            dr_account,
             tc_account,
-            FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
+            FixedPoint32::create_from_rational(1, 2), // exchange rate to XDX
             1000000, // scaling_factor = 10^6
             100,     // fractional_part = 10^2
             b"COIN",
@@ -57,8 +57,8 @@ module COIN {
 script {
 use 0x1::TransactionFee;
 use 0x1::COIN::{Self, COIN};
-fun main(lr_account: &signer, tc_account: &signer) {
-    COIN::initialize(lr_account, tc_account);
+fun main(dr_account: &signer, tc_account: &signer) {
+    COIN::initialize(dr_account, tc_account);
     TransactionFee::add_txn_fee_currency<COIN>(tc_account);
 }
 }
@@ -71,9 +71,9 @@ fun main(lr_account: &signer, tc_account: &signer) {
 //! sender: diemroot
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -83,9 +83,9 @@ fun main(account: &signer) {
 //! sender: blessed
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -109,9 +109,9 @@ fun main(account: &signer) {
 //! sender: vivian
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
@@ -121,16 +121,16 @@ fun main(account: &signer) {
 //! sender: otto
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(ABORTED { code: 1031,"
 
 //! new-transaction
 //! sender: blessed
-//! type-args: 0x1::Coin1::Coin1
+//! type-args: 0x1::XUS::XUS
 //! args: 0, {{vasp}}, {{vasp::auth_key}}, b"bob", false
 stdlib_script::create_parent_vasp_account
 // check: "Keep(EXECUTED)"
@@ -148,9 +148,9 @@ stdlib_script::add_currency_to_account
 stdlib_script::create_child_vasp_account
 // check: "Keep(EXECUTED)"
 
-// can't add a balance of LBR right now
+// can't add a balance of XDX right now
 //! new-transaction
 //! sender: child
-//! type-args: 0x1::LBR::LBR
+//! type-args: 0x1::XDX::XDX
 stdlib_script::add_currency_to_account
 // check: "Keep(EXECUTED)"

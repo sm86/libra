@@ -15,7 +15,7 @@ pub enum NetworkErrorKind {
     #[error("IO error")]
     IoError,
 
-    #[error("bcs error")]
+    #[error("Bcs error")]
     BcsError,
 
     #[error("PeerManager error")]

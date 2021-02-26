@@ -14,15 +14,15 @@ use crate::{
 };
 use bytes::Bytes;
 use channel::diem_channel;
+use diem_logger::prelude::*;
+use diem_network_address::NetworkAddress;
+use diem_types::PeerId;
 use futures::{
     channel::oneshot,
     future,
     stream::{FilterMap, FusedStream, Map, Select, Stream, StreamExt},
     task::{Context, Poll},
 };
-use diem_logger::prelude::*;
-use diem_network_address::NetworkAddress;
-use diem_types::PeerId;
 use netcore::transport::ConnectionOrigin;
 use pin_project::pin_project;
 use serde::{de::DeserializeOwned, Serialize};

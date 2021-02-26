@@ -463,7 +463,7 @@ impl ValueImpl {
  * Copy Value
  *
  *   Implementation of Move copy. Extra care needs to be taken when copying references.
- *   It is intentional we avoid implementing the standard diemry trait Clone, to prevent
+ *   It is intentional we avoid implementing the standard library trait Clone, to prevent
  *   surprising behaviors from happening.
  *
  **************************************************************************************/
@@ -576,7 +576,7 @@ impl Value {
  *
  *   Equality tests of Move values. Errors are raised when types mismatch.
  *
- *   It is intented to NOT use or even implement the standard diemry traits Eq and
+ *   It is intented to NOT use or even implement the standard library traits Eq and
  *   Partial Eq due to:
  *     1. They do not allow errors to be returned.
  *     2. They can be invoked without the user being noticed thanks to operator
@@ -2291,6 +2291,18 @@ impl GlobalValueImpl {
             },
         })
     }
+
+    fn is_mutated(&self) -> bool {
+        match self {
+            Self::None => false,
+            Self::Deleted => true,
+            Self::Fresh { fields: _ } => true,
+            Self::Cached { fields: _, status } => match &*status.borrow() {
+                GlobalDataStatus::Dirty => true,
+                GlobalDataStatus::Clean => false,
+            },
+        }
+    }
 }
 
 impl GlobalValue {
@@ -2328,6 +2340,10 @@ impl GlobalValue {
             GlobalValueEffect::Changed(v) => GlobalValueEffect::Changed(Value(v)),
         })
     }
+
+    pub fn is_mutated(&self) -> bool {
+        self.0.is_mutated()
+    }
 }
 
 /***************************************************************************************
@@ -2348,7 +2364,7 @@ impl Display for ValueImpl {
             Self::U64(x) => write!(f, "U64({})", x),
             Self::U128(x) => write!(f, "U128({})", x),
             Self::Bool(x) => write!(f, "{}", x),
-            Self::Address(addr) => write!(f, "Address({})", addr.short_str()),
+            Self::Address(addr) => write!(f, "Address({})", addr.short_str_lossless()),
 
             Self::Container(r) => write!(f, "{}", r),
 

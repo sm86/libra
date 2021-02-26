@@ -5,8 +5,7 @@ use crate::{
     account_address::AccountAddress,
     identifier::{IdentStr, Identifier},
 };
-use diem_crypto::hash::CryptoHash;
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest_derive::Arbitrary;
 use serde::{Deserialize, Serialize};
@@ -57,7 +56,7 @@ impl StructTag {
         let mut key = vec![];
         key.push(RESOURCE_TAG);
 
-        key.append(&mut self.hash().to_vec());
+        key.append(&mut bcs::to_bytes(self).unwrap());
         key
     }
 
@@ -70,8 +69,8 @@ impl StructTag {
 /// the struct tag
 #[derive(Serialize, Deserialize, Debug, PartialEq, Hash, Eq, Clone, PartialOrd, Ord)]
 pub struct ResourceKey {
-    address: AccountAddress,
-    type_: StructTag,
+    pub address: AccountAddress,
+    pub type_: StructTag,
 }
 
 impl ResourceKey {
@@ -135,7 +134,7 @@ impl ModuleId {
         let mut key = vec![];
         key.push(CODE_TAG);
 
-        key.append(&mut self.hash().to_vec());
+        key.append(&mut bcs::to_bytes(self).unwrap());
         key
     }
 }
@@ -150,8 +149,8 @@ impl Display for StructTag {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}::{}::{}",
-            self.address.short_str(),
+            "0x{}::{}::{}",
+            self.address.short_str_lossless(),
             self.module,
             self.name
         )?;

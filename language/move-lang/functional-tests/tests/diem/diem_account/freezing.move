@@ -83,10 +83,10 @@ fun main(account: &signer) {
 //! sender: blessed
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
-fun main(lr_account: &signer) {
-    DiemAccount::create_parent_vasp_account<Coin1>(
-        lr_account,
+use 0x1::XUS::XUS;
+fun main(dr_account: &signer) {
+    DiemAccount::create_parent_vasp_account<XUS>(
+        dr_account,
         {{vasp}},
         {{vasp::auth_key}},
         x"A",
@@ -101,10 +101,10 @@ fun main(lr_account: &signer) {
 //! sender: vasp
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(parent_vasp: &signer) {
     let dummy_auth_key_prefix = x"00000000000000000000000000000000";
-    DiemAccount::create_child_vasp_account<Coin1>(parent_vasp, 0xAA, dummy_auth_key_prefix, false);
+    DiemAccount::create_child_vasp_account<XUS>(parent_vasp, 0xAA, dummy_auth_key_prefix, false);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -244,7 +244,7 @@ script {
 
 //! new-transaction
 //! sender: blessed
-//! type-args: 0x1::Coin1::Coin1
+//! type-args: 0x1::XUS::XUS
 //! args: 0, {{alice}}, {{alice::auth_key}}, b"bob", true
 stdlib_script::create_parent_vasp_account
 //! check: "Keep(EXECUTED)"
@@ -254,10 +254,10 @@ stdlib_script::create_parent_vasp_account
 script {
     use {{default}}::Holder;
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let cap = Holder::get<DiemAccount::WithdrawCapability>({{vasp}});
-        DiemAccount::pay_from<Coin1>(&cap, {{alice}}, 0, x"", x"");
+        DiemAccount::pay_from<XUS>(&cap, {{alice}}, 0, x"", x"");
         Holder::hold(account, cap);
     }
 }
@@ -267,10 +267,10 @@ script {
 //! sender: alice
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&cap, {{vasp}}, 0, x"", x"");
+        DiemAccount::pay_from<XUS>(&cap, {{vasp}}, 0, x"", x"");
         DiemAccount::restore_withdraw_capability(cap);
     }
 }
@@ -280,10 +280,10 @@ script {
 //! sender: alice
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&cap, {{vasp}}, 0, x"", x"");
+        DiemAccount::pay_from<XUS>(&cap, {{vasp}}, 0, x"", x"");
         DiemAccount::restore_withdraw_capability(cap);
     }
 }

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
-use difference::Changeset;
 use diem_transaction_replay::DiemDebugger;
 use diem_types::{account_address::AccountAddress, transaction::Version};
+use difference::Changeset;
 use move_vm_test_utils::ChangeSet;
 use std::path::PathBuf;
 use stdlib::build_stdlib;

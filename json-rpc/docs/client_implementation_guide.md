@@ -17,7 +17,7 @@ Diem JSON-RPC APIs extend to JSON-RPC 2.0 Spec for specific use case, check [Die
 
 ### Testnet
 
-A simplest way to validate your client works is connecting it to Testnet(https://testnet.diem.org/v1).
+A simplest way to validate your client works is connecting it to Testnet(https://testnet.diem.com/v1).
 For some query blockchain methods like [get_currencies](method_get_currencies.md) or [get_metadata](method_get_metadata.md), you don't need anything else other than a HTTP client to get back response from server.
 Try out [get_currencies example](method_get_currencies.md#example) on Testnet, and this can be the first query blockchain API you implement for your client.
 
@@ -104,7 +104,7 @@ Here we give an example of how to create and sign transactions with option 1 in 
 ```Java
 
 ChainId testNetChainID = new ChainId((byte) 2); // Testnet chain id is static value
-String currencyCode = "Coin1";
+String currencyCode = "XUS";
 String account1_address = "a74fd7c46952c497e75afb0a7932586d";
 String account1_public_key = "447fc3be296803c2303951c7816624c7566730a5cc6860a4a1bd3c04731569f5";
 String account1_private_key = "cd9a2c90296a210249128ae3c908611637b2e00efd4986670e252abf3fabd1a9";
@@ -152,8 +152,8 @@ The following code does signing transaction:
 
 ```Java
 
-// sha3 hash "LIBRA::RawTransaction" bytes first, then concat with raw transaction bytes to create a message for signing.
-byte[] hash = concat(sha3Hash("LIBRA::RawTransaction".getBytes()), rawTxnBytes);
+// sha3 hash "DIEM::RawTransaction" bytes first, then concat with raw transaction bytes to create a message for signing.
+byte[] hash = concat(sha3Hash("DIEM::RawTransaction".getBytes()), rawTxnBytes);
 
 // [bouncycastle](https://www.bouncycastle.org/)'s Ed25519Signer
 Ed25519Signer signer = new Ed25519Signer();
@@ -186,7 +186,7 @@ When you implement above logic, you may extract `createRawTransaction` and `crea
 
 ```Java
 
-import com.novi.bcs.bcsSerializer;
+import com.novi.bcs.BcsSerializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.Serializer;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
@@ -229,13 +229,13 @@ public static String bytesToHex(Bytes bytes) {
 }
 
 public static byte[] toBCS(RawTransaction rt) throws Exception {
-    Serializer serializer = new bcsSerializer();
+    Serializer serializer = new BcsSerializer();
     rt.serialize(serializer);
     return serializer.get_bytes();
 }
 
 public static byte[] toBCS(SignedTransaction rt) throws Exception {
-    Serializer serializer = new bcsSerializer();
+    Serializer serializer = new BcsSerializer();
     rt.serialize(serializer);
     return serializer.get_bytes();
 }
@@ -346,11 +346,11 @@ Other than general error handling, another type of error that client / applicati
 Once the above basic function works, you have a minimum client ready for usage.
 To make a production quality client, please checkout our [Client CHECKLIST](client_checklist.md).
 
-[1]: https://developers.diem.org/docs/rustdocs/diem_types/transaction/struct.SignedTransaction.html "SignedTransaction"
+[1]: https://developers.diem.com/docs/rustdocs/diem_types/transaction/struct.SignedTransaction.html "SignedTransaction"
 [2]: ../../language/transaction-builder/generator/README.md "Transaction Builder Generator"
 [3]: ./../../client/swiss-knife/README.md "Diem Swiss Knife"
-[4]: https://developers.diem.org/docs/rustdocs/diem_types/transaction/struct.RawTransaction.html "RawTransaction"
-[5]: https://developers.diem.org/docs/rustdocs/diem_canonical_serialization/index.html "BCS"
+[4]: https://developers.diem.com/docs/rustdocs/diem_types/transaction/struct.RawTransaction.html "RawTransaction"
+[5]: https://docs.rs/bcs/ "BCS"
 [6]: ./../../client/swiss-knife#generate-a-ed25519-keypair "Swiss Knife Gen Keys"
 [7]: ./../../language/stdlib/transaction_scripts/doc/peer_to_peer_with_metadata.md#function-peer_to_peer_with_metadata-1 "P2P script doc"
 [8]: ./../../client/swiss-knife/README.md#examples-for-generate-raw-txn-and-generate-signed-txn-operations "Swiss Knife gen txn"

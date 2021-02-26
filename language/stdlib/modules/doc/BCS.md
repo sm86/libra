@@ -3,7 +3,7 @@
 
 # Module `0x1::BCS`
 
-Utility for converting a Move value to its binary representation in BCS (Diem Canonical
+Utility for converting a Move value to its binary representation in BCS (Binary Canonical
 Serialization). BCS is the binary encoding for Move resources and other non-module values
 published on-chain. See https://github.com/diem/diem/tree/master/common/bcs for more
 details on BCS.
@@ -21,7 +21,7 @@ details on BCS.
 
 ## Function `to_bytes`
 
-Return the binary representation of <code>v</code> in BCS (Diem Canonical Serialization) format
+Return the binary representation of <code>v</code> in BCS (Binary Canonical Serialization) format
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="BCS.md#0x1_BCS_to_bytes">to_bytes</a>&lt;MoveValue&gt;(v: &MoveValue): vector&lt;u8&gt;
@@ -57,6 +57,6 @@ Native function which is defined in the prover's prelude.
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

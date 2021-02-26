@@ -9,7 +9,7 @@ use crate::{
 };
 use anyhow::{ensure, format_err, Error, Result};
 use diem_crypto::hash::{CryptoHash, HashValue};
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
     fmt::{Display, Formatter},

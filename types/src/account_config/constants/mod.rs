@@ -4,11 +4,11 @@
 pub mod account;
 pub mod addresses;
 pub mod coins;
-pub mod event;
 pub mod diem;
+pub mod event;
 
 pub use account::*;
 pub use addresses::*;
 pub use coins::*;
-pub use event::*;
 pub use diem::*;
+pub use event::*;

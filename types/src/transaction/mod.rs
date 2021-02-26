@@ -3,7 +3,7 @@
 
 use crate::{
     account_address::AccountAddress,
-    account_config::COIN1_NAME,
+    account_config::XUS_NAME,
     account_state_blob::AccountStateBlob,
     block_metadata::BlockMetadata,
     chain_id::ChainId,
@@ -22,7 +22,7 @@ use diem_crypto::{
     traits::SigningKey,
     HashValue,
 };
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest_derive::Arbitrary;
 use serde::{Deserialize, Serialize};
@@ -72,7 +72,7 @@ pub struct RawTransaction {
     /// Price to be paid per gas unit.
     gas_unit_price: u64,
 
-    /// The currency code, e.g., "Coin1", used to pay for gas. The `max_gas_amount`
+    /// The currency code, e.g., "XUS", used to pay for gas. The `max_gas_amount`
     /// and `gas_unit_price` values refer to units of this currency.
     gas_currency_code: String,
 
@@ -192,7 +192,7 @@ impl RawTransaction {
             // Since write-set transactions bypass the VM, these fields aren't relevant.
             max_gas_amount: 0,
             gas_unit_price: 0,
-            gas_currency_code: COIN1_NAME.to_owned(),
+            gas_currency_code: XUS_NAME.to_owned(),
             // Write-set transactions are special and important and shouldn't expire.
             expiration_timestamp_secs: u64::max_value(),
             chain_id,
@@ -216,7 +216,7 @@ impl RawTransaction {
             // Since write-set transactions bypass the VM, these fields aren't relevant.
             max_gas_amount: 0,
             gas_unit_price: 0,
-            gas_currency_code: COIN1_NAME.to_owned(),
+            gas_currency_code: XUS_NAME.to_owned(),
             // Write-set transactions are special and important and shouldn't expire.
             expiration_timestamp_secs: u64::max_value(),
             chain_id,
@@ -584,7 +584,7 @@ pub enum TransactionStatus {
     /// Keep the transaction output
     Keep(KeptVMStatus),
 
-    /// Retry the transaction because it is after a ValidatorSetChange txn
+    /// Retry the transaction, e.g., after a reconfiguration
     Retry,
 }
 

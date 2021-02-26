@@ -1,19 +1,19 @@
-//! account: validatorvivian, 10000000Coin1, 0, validator
-//! account: bob, 100000000Coin1, 0
-//! account: alice, 100000000Coin1, 0
-//! account: otherblessed, 0Coin1, 0
-//! account: otherbob, 0Coin1, 0, address
+//! account: validatorvivian, 10000000XUS, 0, validator
+//! account: bob, 100000000XUS, 0
+//! account: alice, 100000000XUS, 0
+//! account: otherblessed, 0XUS, 0
+//! account: otherbob, 0XUS, 0, address
 
-//! account: moneybags, 1000000000000Coin1
+//! account: moneybags, 1000000000000XUS
 
 //! new-transaction
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -24,11 +24,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 1, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{otherblessed}}, 1, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap)
 }
 }
@@ -43,9 +43,9 @@ fun main(account: &signer) {
 script {
     use 0x1::AccountLimits;
     use 0x1::CoreAddresses;
-    use 0x1::LBR::LBR;
+    use 0x1::XDX::XDX;
     fun main(tc_account: &signer) {
-        AccountLimits::update_limits_definition<LBR>(tc_account, CoreAddresses::LIBRA_ROOT_ADDRESS(), 2, 2, 0, 0);
+        AccountLimits::update_limits_definition<XDX>(tc_account, CoreAddresses::DIEM_ROOT_ADDRESS(), 2, 2, 0, 0);
     }
 }
 
@@ -56,11 +56,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     use 0x1::DiemAccount;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 3, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 3, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap)
     }
 }
@@ -76,9 +76,9 @@ script {
 script {
     use 0x1::AccountLimits;
     use 0x1::CoreAddresses;
-    use 0x1::LBR::LBR;
+    use 0x1::XDX::XDX;
     fun main(tc_account: &signer) {
-        AccountLimits::update_limits_definition<LBR>(tc_account, CoreAddresses::LIBRA_ROOT_ADDRESS(), 1000, 1000, 1000, 0);
+        AccountLimits::update_limits_definition<XDX>(tc_account, CoreAddresses::DIEM_ROOT_ADDRESS(), 1000, 1000, 1000, 0);
     }
 }
 
@@ -86,13 +86,13 @@ script {
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     // Since we directly wrote into this account using fake data store, we
     // don't actually know that the balance is greater than 0 in the
     // account limits code, but it is.
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -101,11 +101,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::pay_from<Coin1>(&with_cap, {{otherblessed}}, 2, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{otherblessed}}, 2, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
@@ -115,10 +115,10 @@ fun main(account: &signer) {
 //! sender: otherblessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -127,11 +127,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 2, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 2, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
@@ -141,10 +141,10 @@ fun main(account: &signer) {
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -154,10 +154,10 @@ script {
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -172,11 +172,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     use 0x1::DiemAccount;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 100, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 100, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -185,11 +185,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     use 0x1::DiemAccount;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -201,10 +201,10 @@ script {
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 101, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 101, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -215,10 +215,10 @@ script {
 //! sender: bob
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -229,11 +229,11 @@ script {
 //! new-transaction
 //! sender: moneybags
 script {
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     use 0x1::DiemAccount;
     fun main(account: &signer) {
         let with_cap = DiemAccount::extract_withdraw_capability(account);
-        DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 1, x"", x"");
+        DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 1, x"", x"");
         DiemAccount::restore_withdraw_capability(with_cap);
     }
 }
@@ -243,7 +243,7 @@ script {
 
 //! new-transaction
 //! sender: blessed
-//! type-args: 0x1::Coin1::Coin1
+//! type-args: 0x1::XUS::XUS
 //! args: 0, {{otherbob}}, {{otherbob::auth_key}}, b"bob", true
 stdlib_script::create_parent_vasp_account
 //! check: "Keep(EXECUTED)"

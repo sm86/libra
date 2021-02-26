@@ -74,7 +74,7 @@ Tried to set an invalid major version for the VM. Major versions must be strictl
 Publishes the DiemVersion config. Must be called during Genesis.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_initialize">initialize</a>(lr_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_initialize">initialize</a>(dr_account: &signer)
 </code></pre>
 
 
@@ -84,12 +84,12 @@ Publishes the DiemVersion config. Must be called during Genesis.
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_initialize">initialize</a>(
-    lr_account: &signer,
+    dr_account: &signer,
 ) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
     <a href="DiemConfig.md#0x1_DiemConfig_publish_new_config">DiemConfig::publish_new_config</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;(
-        lr_account,
+        dr_account,
         <a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a> { major: 1 },
     );
 }
@@ -106,7 +106,7 @@ Publishes the DiemVersion config. Must be called during Genesis.
 Must abort if the signer does not have the DiemRoot role [[H10]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">DiemTimestamp::AbortsIfNotGenesis</a>;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigAbortsIf">DiemConfig::PublishNewConfigAbortsIf</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigEnsures">DiemConfig::PublishNewConfigEnsures</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;{payload: <a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a> { major: 1 }};
@@ -123,7 +123,7 @@ Must abort if the signer does not have the DiemRoot role [[H10]][PERMISSION].
 Allows Diem root to update the major version to a larger version.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_set">set</a>(lr_account: &signer, major: u64)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_set">set</a>(dr_account: &signer, major: u64)
 </code></pre>
 
 
@@ -132,10 +132,10 @@ Allows Diem root to update the major version to a larger version.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_set">set</a>(lr_account: &signer, major: u64) {
+<pre><code><b>public</b> <b>fun</b> <a href="DiemVersion.md#0x1_DiemVersion_set">set</a>(dr_account: &signer, major: u64) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_operating">DiemTimestamp::assert_operating</a>();
 
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
 
     <b>let</b> old_config = <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;();
 
@@ -145,7 +145,7 @@ Allows Diem root to update the major version to a larger version.
     );
 
     <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;(
-        lr_account,
+        dr_account,
         <a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a> { major }
     );
 }
@@ -162,10 +162,10 @@ Allows Diem root to update the major version to a larger version.
 Must abort if the signer does not have the DiemRoot role [[H10]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotOperating">DiemTimestamp::AbortsIfNotOperating</a>;
 <b>aborts_if</b> <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;().major &gt;= major <b>with</b> <a href="Errors.md#0x1_Errors_INVALID_ARGUMENT">Errors::INVALID_ARGUMENT</a>;
-<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;{account: lr_account};
+<b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;{account: dr_account};
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetEnsures">DiemConfig::SetEnsures</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;{payload: <a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a> { major }};
 </code></pre>
 
@@ -204,8 +204,8 @@ Only "set" can modify the DiemVersion config [[H10]][PERMISSION]
 
 <pre><code><b>schema</b> <a href="DiemVersion.md#0x1_DiemVersion_DiemVersionRemainsSame">DiemVersionRemainsSame</a> {
     <b>ensures</b> <b>old</b>(<a href="DiemConfig.md#0x1_DiemConfig_spec_is_published">DiemConfig::spec_is_published</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;()) ==&gt;
-        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()) ==
-            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()));
+        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()) ==
+            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()));
 }
 </code></pre>
 
@@ -221,7 +221,7 @@ The permission "UpdateDiemProtocolVersion" is granted to DiemRoot [[H10]][PERMIS
 
 
 <pre><code><b>invariant</b> [<b>global</b>, isolated] <b>forall</b> addr: address <b>where</b> <b>exists</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVersion.md#0x1_DiemVersion">DiemVersion</a>&gt;&gt;(addr):
-    addr == <a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>();
+    addr == <a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>();
 </code></pre>
 
 
@@ -240,6 +240,6 @@ Version number never decreases
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

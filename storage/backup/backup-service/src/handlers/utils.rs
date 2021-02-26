@@ -3,12 +3,10 @@
 
 use anyhow::Result;
 use bytes::Bytes;
-use hyper::Body;
 use diem_logger::prelude::*;
-use diem_metrics::{
-    register_histogram_vec, register_int_counter_vec, HistogramVec, IntCounterVec,
-};
+use diem_metrics::{register_histogram_vec, register_int_counter_vec, HistogramVec, IntCounterVec};
 use diemdb::backup::backup_handler::BackupHandler;
+use hyper::Body;
 use once_cell::sync::Lazy;
 use serde::Serialize;
 use std::{convert::Infallible, future::Future};
@@ -39,7 +37,7 @@ pub(super) fn reply_with_bcs_bytes<R: Serialize>(
     let bytes = bcs::to_bytes(record)?;
     THROUGHPUT_COUNTER
         .with_label_values(&[endpoint])
-        .inc_by(bytes.len() as i64);
+        .inc_by(bytes.len() as u64);
     Ok(Box::new(bytes))
 }
 
@@ -58,7 +56,7 @@ impl BytesSender {
         self.inner.send_data(chunk).await?;
         THROUGHPUT_COUNTER
             .with_label_values(&[self.endpoint])
-            .inc_by(n_bytes as i64);
+            .inc_by(n_bytes as u64);
         Ok(())
     }
 

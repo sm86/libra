@@ -16,9 +16,9 @@ use consensus_types::{
     vote_data::VoteData,
     vote_msg::VoteMsg,
 };
-use futures::{channel::mpsc, SinkExt, StreamExt};
 use diem_infallible::{Mutex, RwLock};
 use diem_types::{block_info::BlockInfo, PeerId};
+use futures::{channel::mpsc, SinkExt, StreamExt};
 use network::{
     peer_manager::{
         conn_notifs_channel, ConnectionRequestSender, PeerManagerNotification, PeerManagerRequest,
@@ -62,9 +62,7 @@ pub struct NetworkPlayground {
     /// `ConsensusNetworkImpl`.
     ///
     node_consensus_txs: Arc<
-        Mutex<
-            HashMap<TwinId, diem_channel::Sender<(PeerId, ProtocolId), PeerManagerNotification>>,
-        >,
+        Mutex<HashMap<TwinId, diem_channel::Sender<(PeerId, ProtocolId), PeerManagerNotification>>>,
     >,
     /// Nodes' outbound handlers forward their outbound non-rpc messages to this
     /// queue.
@@ -472,9 +470,9 @@ mod tests {
     use consensus_types::block_retrieval::{
         BlockRetrievalRequest, BlockRetrievalResponse, BlockRetrievalStatus,
     };
-    use futures::{channel::oneshot, future};
     use diem_crypto::HashValue;
     use diem_types::validator_verifier::random_validator_verifier;
+    use futures::{channel::oneshot, future};
     use network::protocols::direct_send::Message;
 
     #[test]

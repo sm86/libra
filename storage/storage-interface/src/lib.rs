@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{format_err, Result};
-use itertools::Itertools;
 use diem_crypto::{hash::SPARSE_MERKLE_PLACEHOLDER_HASH, HashValue};
 use diem_types::{
     access_path::AccessPath,
@@ -21,6 +20,7 @@ use diem_types::{
         Version,
     },
 };
+use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet},

@@ -6,7 +6,7 @@ use diem_crypto::{
     multi_ed25519::{MultiEd25519PublicKey, MultiEd25519Signature},
     traits::{SigningKey, Uniform},
 };
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use diem_types::{contract_event, event, transaction, write_set};
 use move_core_types::language_storage;
 use rand::{rngs::StdRng, SeedableRng};

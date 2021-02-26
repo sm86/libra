@@ -34,11 +34,11 @@ module DiemTimestamp {
 
     /// Marks that time has started and genesis has finished. This can only be called from genesis and with the root
     /// account.
-    public fun set_time_has_started(lr_account: &signer) {
+    public fun set_time_has_started(dr_account: &signer) {
         assert_genesis();
-        CoreAddresses::assert_diem_root(lr_account);
+        CoreAddresses::assert_diem_root(dr_account);
         let timer = CurrentTimeMicroseconds { microseconds: 0 };
-        move_to(lr_account, timer);
+        move_to(dr_account, timer);
     }
     spec fun set_time_has_started {
         /// Verification of this function is turned off because it cannot be verified without genesis execution
@@ -46,7 +46,7 @@ module DiemTimestamp {
         /// activated and need to hold.
         pragma verify = false;
         include AbortsIfNotGenesis;
-        include CoreAddresses::AbortsIfNotDiemRoot{account: lr_account};
+        include CoreAddresses::AbortsIfNotDiemRoot{account: dr_account};
         ensures is_operating();
     }
 
@@ -60,7 +60,7 @@ module DiemTimestamp {
         // Can only be invoked by DiemVM signer.
         CoreAddresses::assert_vm(account);
 
-        let global_timer = borrow_global_mut<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS());
+        let global_timer = borrow_global_mut<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS());
         let now = global_timer.microseconds;
         if (proposer == CoreAddresses::VM_RESERVED_ADDRESS()) {
             // NIL block with null address as proposer. Timestamp must be equal.
@@ -90,7 +90,7 @@ module DiemTimestamp {
     /// Gets the current time in microseconds.
     public fun now_microseconds(): u64 acquires CurrentTimeMicroseconds {
         assert_operating();
-        borrow_global<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS()).microseconds
+        borrow_global<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS()).microseconds
     }
     spec fun now_microseconds {
         pragma opaque;
@@ -98,7 +98,7 @@ module DiemTimestamp {
         ensures result == spec_now_microseconds();
     }
     spec define spec_now_microseconds(): u64 {
-        global<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS()).microseconds
+        global<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS()).microseconds
     }
 
     /// Gets the current time in seconds.
@@ -111,12 +111,12 @@ module DiemTimestamp {
         ensures result == spec_now_microseconds() /  MICRO_CONVERSION_FACTOR;
     }
     spec define spec_now_seconds(): u64 {
-        global<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS()).microseconds / MICRO_CONVERSION_FACTOR
+        global<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS()).microseconds / MICRO_CONVERSION_FACTOR
     }
 
     /// Helper function to determine if Diem is in genesis state.
     public fun is_genesis(): bool {
-        !exists<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS())
+        !exists<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS())
     }
 
     /// Helper function to assert genesis state.
@@ -136,7 +136,7 @@ module DiemTimestamp {
     /// Helper function to determine if Diem is operating. This is the same as `!is_genesis()` and is provided
     /// for convenience. Testing `is_operating()` is more frequent than `is_genesis()`.
     public fun is_operating(): bool {
-        exists<CurrentTimeMicroseconds>(CoreAddresses::LIBRA_ROOT_ADDRESS())
+        exists<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS())
     }
 
     /// Helper function to assert operating (!genesis) state.
@@ -158,6 +158,9 @@ module DiemTimestamp {
     spec module {} // switch documentation context to module level
 
     spec module {
+        /// After genesis, `CurrentTimeMicroseconds` is published forever
+        invariant [global] is_operating() ==> exists<CurrentTimeMicroseconds>(CoreAddresses::DIEM_ROOT_ADDRESS());
+
         /// After genesis, time progresses monotonically.
         invariant update [global]
             old(is_operating()) ==> old(spec_now_microseconds()) <= spec_now_microseconds();
@@ -171,5 +174,4 @@ module DiemTimestamp {
 
 
 }
-
 }

@@ -1,6 +1,6 @@
 //! account: vivian, 1000000, 0, validator
 //! account: dd, 0, 0, address
-//! account: bob, 0Coin1, 0, vasp
+//! account: bob, 0XUS, 0, vasp
 
 //! new-transaction
 //! sender: diemroot
@@ -28,12 +28,12 @@ module COIN {
 
     struct COIN { }
 
-    public fun initialize(lr_account: &signer, tc_account: &signer) {
+    public fun initialize(dr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
         Diem::register_SCS_currency<COIN>(
-            lr_account,
+            dr_account,
             tc_account,
-            FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
+            FixedPoint32::create_from_rational(1, 2), // exchange rate to XDX
             1000000, // scaling_factor = 10^6
             100,     // fractional_part = 10^2
             b"COIN",
@@ -52,8 +52,8 @@ module COIN {
 //! execute-as: blessed
 script {
 use 0x1::COIN;
-fun main(lr_account: &signer, tc_account: &signer) {
-    COIN::initialize(lr_account, tc_account);
+fun main(dr_account: &signer, tc_account: &signer) {
+    COIN::initialize(dr_account, tc_account);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -110,10 +110,10 @@ fun main(tc_account: &signer) {
 //! sender: blessed
 script {
 use 0x1::TransactionFee;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(tc: &signer) {
-    TransactionFee::add_txn_fee_currency<LBR>(tc);
-    TransactionFee::burn_fees<LBR>(tc);
+    TransactionFee::add_txn_fee_currency<XDX>(tc);
+    TransactionFee::burn_fees<XDX>(tc);
 }
 }
 // check: "Keep(ABORTED { code: 1,"

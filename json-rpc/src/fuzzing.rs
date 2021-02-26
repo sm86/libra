@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{methods, runtime, tests};
-use futures::{channel::mpsc::channel, StreamExt};
 use diem_config::config;
 use diem_proptest_helpers::ValueGenerator;
 use diem_types::account_state_blob::AccountStateWithProof;
+use futures::{channel::mpsc::channel, StreamExt};
 use std::sync::Arc;
 use warp::reply::Reply;
 

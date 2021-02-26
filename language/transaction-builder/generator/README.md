@@ -23,8 +23,8 @@ This crate provide a binary tool `generate-transaction-builders` to generate and
 
 The tool will also generate and install type definitions for Diem types such as `TypeTag`, `AccountAddress`, and `Script`.
 
-In practice, hashing and signing Diem transactions additionally requires a runtime diemry for Diem Canonical Serialization ("BCS").
-Such a diemry will be installed together with the Diem types.
+In practice, hashing and signing Diem transactions additionally requires a runtime library for Binary Canonical Serialization ("BCS").
+Such a library will be installed together with the Diem types.
 
 
 ## Supported Languages
@@ -39,7 +39,7 @@ The following languages are currently supported:
 
 * Go >= 1.13
 
-* Rust (NOTE: Code generation of dependency-free Rust is experimental. Consider using the diemries of the Diem repository instead.)
+* Rust (NOTE: Code generation of dependency-free Rust is experimental. Consider using the libraries of the Diem repository instead.)
 
 
 ## Quick Start
@@ -57,6 +57,7 @@ target/debug/generate-transaction-builders \
     --module-name diem_stdlib \
     --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml" \
     --target-source-dir "$DEST" \
+    --with-custom-diem-code language/transaction-builder/generator/examples/python3/custom_diem_code/*.py -- \
     "language/stdlib/compiled/transaction_scripts/abi"
 ```
 Next, you may copy and execute the [Python demo file](examples/python3/stdlib_demo.py) with:
@@ -85,13 +86,14 @@ clang++ --std=c++17 -I "$DEST" "$DEST/diem_stdlib.cpp" "$DEST/stdlib_demo.cpp" -
 
 ### Java
 
-To install Java source packages `com.novi.serde`, `com.novi.bcs`, `org.diem.types`, and `org.diem.stdlib` into a target directory `$DEST`, run:
+To install Java source packages `com.novi.serde`, `com.novi.bcs`, `com.diem.types`, and `com.diem.stdlib` into a target directory `$DEST`, run:
 ```bash
 target/debug/generate-transaction-builders \
     --language java \
-    --module-name org.diem.stdlib \
+    --module-name com.diem.stdlib \
     --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml" \
     --target-source-dir "$DEST" \
+    --with-custom-diem-code language/transaction-builder/generator/examples/java/custom_diem_code/*.java -- \
     "language/stdlib/compiled/transaction_scripts/abi"
 ```
 Next, you may copy and execute the [Java demo file](examples/java/StdlibDemo.java) with:
@@ -139,14 +141,14 @@ Next, you may copy and execute the [Rust demo file](examples/rust/stdlib_demo.rs
 
 Supporting transaction builders in an additional programming language boils down to providing the following items:
 
-1. Code generation for Diem types (Rust diemry and tool),
+1. Code generation for Diem types (Rust library and tool),
 
-2. BCS runtime (diemry in target language),
+2. BCS runtime (library in target language),
 
 3. Code generation for transaction builders (Rust tool).
 
 
-Items (1) and (2) are provided by the Rust diemry `serde-generate` which is developed in a separate [github repository](https://github.com/novifinancial/serde-reflection).
+Items (1) and (2) are provided by the Rust library `serde-generate` which is developed in a separate [github repository](https://github.com/novifinancial/serde-reflection).
 
 Item (3) --- this tool --- is currently developed in the Diem repository.
 

@@ -3,7 +3,7 @@ script {
 // Find the first version where the account is created.
 use 0x1::DiemAccount;
 use 0x1::Signer;
-fun main(_lr_account: &signer, sender: &signer) {
+fun main(_dr_account: &signer, sender: &signer) {
     let addr = Signer::address_of(sender);
     if(DiemAccount::exists_at(addr)) {
         abort 1

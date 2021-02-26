@@ -3,9 +3,10 @@
 
 //! Errors that originate from the PeerManager module
 
-use futures::channel::{mpsc, oneshot};
+use crate::protocols::wire::messaging::v1 as wire;
 use diem_network_address::NetworkAddress;
 use diem_types::PeerId;
+use futures::channel::{mpsc, oneshot};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -36,6 +37,12 @@ pub enum PeerManagerError {
 
     #[error("Serialization error {0}")]
     BcsError(bcs::Error),
+
+    #[error("Error reading off wire: {0}")]
+    WireReadError(#[from] wire::ReadError),
+
+    #[error("Error writing to wire: {0}")]
+    WireWriteError(#[from] wire::WriteError),
 }
 
 impl PeerManagerError {

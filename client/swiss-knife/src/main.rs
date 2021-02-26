@@ -39,7 +39,7 @@ enum Command {
     /// Verifies the Ed25519 signature using the provided Ed25519 public
     /// key. Assumes the caller has a correct binary payload: this is thex
     /// Ed25519 signature verification you would find in an off-the-shelf
-    /// Ed25519 diemry (RFC 8032), hence advised only for sanity-checking and
+    /// Ed25519 library (RFC 8032), hence advised only for sanity-checking and
     /// testing.
     VerifyEd25519Signature,
     /// Generates a signature of a RawTransaction using the provided Ed25519
@@ -152,6 +152,12 @@ enum MoveScriptParams {
         metadata_hex_encoded: String,
         metadata_signature_hex_encoded: String,
     },
+    RotateDualAttestationInfo {
+        // "https://example.com/endpoint"
+        new_url: String,
+        // Hex encoded 32 byte Ed25519PublicKey, eg: "edd0f6de342a1e6a7236d6244f23d83eedfcecd059a386c85055701498e77033"
+        new_key_hex_encoded: String,
+    },
 }
 
 #[derive(Deserialize, Serialize)]
@@ -190,6 +196,15 @@ fn generate_raw_txn(g: GenerateRawTxnRequest) -> GenerateRawTxnResponse {
                 helpers::hex_decode(&metadata_hex_encoded),
                 helpers::hex_decode(&metadata_signature_hex_encoded),
             )
+        }
+        MoveScriptParams::RotateDualAttestationInfo {
+            new_url,
+            new_key_hex_encoded,
+        } => {
+            let new_url = new_url.into_bytes();
+            let new_key = hex::decode(new_key_hex_encoded)
+                .expect("Failed to hex decode new_key_hex_encoded field");
+            transaction_builder::encode_rotate_dual_attestation_info_script(new_url, new_key)
         }
     };
     let payload = TransactionPayload::Script(script);

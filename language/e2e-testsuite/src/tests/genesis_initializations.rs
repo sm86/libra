@@ -1,8 +1,8 @@
 // Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use language_e2e_tests::executor::FakeExecutor;
 use diem_types::account_config;
+use language_e2e_tests::executor::FakeExecutor;
 use move_core_types::account_address::AccountAddress;
 use move_vm_types::values::Value;
 
@@ -10,7 +10,7 @@ use move_vm_types::values::Value;
 fn test_diem_initialize() {
     let mut executor = FakeExecutor::stdlib_only_genesis();
 
-    // LR doesn't have role yet, so role check will fail
+    // DR doesn't have role yet, so role check will fail
     let output = executor.try_exec(
         "Diem",
         "initialize",
@@ -22,7 +22,7 @@ fn test_diem_initialize() {
     );
     assert_eq!(output.unwrap_err().move_abort_code(), Some(5));
 
-    // Grant the LR role
+    // Grant the DR role
     executor.exec(
         "Roles",
         "grant_diem_root_role",
@@ -63,7 +63,7 @@ fn test_diem_initialize() {
 fn test_diem_initialize_tc_account() {
     let mut executor = FakeExecutor::stdlib_only_genesis();
 
-    // LR doesn't have role yet, so role check will fail
+    // DR doesn't have role yet, so role check will fail
     let output = executor.try_exec(
         "Diem",
         "initialize",
@@ -75,7 +75,7 @@ fn test_diem_initialize_tc_account() {
     );
     assert_eq!(output.unwrap_err().move_abort_code(), Some(5));
 
-    // Grant the LR role
+    // Grant the DR role
     executor.exec(
         "Roles",
         "grant_diem_root_role",

@@ -6,15 +6,15 @@
 //! sender: blessed
 script {
 use 0x1::DualAttestation;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 use 0x1::DiemTimestamp;
 use 0x1::VASP;
-fun main(lr_account: &signer) {
+fun main(dr_account: &signer) {
     let add_all_currencies = false;
 
-    DiemAccount::create_parent_vasp_account<Coin1>(
-        lr_account,
+    DiemAccount::create_parent_vasp_account<XUS>(
+        dr_account,
         {{parent}},
         {{parent::auth_key}},
         x"A1",
@@ -44,18 +44,18 @@ fun main(lr_account: &signer) {
 //! sender: parent
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::VASP;
 fun main(parent_vasp: &signer) {
     let dummy_auth_key_prefix = x"00000000000000000000000000000000";
     let add_all_currencies = false;
     assert(VASP::num_children({{parent}}) == 0, 2010);
-    DiemAccount::create_child_vasp_account<Coin1>(
+    DiemAccount::create_child_vasp_account<XUS>(
         parent_vasp, 0xAA, copy dummy_auth_key_prefix, add_all_currencies
     );
     assert(VASP::num_children({{parent}}) == 1, 2011);
     assert(VASP::parent_address(0xAA) == {{parent}}, 2012);
-    DiemAccount::create_child_vasp_account<Coin1>(
+    DiemAccount::create_child_vasp_account<XUS>(
         parent_vasp, 0xBB, dummy_auth_key_prefix, add_all_currencies
     );
     assert(VASP::num_children({{parent}}) == 2, 2013);
@@ -140,7 +140,7 @@ fun main(account: &signer) {
     VASP::publish_child_vasp_credential(account, account);
 }
 }
-// check: "Keep(ABORTED { code: 6,"
+// check: "Keep(ABORTED { code: 2307,"
 
 //! new-transaction
 //! sender: parent

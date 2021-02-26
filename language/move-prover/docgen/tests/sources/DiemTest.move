@@ -29,16 +29,16 @@ module DiemTest {
     /// The `MintCapability` resource defines a capability to allow minting
     /// of coins of `CoinType` currency by the holder of this capability.
     /// This capability is held only either by the `CoreAddresses::TREASURY_COMPLIANCE_ADDRESS()`
-    /// account or the `0x1::LBR` module (and `CoreAddresses::LIBRA_ROOT_ADDRESS()` in testnet).
+    /// account or the `0x1::XDX` module (and `CoreAddresses::DIEM_ROOT_ADDRESS()` in testnet).
     resource struct MintCapability<CoinType> { }
 
     /// The `BurnCapability` resource defines a capability to allow coins
     /// of `CoinType` currency to be burned by the holder of the
-    /// and the `0x1::LBR` module (and `CoreAddresses::LIBRA_ROOT_ADDRESS()` in testnet).
+    /// and the `0x1::XDX` module (and `CoreAddresses::DIEM_ROOT_ADDRESS()` in testnet).
     resource struct BurnCapability<CoinType> { }
 
     /// The `CurrencyRegistrationCapability` is a singleton resource
-    /// published under the `CoreAddresses::LIBRA_ROOT_ADDRESS()` and grants
+    /// published under the `CoreAddresses::DIEM_ROOT_ADDRESS()` and grants
     /// the capability to the `0x1::Diem` module to add currencies to the
     /// `0x1::RegisteredCurrencies` on-chain config.
 
@@ -50,7 +50,7 @@ module DiemTest {
     struct MintEvent {
         /// Funds added to the system
         amount: u64,
-        /// ASCII encoded symbol for the coin type (e.g., "LBR")
+        /// ASCII encoded symbol for the coin type (e.g., "XDX")
         currency_code: vector<u8>,
     }
 
@@ -65,7 +65,7 @@ module DiemTest {
     struct BurnEvent {
         /// Funds removed from the system
         amount: u64,
-        /// ASCII encoded symbol for the coin type (e.g., "LBR")
+        /// ASCII encoded symbol for the coin type (e.g., "XDX")
         currency_code: vector<u8>,
         /// Address with the `Preburn` resource that stored the now-burned funds
         preburn_address: address,
@@ -77,7 +77,7 @@ module DiemTest {
     struct PreburnEvent {
         /// The amount of funds waiting to be removed (burned) from the system
         amount: u64,
-        /// ASCII encoded symbol for the coin type (e.g., "LBR")
+        /// ASCII encoded symbol for the coin type (e.g., "XDX")
         currency_code: vector<u8>,
         /// Address with the `Preburn` resource that now holds the funds
         preburn_address: address,
@@ -90,21 +90,21 @@ module DiemTest {
     struct CancelBurnEvent {
         /// The amount of funds returned
         amount: u64,
-        /// ASCII encoded symbol for the coin type (e.g., "LBR")
+        /// ASCII encoded symbol for the coin type (e.g., "XDX")
         currency_code: vector<u8>,
         /// Address of the `Preburn` resource that held the now-returned funds.
         preburn_address: address,
     }
 
-    /// An `ToLBRExchangeRateUpdateEvent` is emitted every time the to-LBR exchange
+    /// An `ToXDXExchangeRateUpdateEvent` is emitted every time the to-XDX exchange
     /// rate for the currency given by `currency_code` is updated.
-    struct ToLBRExchangeRateUpdateEvent {
+    struct ToXDXExchangeRateUpdateEvent {
         /// The currency code of the currency whose exchange rate was updated.
         currency_code: vector<u8>,
-        /// The new on-chain to-LBR exchange rate between the
-        /// `currency_code` currency and LBR. Represented in conversion
+        /// The new on-chain to-XDX exchange rate between the
+        /// `currency_code` currency and XDX. Represented in conversion
         /// between the (on-chain) base-units for the currency and microdiem.
-        new_to_lbr_exchange_rate: u64,
+        new_to_xdx_exchange_rate: u64,
     }
 
     /// The `CurrencyInfo<CoinType>` resource stores the various
@@ -120,24 +120,24 @@ module DiemTest {
         total_value: u128,
         /// Value of funds that are in the process of being burned.  Mutable.
         preburn_value: u64,
-        /// The (rough) exchange rate from `CoinType` to `LBR`. Mutable.
-        to_lbr_exchange_rate: FixedPoint32,
+        /// The (rough) exchange rate from `CoinType` to `XDX`. Mutable.
+        to_xdx_exchange_rate: FixedPoint32,
         /// Holds whether or not this currency is synthetic (contributes to the
         /// off-chain reserve) or not. An example of such a synthetic
-        ///currency would be the LBR.
+        ///currency would be the XDX.
         is_synthetic: bool,
         /// The scaling factor for the coin (i.e. the amount to multiply by
         /// to get to the human-readable representation for this currency).
-        /// e.g. 10^6 for `Coin1`
+        /// e.g. 10^6 for `XUS`
         ///
         /// > TODO(wrwg): should the above be "to divide by"?
         scaling_factor: u64,
         /// The smallest fractional part (number of decimal places) to be
         /// used in the human-readable representation for the currency (e.g.
-        /// 10^2 for `Coin1` cents)
+        /// 10^2 for `XUS` cents)
         fractional_part: u64,
         /// The code symbol for this `CoinType`. ASCII encoded.
-        /// e.g. for "LBR" this is x"4C4252". No character limit.
+        /// e.g. for "XDX" this is x"4C4252". No character limit.
         currency_code: vector<u8>,
         /// We may want to disable the ability to mint further coins of a
         /// currency while that currency is still around. This allows us to
@@ -155,7 +155,7 @@ module DiemTest {
         /// `CoinType`.
         cancel_burn_events: EventHandle<CancelBurnEvent>,
         /// Event stream for emiting exchange rate change events
-        exchange_rate_update_events: EventHandle<ToLBRExchangeRateUpdateEvent>,
+        exchange_rate_update_events: EventHandle<ToXDXExchangeRateUpdateEvent>,
     }
 
     // TODO (dd): It would be great to be able to prove this, but requires more work.
@@ -186,7 +186,7 @@ module DiemTest {
     const EDESTRUCTION_OF_NONZERO_COIN: u64 = 6;
     const ENOT_A_REGISTERED_CURRENCY: u64 = 7;
     const ENOT_AN_SCS_CURRENCY: u64 = 8;
-    const EDOES_NOT_HAVE_LIBRA_ROOT_ROLE: u64 = 9;
+    const EDOES_NOT_HAVE_DIEM_ROOT_ROLE: u64 = 9;
     const EDOES_NOT_HAVE_TREASURY_COMPLIANCE_ROLE: u64 = 10;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -203,14 +203,14 @@ module DiemTest {
     /// Initialization of the `Diem` module; initializes the set of
     /// registered currencies in the `0x1::RegisteredCurrencies` on-chain
     /// config, and publishes the `CurrencyRegistrationCapability` under the
-    /// `CoreAddresses::LIBRA_ROOT_ADDRESS()`. This can only be called from genesis.
+    /// `CoreAddresses::DIEM_ROOT_ADDRESS()`. This can only be called from genesis.
     public fun initialize(
         config_account: &signer,
     ) {
         assert(DiemTimestamp::is_genesis(), ENOT_GENESIS);
         // Operational constraint
         assert(
-            Signer::address_of(config_account) == CoreAddresses::LIBRA_ROOT_ADDRESS(),
+            Signer::address_of(config_account) == CoreAddresses::DIEM_ROOT_ADDRESS(),
             EINVALID_SINGLETON_ADDRESS
         );
         RegisteredCurrencies::initialize(config_account);
@@ -281,7 +281,7 @@ module DiemTest {
 
     /// Mint a new `Diem` coin of `CoinType` currency worth `value`. The
     /// caller must have a reference to a `MintCapability<CoinType>`. Only
-    /// the treasury compliance account or the `0x1::LBR` module can acquire such a
+    /// the treasury compliance account or the `0x1::XDX` module can acquire such a
     /// reference.
     public fun mint_with_capability<CoinType>(
         value: u64,
@@ -606,13 +606,13 @@ module DiemTest {
     }
 
     /// and returns a new coin whose value is equal to the sum of the two inputs.
-    public fun join<CoinType>(coin1_tmp: Diem<CoinType>, coin2: Diem<CoinType>): Diem<CoinType>  {
-        deposit(&mut coin1_tmp, coin2);
-        coin1_tmp
+    public fun join<CoinType>(xus: Diem<CoinType>, coin2: Diem<CoinType>): Diem<CoinType>  {
+        deposit(&mut xus, coin2);
+        xus
     }
     spec fun join {
-        aborts_if coin1_tmp.value + coin2.value > max_u64();
-        ensures result.value == coin1_tmp.value + coin2.value;
+        aborts_if xus.value + coin2.value > max_u64();
+        ensures result.value == xus.value + coin2.value;
     }
 
 
@@ -641,8 +641,8 @@ module DiemTest {
 
     /// Register the type `CoinType` as a currency. Until the type is
     /// registered as a currency it cannot be used as a coin/currency unit in Diem.
-    /// The passed-in `lr_account` must be a specific address (`CoreAddresses::CURRENCY_INFO_ADDRESS()`) and
-    /// `lr_account` must also have the correct `RegisterNewCurrency` capability.
+    /// The passed-in `dr_account` must be a specific address (`CoreAddresses::CURRENCY_INFO_ADDRESS()`) and
+    /// `dr_account` must also have the correct `RegisterNewCurrency` capability.
     /// After the first registration of `CoinType` as a
     /// currency, additional attempts to register `CoinType` as a currency
     /// will abort.
@@ -651,46 +651,46 @@ module DiemTest {
     /// adds the currency to the set of `RegisteredCurrencies`. It returns
     /// `MintCapability<CoinType>` and `BurnCapability<CoinType>` resources.
     public fun register_currency<CoinType>(
-        lr_account: &signer,
-        to_lbr_exchange_rate: FixedPoint32,
+        dr_account: &signer,
+        to_xdx_exchange_rate: FixedPoint32,
         is_synthetic: bool,
         scaling_factor: u64,
         fractional_part: u64,
         currency_code: vector<u8>,
     ): (MintCapability<CoinType>, BurnCapability<CoinType>)
     {
-        Roles::assert_diem_root(lr_account);
+        Roles::assert_diem_root(dr_account);
         // Operational constraint that it must be stored under a specific address.
         assert(
-            Signer::address_of(lr_account) == CoreAddresses::CURRENCY_INFO_ADDRESS(),
+            Signer::address_of(dr_account) == CoreAddresses::CURRENCY_INFO_ADDRESS(),
             EINVALID_SINGLETON_ADDRESS
         );
 
-        move_to(lr_account, CurrencyInfo<CoinType> {
+        move_to(dr_account, CurrencyInfo<CoinType> {
             total_value: 0,
             preburn_value: 0,
-            to_lbr_exchange_rate,
+            to_xdx_exchange_rate,
             is_synthetic,
             scaling_factor,
             fractional_part,
             currency_code: copy currency_code,
             can_mint: true,
-            mint_events: Event::new_event_handle<MintEvent>(lr_account),
-            burn_events: Event::new_event_handle<BurnEvent>(lr_account),
-            preburn_events: Event::new_event_handle<PreburnEvent>(lr_account),
-            cancel_burn_events: Event::new_event_handle<CancelBurnEvent>(lr_account),
-            exchange_rate_update_events: Event::new_event_handle<ToLBRExchangeRateUpdateEvent>(lr_account)
+            mint_events: Event::new_event_handle<MintEvent>(dr_account),
+            burn_events: Event::new_event_handle<BurnEvent>(dr_account),
+            preburn_events: Event::new_event_handle<PreburnEvent>(dr_account),
+            cancel_burn_events: Event::new_event_handle<CancelBurnEvent>(dr_account),
+            exchange_rate_update_events: Event::new_event_handle<ToXDXExchangeRateUpdateEvent>(dr_account)
         });
         RegisteredCurrencies::add_currency_code(
-            lr_account,
+            dr_account,
             currency_code,
         );
         (MintCapability<CoinType>{}, BurnCapability<CoinType>{})
     }
     spec fun register_currency {
-        aborts_if !Roles::spec_has_diem_root_role_addr(Signer::spec_address_of(lr_account));
-        aborts_if Signer::spec_address_of(lr_account) != CoreAddresses::CURRENCY_INFO_ADDRESS();
-        aborts_if exists<CurrencyInfo<CoinType>>(Signer::spec_address_of(lr_account));
+        aborts_if !Roles::spec_has_diem_root_role_addr(Signer::spec_address_of(dr_account));
+        aborts_if Signer::spec_address_of(dr_account) != CoreAddresses::CURRENCY_INFO_ADDRESS();
+        aborts_if exists<CurrencyInfo<CoinType>>(Signer::spec_address_of(dr_account));
         aborts_if spec_is_currency<CoinType>();
         include RegisteredCurrencies::AddCurrencyCodeAbortsIf;
     }
@@ -702,9 +702,9 @@ module DiemTest {
     /// This code allows different currencies to have different treasury compliance
     /// accounts.
     public fun register_SCS_currency<CoinType>(
-        lr_account: &signer,
+        dr_account: &signer,
         tc_account: &signer,
-        to_lbr_exchange_rate: FixedPoint32,
+        to_xdx_exchange_rate: FixedPoint32,
         scaling_factor: u64,
         fractional_part: u64,
         currency_code: vector<u8>,
@@ -712,8 +712,8 @@ module DiemTest {
         Roles::assert_treasury_compliance(tc_account);
         let (mint_cap, burn_cap) =
             register_currency<CoinType>(
-                lr_account,
-                to_lbr_exchange_rate,
+                dr_account,
+                to_xdx_exchange_rate,
                 false,   // is_synthetic
                 scaling_factor,
                 fractional_part,
@@ -737,22 +737,22 @@ module DiemTest {
         borrow_global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).total_value
     }
 
-    /// Returns the value of the coin in the `FromCoinType` currency in LBR.
+    /// Returns the value of the coin in the `FromCoinType` currency in XDX.
     /// This should only be used where a _rough_ approximation of the exchange
     /// rate is needed.
-    public fun approx_lbr_for_value<FromCoinType>(from_value: u64): u64
+    public fun approx_xdx_for_value<FromCoinType>(from_value: u64): u64
     acquires CurrencyInfo {
-        let lbr_exchange_rate = lbr_exchange_rate<FromCoinType>();
-        FixedPoint32::multiply_u64(from_value, lbr_exchange_rate)
+        let xdx_exchange_rate = xdx_exchange_rate<FromCoinType>();
+        FixedPoint32::multiply_u64(from_value, xdx_exchange_rate)
     }
 
-    /// Returns the value of the coin in the `FromCoinType` currency in LBR.
+    /// Returns the value of the coin in the `FromCoinType` currency in XDX.
     /// This should only be used where a rough approximation of the exchange
     /// rate is needed.
-    public fun approx_lbr_for_coin<FromCoinType>(coin: &Diem<FromCoinType>): u64
+    public fun approx_xdx_for_coin<FromCoinType>(coin: &Diem<FromCoinType>): u64
     acquires CurrencyInfo {
         let from_value = value(coin);
-        approx_lbr_for_value<FromCoinType>(from_value)
+        approx_xdx_for_value<FromCoinType>(from_value)
     }
 
     /// Returns `true` if the type `CoinType` is a registered currency.
@@ -797,30 +797,30 @@ module DiemTest {
         *&borrow_global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).currency_code
     }
 
-    /// Updates the `to_lbr_exchange_rate` held in the `CurrencyInfo` for
-    /// `FromCoinType` to the new passed-in `lbr_exchange_rate`.
-    public fun update_lbr_exchange_rate<FromCoinType>(
+    /// Updates the `to_xdx_exchange_rate` held in the `CurrencyInfo` for
+    /// `FromCoinType` to the new passed-in `xdx_exchange_rate`.
+    public fun update_xdx_exchange_rate<FromCoinType>(
         tr_account: &signer,
-        lbr_exchange_rate: FixedPoint32
+        xdx_exchange_rate: FixedPoint32
     ) acquires CurrencyInfo {
         assert(Roles::has_treasury_compliance_role(tr_account), ENOT_TREASURY_COMPLIANCE);
         assert_is_currency<FromCoinType>();
         let currency_info = borrow_global_mut<CurrencyInfo<FromCoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS());
-        currency_info.to_lbr_exchange_rate = lbr_exchange_rate;
+        currency_info.to_xdx_exchange_rate = xdx_exchange_rate;
         Event::emit_event(
             &mut currency_info.exchange_rate_update_events,
-            ToLBRExchangeRateUpdateEvent {
+            ToXDXExchangeRateUpdateEvent {
                 currency_code: *&currency_info.currency_code,
-                new_to_lbr_exchange_rate: FixedPoint32::get_raw_value(*&currency_info.to_lbr_exchange_rate),
+                new_to_xdx_exchange_rate: FixedPoint32::get_raw_value(*&currency_info.to_xdx_exchange_rate),
             }
         );
 
     }
 
-    /// Returns the (rough) exchange rate between `CoinType` and `LBR`
-    public fun lbr_exchange_rate<CoinType>(): FixedPoint32
+    /// Returns the (rough) exchange rate between `CoinType` and `XDX`
+    public fun xdx_exchange_rate<CoinType>(): FixedPoint32
     acquires CurrencyInfo {
-        *&borrow_global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).to_lbr_exchange_rate
+        *&borrow_global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).to_xdx_exchange_rate
     }
 
     /// There may be situations in which we disallow the further minting of
@@ -878,11 +878,11 @@ module DiemTest {
             global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS())
         }
 
-        /// Specification version of `Self::approx_lbr_for_value`.
-        define spec_approx_lbr_for_value<CoinType>(value: num):  num {
+        /// Specification version of `Self::approx_xdx_for_value`.
+        define spec_approx_xdx_for_value<CoinType>(value: num):  num {
             FixedPoint32::spec_multiply_u64(
                 value,
-                global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).to_lbr_exchange_rate
+                global<CurrencyInfo<CoinType>>(CoreAddresses::CURRENCY_INFO_ADDRESS()).to_xdx_exchange_rate
             )
         }
 

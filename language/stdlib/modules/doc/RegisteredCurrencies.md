@@ -78,7 +78,7 @@ Initializes this module. Can only be called from genesis, with
 a Diem root signer.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_initialize">initialize</a>(lr_account: &signer)
+<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_initialize">initialize</a>(dr_account: &signer)
 </code></pre>
 
 
@@ -87,11 +87,11 @@ a Diem root signer.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_initialize">initialize</a>(lr_account: &signer) {
+<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_initialize">initialize</a>(dr_account: &signer) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
     <a href="DiemConfig.md#0x1_DiemConfig_publish_new_config">DiemConfig::publish_new_config</a>(
-        lr_account,
+        dr_account,
         <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">RegisteredCurrencies</a> { currency_codes: <a href="Vector.md#0x1_Vector_empty">Vector::empty</a>() }
     );
 }
@@ -117,9 +117,9 @@ a Diem root signer.
 
 
 <pre><code><b>schema</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_InitializeAbortsIf">InitializeAbortsIf</a> {
-    lr_account: signer;
+    dr_account: signer;
     <b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">DiemTimestamp::AbortsIfNotGenesis</a>;
-    <b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+    <b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
     <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigAbortsIf">DiemConfig::PublishNewConfigAbortsIf</a>&lt;<a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">RegisteredCurrencies</a>&gt;;
 }
 </code></pre>
@@ -149,7 +149,7 @@ a Diem root signer.
 Adds a new currency code. The currency code must not yet exist.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_add_currency_code">add_currency_code</a>(lr_account: &signer, currency_code: vector&lt;u8&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_add_currency_code">add_currency_code</a>(dr_account: &signer, currency_code: vector&lt;u8&gt;)
 </code></pre>
 
 
@@ -159,7 +159,7 @@ Adds a new currency code. The currency code must not yet exist.
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_add_currency_code">add_currency_code</a>(
-    lr_account: &signer,
+    dr_account: &signer,
     currency_code: vector&lt;u8&gt;,
 ) {
     <b>let</b> config = <a href="DiemConfig.md#0x1_DiemConfig_get">DiemConfig::get</a>&lt;<a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">RegisteredCurrencies</a>&gt;();
@@ -168,7 +168,7 @@ Adds a new currency code. The currency code must not yet exist.
         <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_ECURRENCY_CODE_ALREADY_TAKEN">ECURRENCY_CODE_ALREADY_TAKEN</a>)
     );
     <a href="Vector.md#0x1_Vector_push_back">Vector::push_back</a>(&<b>mut</b> config.currency_codes, currency_code);
-    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>(lr_account, config);
+    <a href="DiemConfig.md#0x1_DiemConfig_set">DiemConfig::set</a>(dr_account, config);
 }
 </code></pre>
 
@@ -192,9 +192,9 @@ Adds a new currency code. The currency code must not yet exist.
 
 
 <pre><code><b>schema</b> <a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies_AddCurrencyCodeAbortsIf">AddCurrencyCodeAbortsIf</a> {
-    lr_account: &signer;
+    dr_account: &signer;
     currency_code: vector&lt;u8&gt;;
-    <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">RegisteredCurrencies</a>&gt;{ account: lr_account };
+    <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_SetAbortsIf">DiemConfig::SetAbortsIf</a>&lt;<a href="RegisteredCurrencies.md#0x1_RegisteredCurrencies">RegisteredCurrencies</a>&gt;{ account: dr_account };
 }
 </code></pre>
 
@@ -264,6 +264,6 @@ Helper to get the currency code vector.
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

@@ -44,7 +44,7 @@ fn test_genesis_transaction_flow() {
     let mut client_0 = env.get_validator_client(0, None);
     client_0.create_next_account(false).unwrap();
     client_0
-        .mint_coins(&["mintb", "0", "10", "Coin1"], true)
+        .mint_coins(&["mintb", "0", "10", "XUS"], true)
         .unwrap();
 
     println!("2. Set sync_only = true for all nodes and restart");
@@ -142,10 +142,10 @@ fn test_genesis_transaction_flow() {
     client_proxy_1.set_accounts(client_0.copy_all_accounts());
     client_proxy_1.create_next_account(false).unwrap();
     client_proxy_1
-        .mint_coins(&["mintb", "1", "10", "Coin1"], true)
+        .mint_coins(&["mintb", "1", "10", "XUS"], true)
         .unwrap();
     client_proxy_1
-        .wait_for_transaction(treasury_compliance_account_address(), 1)
+        .wait_for_transaction(treasury_compliance_account_address(), 0)
         .unwrap();
 
     println!("9. add node 0 back and test if it can sync to the waypoint via state synchronizer");
@@ -167,7 +167,7 @@ fn test_genesis_transaction_flow() {
     client_proxy_0.set_accounts(client_proxy_1.copy_all_accounts());
     client_proxy_0.create_next_account(false).unwrap();
     client_proxy_1
-        .mint_coins(&["mintb", "1", "10", "Coin1"], true)
+        .mint_coins(&["mintb", "1", "10", "XUS"], true)
         .unwrap();
 }
 

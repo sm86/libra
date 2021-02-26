@@ -15,7 +15,7 @@ module Compare {
     /// (2) vector length to break ties.
     /// Returns either `EQUAL` (0u8), `LESS_THAN` (1u8), or `GREATER_THAN` (2u8).
     ///
-    /// This function is designed to compare BCS (Diem Canonical Serialization)-encoded values
+    /// This function is designed to compare BCS (Binary Canonical Serialization)-encoded values
     /// (i.e., vectors produced by `BCS::to_bytes`). A typical client will call
     /// `Compare::cmp_bcs_bytes(BCS::to_bytes(&t1), BCS::to_bytes(&t2))`. The comparison provides the
     /// following guarantees w.r.t the original values t1 and t2:

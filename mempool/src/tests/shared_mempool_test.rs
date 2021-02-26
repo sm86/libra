@@ -10,16 +10,6 @@ use crate::{
     CommitNotification, CommittedTransaction, ConsensusRequest,
 };
 use channel::{self, diem_channel, message_queues::QueueStyle};
-use futures::{
-    channel::{
-        mpsc::{self, unbounded, UnboundedReceiver},
-        oneshot,
-    },
-    executor::block_on,
-    future::FutureExt,
-    sink::SinkExt,
-    StreamExt,
-};
 use diem_config::{
     config::{NetworkConfig, NodeConfig, RoleType, UpstreamConfig},
     network_id::{NetworkContext, NetworkId, NodeNetworkId},
@@ -29,6 +19,16 @@ use diem_network_address::NetworkAddress;
 use diem_types::{
     transaction::{GovernanceRole, SignedTransaction},
     PeerId,
+};
+use futures::{
+    channel::{
+        mpsc::{self, unbounded, UnboundedReceiver},
+        oneshot,
+    },
+    executor::block_on,
+    future::FutureExt,
+    sink::SinkExt,
+    StreamExt,
 };
 use netcore::transport::ConnectionOrigin;
 use network::{

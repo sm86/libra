@@ -5,8 +5,8 @@
 
 use crate::peer_manager::PeerManagerError;
 use anyhow::anyhow;
-use futures::channel::{mpsc, oneshot};
 use diem_types::PeerId;
+use futures::channel::{mpsc, oneshot};
 use std::io;
 use thiserror::Error;
 
@@ -18,7 +18,7 @@ pub enum RpcError {
     #[error("IO error: {0}")]
     IoError(#[from] io::Error),
 
-    #[error("bcs error: {0:?}")]
+    #[error("Bcs error: {0:?}")]
     BcsError(#[from] bcs::Error),
 
     #[error("Failed to open substream, not connected with peer: {0}")]

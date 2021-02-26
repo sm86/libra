@@ -103,7 +103,7 @@ module ApprovedPayment {
 
     // Remove and destroy the ApprovedPayment resource under the sender's account
     public fun unpublish_from_sender(sender: &signer) acquires T {
-        let T { public_key: _ } = move_from<T>(Signer::address_of(sender))
+        let T { public_key: _ } = move_from<T>(Signer::address_of(sender));
     }
 
     // Return true if an ApprovedPayment resource exists under `addr`
@@ -206,11 +206,11 @@ fun main(account: &signer) {
 //! sender: bob2
 script {
 use {{default}}::ApprovedPayment;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
     let payment_id = x"0000000000000000000000000000000000000000000000000000000000000000";
     let signature = x"62d6be393b8ec77fb2c12ff44ca8b5bd8bba83b805171bc99f0af3bdc619b20b8bd529452fe62dac022c80752af2af02fb610c20f01fb67a4d72789db2b8b703";
-    ApprovedPayment::deposit_to_payee<LBR>(account, {{alice2}}, 1000, payment_id, signature);
+    ApprovedPayment::deposit_to_payee<XDX>(account, {{alice2}}, 1000, payment_id, signature);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -261,11 +261,11 @@ fun main(account: &signer) {
 //! sender: bob3
 script {
 use {{default}}::ApprovedPayment;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
     let payment_id = x"0000000000000000000000000000000000000000000000000000000000000000";
     let signature = x"62d6be393b8ec77fb2c12ff44ca8b5bd8bba83b805171bc99f0af3bdc619b20b8bd529452fe62dac022c80752af2af02fb610c20f01fb67a4d72789db2b8b703";
-    ApprovedPayment::deposit_to_payee<LBR>(account, {{alice3}}, 1000, payment_id, signature);
+    ApprovedPayment::deposit_to_payee<XDX>(account, {{alice3}}, 1000, payment_id, signature);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -276,11 +276,11 @@ fun main(account: &signer) {
 //! sender: bob3
 script {
 use {{default}}::ApprovedPayment;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
     let payment_id = x"0000000000000000000000000000000000000000000000000000000000000000";
     let signature = x"";
-    ApprovedPayment::deposit_to_payee<LBR>(account, {{alice}}, 1000, payment_id, signature);
+    ApprovedPayment::deposit_to_payee<XDX>(account, {{alice}}, 1000, payment_id, signature);
 }
 }
 
@@ -292,11 +292,11 @@ fun main(account: &signer) {
 //! sender: bob3
 script {
 use {{default}}::ApprovedPayment;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
     let payment_id = x"7";
     let signature = x"62d6be393b8ec77fb2c12ff44ca8b5bd8bba83b805171bc99f0af3bdc619b20b8bd529452fe62dac022c80752af2af02fb610c20f01fb67a4d72789db2b8b703";
-    ApprovedPayment::deposit_to_payee<LBR>(account, {{alice3}}, 1000, payment_id, signature);
+    ApprovedPayment::deposit_to_payee<XDX>(account, {{alice3}}, 1000, payment_id, signature);
 }
 }
 // check: "Keep(ABORTED { code: 9002,"

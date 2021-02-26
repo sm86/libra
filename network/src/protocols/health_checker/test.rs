@@ -13,9 +13,9 @@ use crate::{
     ProtocolId,
 };
 use channel::{diem_channel, message_queues::QueueStyle};
-use futures::sink::SinkExt;
 use diem_config::{config::RoleType, network_id::NetworkId};
 use diem_network_address::NetworkAddress;
+use futures::sink::SinkExt;
 use netcore::transport::ConnectionOrigin;
 use std::{num::NonZeroUsize, str::FromStr};
 use tokio::runtime::Runtime;

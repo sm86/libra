@@ -2,15 +2,15 @@
 //! sender: diemroot
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
-// Make sure that Coin1 is registered. Make sure that the rules
+use 0x1::XUS::XUS;
+// Make sure that XUS is registered. Make sure that the rules
 // relating to SCS and synthetic currencies are consistent
 fun main() {
-    assert(Diem::is_currency<Coin1>(), 1);
-    assert(!Diem::is_synthetic_currency<Coin1>(), 2);
-    assert(Diem::is_SCS_currency<Coin1>(), 4);
-    Diem::assert_is_currency<Coin1>();
-    Diem::assert_is_SCS_currency<Coin1>();
+    assert(Diem::is_currency<XUS>(), 1);
+    assert(!Diem::is_synthetic_currency<XUS>(), 2);
+    assert(Diem::is_SCS_currency<XUS>(), 4);
+    Diem::assert_is_currency<XUS>();
+    Diem::assert_is_SCS_currency<XUS>();
 }
 }
 // check: "Keep(EXECUTED)"
@@ -18,9 +18,9 @@ fun main() {
 //! new-transaction
 script {
 use 0x1::Diem;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main() {
-    Diem::assert_is_SCS_currency<LBR>();
+    Diem::assert_is_SCS_currency<XDX>();
 }
 }
 // check: "Keep(ABORTED { code: 257,"
@@ -37,10 +37,10 @@ fun main() {
 //! new-transaction
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::FixedPoint32;
 fun main(account: &signer) {
-    Diem::update_lbr_exchange_rate<Coin1>(account, FixedPoint32::create_from_rational(1, 3));
+    Diem::update_xdx_exchange_rate<XUS>(account, FixedPoint32::create_from_rational(1, 3));
 }
 }
 // check: "Keep(ABORTED { code: 258,"
@@ -48,9 +48,9 @@ fun main(account: &signer) {
 //! new-transaction
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    Diem::update_minting_ability<Coin1>(account, false);
+    Diem::update_minting_ability<XUS>(account, false);
 }
 }
 // check: "Keep(ABORTED { code: 258,"
@@ -74,12 +74,12 @@ module Holder {
 //! sender: diemroot
 script {
 use 0x1::Diem;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::FixedPoint32;
 use {{default}}::Holder;
-fun main(lr_account: &signer) {
-    let (a, b) = Diem::register_currency<Coin1>(
-        lr_account,
+fun main(dr_account: &signer) {
+    let (a, b) = Diem::register_currency<XUS>(
+        dr_account,
         FixedPoint32::create_from_rational(1, 1),
         false,
         1000,
@@ -87,8 +87,8 @@ fun main(lr_account: &signer) {
         b"ABC",
     );
 
-    Holder::hold(lr_account, a);
-    Holder::hold(lr_account, b);
+    Holder::hold(dr_account, a);
+    Holder::hold(dr_account, b);
 }
 }
 // check: "Keep(ABORTED { code: 262,"
@@ -99,17 +99,17 @@ script {
 use 0x1::Diem;
 use 0x1::FixedPoint32;
 use {{default}}::Holder;
-fun main(lr_account: &signer) {
+fun main(dr_account: &signer) {
     let (a, b) = Diem::register_currency<u64>(
-        lr_account,
+        dr_account,
         FixedPoint32::create_from_rational(1,1),
         false,
         0, // scaling factor
         100,
         x""
     );
-    Holder::hold(lr_account, a);
-    Holder::hold(lr_account, b);
+    Holder::hold(dr_account, a);
+    Holder::hold(dr_account, b);
 }
 }
 // check: "Keep(ABORTED { code: 263,"
@@ -120,17 +120,17 @@ script {
 use 0x1::Diem;
 use 0x1::FixedPoint32;
 use {{default}}::Holder;
-fun main(lr_account: &signer) {
+fun main(dr_account: &signer) {
     let (a, b) = Diem::register_currency<u64>(
-        lr_account,
+        dr_account,
         FixedPoint32::create_from_rational(1,1),
         false,
         1000000000000000, // scaling factor > MAX_SCALING_FACTOR
         100,
         x""
     );
-    Holder::hold(lr_account, a);
-    Holder::hold(lr_account, b);
+    Holder::hold(dr_account, a);
+    Holder::hold(dr_account, b);
 }
 }
 // check: "Keep(ABORTED { code: 263,"

@@ -4,12 +4,12 @@
 use crate::serializer::{
     ExecutionCorrectnessInput, SerializerClient, SerializerService, TSerializerClient,
 };
-use executor::Executor;
-use executor_types::Error;
 use diem_crypto::ed25519::Ed25519PrivateKey;
 use diem_logger::warn;
 use diem_secure_net::{NetworkClient, NetworkServer};
 use diem_vm::DiemVM;
+use executor::Executor;
+use executor_types::Error;
 use std::net::SocketAddr;
 use storage_client::StorageClient;
 

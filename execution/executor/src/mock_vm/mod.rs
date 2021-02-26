@@ -9,7 +9,7 @@ use diem_state_view::StateView;
 use diem_types::{
     access_path::AccessPath,
     account_address::AccountAddress,
-    account_config::{diem_root_address, validator_set_address, COIN1_NAME},
+    account_config::{diem_root_address, validator_set_address, XUS_NAME},
     chain_id::ChainId,
     contract_event::ContractEvent,
     event::EventKey,
@@ -313,7 +313,7 @@ fn encode_transaction(sender: AccountAddress, program: Script) -> Transaction {
         program,
         0,
         0,
-        COIN1_NAME.to_owned(),
+        XUS_NAME.to_owned(),
         0,
         ChainId::test(),
     );

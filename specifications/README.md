@@ -2,11 +2,11 @@
 
 This document describes the protocol specifications for the Diem Payment Network (LPN). The intended audience for this document are as follows:
 
-* Virtual Asset Service Providers (VASPs), designated dealers (DDs), and other [ecosystem developers](https://diem.org/en-US/white-paper/) who build software that can interface with the LPN.
+* Virtual Asset Service Providers (VASPs), designated dealers (DDs), and other [ecosystem developers](https://diem.com/en-US/white-paper/) who build software that can interface with the LPN.
 * Developers who work on supporting transaction validation and interface with the validation protocols.
 * Those interested in improving the protocol specifications and/or understanding the LPN in more detail.
 
-The reference implementations for all LPN specifications is [Diem Core](https://github.com/diem/diem). Diem Core is maintained by the open-source developer community on behalf of the [Diem Association](https://diem.org/en-US/association/). After the initial launch of the LPN, all specification changes will be proposed via the Diem Improvement Proposals (LIP) process - which is not yet finalized and public. For expedience prior to the launch of the LPN, changes to the specification will be made directly in the documentation and code.
+The reference implementations for all LPN specifications is [Diem Core](https://github.com/diem/diem). Diem Core is maintained by the open-source developer community on behalf of the [Diem Association](https://diem.com/en-US/association/). After the initial launch of the LPN, all specification changes will be proposed via the Diem Improvement Proposals (DIP) process - which is not yet finalized and public. For expedience prior to the launch of the LPN, changes to the specification will be made directly in the documentation and code.
 
 ## Overview
 
@@ -19,7 +19,7 @@ latency, and an efficient, high-capacity storage system.
 * Highly secure to ensure the safety of funds and financial data.
 * Flexible, so that it can power future innovation in financial services.
 
-The Diem Blockchain is designed from the ground up to holistically address these requirements and builds on the learnings from existing projects and research — a combination of innovative approaches and well-understood techniques. The [Diem whitepaper](https://developers.diem.org/docs/assets/papers/the-diem-blockchain/2019-09-26.pdf) provides much of the rationale behind the overall design.  More details on the Diem Association and its mission are available on [diem.org](https://diem.org)
+The Diem Blockchain is designed from the ground up to holistically address these requirements and builds on the learnings from existing projects and research — a combination of innovative approaches and well-understood techniques. The [Diem whitepaper](https://developers.diem.com/docs/assets/papers/the-diem-blockchain/2019-09-26.pdf) provides much of the rationale behind the overall design.  More details on the Diem Association and its mission are available on [diem.com](https://diem.com)
 
 ## Architecture
 
@@ -32,7 +32,7 @@ The Diem network consists of different types of actors:
   * **Verifying clients**. By default, clients are bootstrapped with a state and a set of validator, and can thus be epoch-aware by syncing this state with the blockchain. This way, a verifying client can verify the proofs carried in every response they obtain from full nodes they query. A full node, for instance, is a verifying client. A developer could develop a custom verifying client with the LPN specifications for specific applications, for instance, a light weight client that only keeps the more recent subset of account state.
   * **Non-verifying clients**. A client might query a third-party to access the state of the blockchain without verifying the signatures from the validators. The optional JSON-RPC protocol supports this mode of operation, and developers are also free to build other systems that accomplish this task. This specification does not define how a client should find such a service. As an example, some clients could run their own full nodes that expose the JSON-RPC protocol and access these endpoints under secure channels. In this setup, a non-verifying client delegates proof verification to the full node.
 
-Below is a recapicoin1_tmpating diagram of the Diem network. The arrow tail signifies the sender of a network request and the arrow head is the receiver of the network request.
+Below is a recapixusating diagram of the Diem network. The arrow tail signifies the sender of a network request and the arrow head is the receiver of the network request.
 
 ## The Diem network
 
@@ -53,7 +53,7 @@ As [depicted](#The-Diem-network), there are 4 network protocol specifications:
 
 In addition, these specifications build on top of a common set of specifications:
 
-* **[Diem canonical serialization (BCS)](https://developers.diem.org/docs/rustdocs/diem_canonical_serialization/)**. This details how data is canonically serialized and deserialized. Hashing and signing of data structures are applied after BCS serialization.
+* **[Binary canonical serialization (BCS)](https://docs.rs/bcs/)**. This details how data is canonically serialized and deserialized. Hashing and signing of data structures are applied after BCS serialization.
 * **[Common data structures](common/data_structures.md)**. These are the data structures that are used across more than one specification.
 * **[DiemNet](network/)**. This describes a handshake and wire protocol for all networking protocols. This relies on the [Noise protocol framework](https://noiseprotocol.org/) for integrity and confidentiality.
 * **[On-chain discovery](network/onchain-discovery.md)**. This defines how clients can safely find the endpoints of the LPN validators.
@@ -62,17 +62,17 @@ In addition, these specifications build on top of a common set of specifications
 
 ## Specification upgrades
 
-The LPN specifications are designed to support upgrades over time via the Diem Improvement Proposal (LIP) process. Unlike many other blockchains that determine when upgrades are live in mainnet through community organization and coordination, the timing for LPN specification upgrades is directed by the Diem Association. The full LPN specifications are split into smaller specifications in order to limit the affected parties. For example, the JSON-RPC client specification can be upgraded without affecting the validating service specifications and correspondingly the validating nodes (validators). Each specification is versioned sequentially beginning with 1\. Over time, the specifications may be divided or merged to balance the size of the affected parties against the overhead of maintaining and versioning separate specifications.
+The LPN specifications are designed to support upgrades over time via the Diem Improvement Proposal (DIP) process. Unlike many other blockchains that determine when upgrades are live in mainnet through community organization and coordination, the timing for LPN specification upgrades is directed by the Diem Association. The full LPN specifications are split into smaller specifications in order to limit the affected parties. For example, the JSON-RPC client specification can be upgraded without affecting the validating service specifications and correspondingly the validating nodes (validators). Each specification is versioned sequentially beginning with 1\. Over time, the specifications may be divided or merged to balance the size of the affected parties against the overhead of maintaining and versioning separate specifications.
 
 The process for upgrading the LPN specifications is as follows:
 
 1. **Seed an idea**. A Contributor should socialize their idea with the Diem developer community and Maintainers. They might create a [GitHub issue](https://github.com/diem/diem/issues) or use another means of gathering feedback.
 
-2. **[Standard LIP](https://lip.diem.org/overview)**. A Contributor proposes a new standard LIP that modifies an existing specification(s) or proposes a new specification. If the standard LIP reaches the "Accepted" status, the proposed changes will be set in the new specification version as well as implemented in the Diem Core master branch. Other implementations of the protocol must follow these changes as well.
+2. **[Standard DIP](https://dip.diem.com/overview)**. A Contributor proposes a new standard DIP that modifies an existing specification(s) or proposes a new specification. If the standard DIP reaches the "Accepted" status, the proposed changes will be set in the new specification version as well as implemented in the Diem Core master branch. Other implementations of the protocol must follow these changes as well.
 
 3. **LPN upgrade**. There are two types of specification upgrades: backwards-incompatible (e.g. hard forks) or backwards-compatible (e.g. soft forks). Unlike conventional software systems, backwards-incompatible upgrades are likely to be much more common than backwards-compatible upgrades in LPN. Because the purpose of LPN is to agree on the bit-precise result of executing a computation and most specifications contribute to that result, almost every upgrade will break compatibility with previous versions. Thus, we will assume that proposed upgrades are backwards-incompatible by default and require rigorous justification to handle an upgrade as backwards-compatible. In addition, changes to the following specifications are backwards-incompatible by definition:
 
-    * Diem canonical serialization
+    * Binary canonical serialization
     * Authenticated data structures
     * Move virtual machine
     * Diem adapter
@@ -88,7 +88,7 @@ The process for upgrading the LPN specifications is as follows:
 
     * **Backwards-compatible specification changes**. Although the version of the specification S will increase, since the previous active version V of the specification will continue to operate correctly, the Diem Association will publicly announce a deadline for the LPN validators to adopt version V+1\. This will provide clients an opportunity to know when V+1 will be supported and start leveraging V+1\. After this deadline passes, all the LPN validators will actively support the upgraded specification version V+1 and implicitly version V since version V+1 is backwards-compatible. In most cases, backwards-compatible changes will have overlapping functionality (i.e. 2 APIs for syncing transaction history, the newer one containing mores features than the previous one) and a future upgrade of the specification (e.g. V+2) may remove the duplicate functionality from V+1, making V+2 a backwards-incompatible change for V+1\. Some examples of these types of changes include DiemNet specification changes or adding new APIs for state synchronization. In summary, LPN validators upgrade to the V+1 specification by a deadline set by the Diem Association while LPN clients can optionally upgrade to the V+1 specification.
 
-4. **Finalize upgrade**. After the upgrade is running in production, all productionized LIPs move from "Accepted" to "Final". Additionally, the specifications listed in production are updated.
+4. **Finalize upgrade**. After the upgrade is running in production, all productionized DIPs move from "Accepted" to "Final". Additionally, the specifications listed in production are updated.
 
 ## Current specifications
 

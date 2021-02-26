@@ -3,7 +3,7 @@
 
 use crate::block::Block;
 use diem_crypto::{ed25519::Ed25519Signature, hash::TransactionAccumulatorHasher};
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use diem_types::{epoch_state::EpochState, proof::AccumulatorExtensionProof};
 use serde::{Deserialize, Serialize};
 use std::{

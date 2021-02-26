@@ -76,8 +76,7 @@ where
             Some(path) => format!("{}/diemtypes", path),
             None => "diemtypes".into(),
         };
-        let mut external_definitions =
-            crate::common::get_external_definitions(&diem_types_package);
+        let mut external_definitions = crate::common::get_external_definitions(&diem_types_package);
         // Add standard imports
         external_definitions.insert("fmt".to_string(), Vec::new());
 

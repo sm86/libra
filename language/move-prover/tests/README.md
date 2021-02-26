@@ -43,7 +43,7 @@ MVP_TEST_FLAGS="-T=20" cargo test -p move-prover
 ## Code coverage
 
 Analyzing the test coverage of the diem repo is regularly done in CI, and the result updates the online report at
-* https://ci-artifacts.diem.org/coverage/unit-coverage/latest/index.html
+* https://ci-artifacts.diem.com/coverage/unit-coverage/latest/index.html
 * https://codecov.io/gh/diem/diem (reports significantly less coverage due to panic unwinding being considered a branch)
 
 Note that this report is based on the the coverage test when the environment variable `BOOGIE_EXE` is not set.

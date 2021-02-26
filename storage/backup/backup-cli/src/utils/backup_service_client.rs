@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
-use futures::TryStreamExt;
 use diem_crypto::HashValue;
 use diem_types::transaction::Version;
 use diemdb::backup::backup_handler::DbState;
+use futures::TryStreamExt;
 use structopt::StructOpt;
 use tokio::prelude::*;
 use tokio_util::compat::FuturesAsyncReadCompatExt;

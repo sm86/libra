@@ -11,7 +11,6 @@ use crate::{
 };
 use anyhow::{bail, Result};
 use channel::{diem_channel, message_queues::QueueStyle};
-use futures::{executor::block_on, future::FutureExt, StreamExt};
 use diem_config::{
     config::RoleType,
     network_id::{NetworkContext, NetworkId, NodeNetworkId},
@@ -26,6 +25,7 @@ use diem_types::{
     validator_signer::ValidatorSigner, validator_verifier::random_validator_verifier,
     waypoint::Waypoint, PeerId,
 };
+use futures::{executor::block_on, future::FutureExt, StreamExt};
 use netcore::transport::{ConnectionOrigin, ConnectionOrigin::*};
 use network::{
     peer_manager::{

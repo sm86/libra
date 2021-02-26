@@ -1226,7 +1226,7 @@ pub enum Bytecode {
     Shr,
 }
 
-pub const NUMBER_OF_NATIVE_FUNCTIONS: usize = 20;
+pub const NUMBER_OF_NATIVE_FUNCTIONS: usize = 18;
 
 impl ::std::fmt::Debug for Bytecode {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
@@ -1774,14 +1774,14 @@ impl CompiledModule {
 
     /// Returns the number of items of a specific `IndexKind`.
     pub fn kind_count(&self, kind: IndexKind) -> usize {
-        precondition!(match kind {
+        precondition!(!matches!(
+            kind,
             IndexKind::LocalPool
-            | IndexKind::CodeDefinition
-            | IndexKind::FieldDefinition
-            | IndexKind::TypeParameter
-            | IndexKind::MemberCount => false,
-            _ => true,
-        });
+                | IndexKind::CodeDefinition
+                | IndexKind::FieldDefinition
+                | IndexKind::TypeParameter
+                | IndexKind::MemberCount
+        ));
         self.as_inner().kind_count(kind)
     }
 

@@ -1,6 +1,6 @@
 //! account: vivian, 1000000, 0, validator
 //! account: dd, 0, 0, address
-//! account: bob, 0Coin1, 0, vasp
+//! account: bob, 0XUS, 0, vasp
 
 //! new-transaction
 //! sender: bob
@@ -41,12 +41,12 @@ module COIN {
 
     struct COIN { }
 
-    public fun initialize(lr_account: &signer, tc_account: &signer) {
+    public fun initialize(dr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
         Diem::register_SCS_currency<COIN>(
-            lr_account,
+            dr_account,
             tc_account,
-            FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
+            FixedPoint32::create_from_rational(1, 2), // exchange rate to XDX
             1000000, // scaling_factor = 10^6
             100,     // fractional_part = 10^2
             b"COIN",
@@ -66,8 +66,8 @@ module COIN {
 script {
 use 0x1::TransactionFee;
 use 0x1::COIN::{Self, COIN};
-fun main(lr_account: &signer, tc_account: &signer) {
-    COIN::initialize(lr_account, tc_account);
+fun main(dr_account: &signer, tc_account: &signer) {
+    COIN::initialize(dr_account, tc_account);
     TransactionFee::add_txn_fee_currency<COIN>(tc_account);
 }
 }
@@ -83,14 +83,14 @@ use 0x1::Diem;
 use 0x1::COIN::COIN;
 use 0x1::FixedPoint32;
 fun main(account: &signer) {
-    assert(Diem::approx_lbr_for_value<COIN>(10) == 5, 1);
+    assert(Diem::approx_xdx_for_value<COIN>(10) == 5, 1);
     assert(Diem::scaling_factor<COIN>() == 1000000, 2);
     assert(Diem::fractional_part<COIN>() == 100, 3);
-    Diem::update_lbr_exchange_rate<COIN>(account, FixedPoint32::create_from_rational(1, 3));
-    assert(Diem::approx_lbr_for_value<COIN>(10) == 3, 4);
+    Diem::update_xdx_exchange_rate<COIN>(account, FixedPoint32::create_from_rational(1, 3));
+    assert(Diem::approx_xdx_for_value<COIN>(10) == 3, 4);
 }
 }
-// check: ToLBRExchangeRateUpdateEvent
+// check: ToXDXExchangeRateUpdateEvent
 // check: "Keep(EXECUTED)"
 
 //! new-transaction

@@ -48,9 +48,9 @@ mod tests {
         },
         ProtocolId,
     };
-    use futures::{executor::block_on, future::join};
     use diem_config::network_id::NetworkId;
     use diem_types::chain_id::ChainId;
+    use futures::{executor::block_on, future::join};
     use memsocket::MemorySocket;
     use std::collections::BTreeMap;
 

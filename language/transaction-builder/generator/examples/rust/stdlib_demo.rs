@@ -1,7 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use diem_canonical_serialization as bcs;
 use diem_stdlib::{encode_peer_to_peer_with_metadata_script, ScriptCall};
 use diem_types::{AccountAddress, Identifier, TypeTag, StructTag};
 use serde_bytes::ByteBuf as Bytes;
@@ -9,8 +8,8 @@ use serde_bytes::ByteBuf as Bytes;
 fn main() {
     let token = TypeTag::Struct(StructTag {
         address: AccountAddress([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]),
-        module: Identifier("LBR".into()),
-        name: Identifier("LBR".into()),
+        module: Identifier("XDX".into()),
+        name: Identifier("XDX".into()),
         type_params: Vec::new(),
     });
     let payee = AccountAddress([0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22,

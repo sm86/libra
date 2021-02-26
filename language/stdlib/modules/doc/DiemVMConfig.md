@@ -202,7 +202,7 @@ load this into memory at the startup of each block.
 Initialize the table under the diem root account
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="DiemVMConfig.md#0x1_DiemVMConfig_initialize">initialize</a>(lr_account: &signer, instruction_schedule: vector&lt;u8&gt;, native_schedule: vector&lt;u8&gt;, _chain_id: u8)
+<pre><code><b>public</b> <b>fun</b> <a href="DiemVMConfig.md#0x1_DiemVMConfig_initialize">initialize</a>(dr_account: &signer, instruction_schedule: vector&lt;u8&gt;, native_schedule: vector&lt;u8&gt;)
 </code></pre>
 
 
@@ -212,20 +212,14 @@ Initialize the table under the diem root account
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="DiemVMConfig.md#0x1_DiemVMConfig_initialize">initialize</a>(
-    lr_account: &signer,
+    dr_account: &signer,
     instruction_schedule: vector&lt;u8&gt;,
     native_schedule: vector&lt;u8&gt;,
-    _chain_id: u8,
 ) {
     <a href="DiemTimestamp.md#0x1_DiemTimestamp_assert_genesis">DiemTimestamp::assert_genesis</a>();
 
     // The permission "UpdateVMConfig" is granted <b>to</b> DiemRoot [[H11]][PERMISSION].
-    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(lr_account);
-
-    <b>let</b> min_price_per_gas_unit = 0;
-    // <b>if</b> (chain_id == 7 || chain_id == 1) {
-    //     min_price_per_gas_unit = 1;
-    // };
+    <a href="Roles.md#0x1_Roles_assert_diem_root">Roles::assert_diem_root</a>(dr_account);
 
     <b>let</b> gas_constants = <a href="DiemVMConfig.md#0x1_DiemVMConfig_GasConstants">GasConstants</a> {
         global_memory_per_byte_cost: 4,
@@ -233,16 +227,16 @@ Initialize the table under the diem root account
         min_transaction_gas_units: 600,
         large_transaction_cutoff: 600,
         intrinsic_gas_per_byte: 8,
-        maximum_number_of_gas_units: 100000000000, // 0L: changed temporarily for oversized upgrade payload
-        min_price_per_gas_unit: min_price_per_gas_unit,
+        maximum_number_of_gas_units: 4000000,
+        min_price_per_gas_unit: 0,
         max_price_per_gas_unit: 10000,
-        max_transaction_size_in_bytes: 409600,     // 0L: changed temporarily for oversized upgrade payload
+        max_transaction_size_in_bytes: 4096,
         gas_unit_scaling_factor: 1000,
         default_account_size: 800,
     };
 
     <a href="DiemConfig.md#0x1_DiemConfig_publish_new_config">DiemConfig::publish_new_config</a>(
-        lr_account,
+        dr_account,
         <a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a> {
             gas_schedule: <a href="DiemVMConfig.md#0x1_DiemVMConfig_GasSchedule">GasSchedule</a> {
                 instruction_schedule,
@@ -285,7 +279,7 @@ Initialize the table under the diem root account
 Must abort if the signer does not have the DiemRoot role [[H11]][PERMISSION].
 
 
-<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: lr_account};
+<pre><code><b>include</b> <a href="Roles.md#0x1_Roles_AbortsIfNotDiemRoot">Roles::AbortsIfNotDiemRoot</a>{account: dr_account};
 <b>include</b> <a href="DiemTimestamp.md#0x1_DiemTimestamp_AbortsIfNotGenesis">DiemTimestamp::AbortsIfNotGenesis</a>;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigAbortsIf">DiemConfig::PublishNewConfigAbortsIf</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;;
 <b>include</b> <a href="DiemConfig.md#0x1_DiemConfig_PublishNewConfigEnsures">DiemConfig::PublishNewConfigEnsures</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt; {
@@ -331,8 +325,8 @@ Currently, no one can update DiemVMConfig [[H11]][PERMISSION]
 
 <pre><code><b>schema</b> <a href="DiemVMConfig.md#0x1_DiemVMConfig_DiemVMConfigRemainsSame">DiemVMConfigRemainsSame</a> {
     <b>ensures</b> <b>old</b>(<a href="DiemConfig.md#0x1_DiemConfig_spec_is_published">DiemConfig::spec_is_published</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;()) ==&gt;
-        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()) ==
-            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_LIBRA_ROOT_ADDRESS">CoreAddresses::LIBRA_ROOT_ADDRESS</a>()));
+        <b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()) ==
+            <b>old</b>(<b>global</b>&lt;<a href="DiemConfig.md#0x1_DiemConfig">DiemConfig</a>&lt;<a href="DiemVMConfig.md#0x1_DiemVMConfig">DiemVMConfig</a>&gt;&gt;(<a href="CoreAddresses.md#0x1_CoreAddresses_DIEM_ROOT_ADDRESS">CoreAddresses::DIEM_ROOT_ADDRESS</a>()));
 }
 </code></pre>
 
@@ -344,6 +338,6 @@ Currently, no one can update DiemVMConfig [[H11]][PERMISSION]
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

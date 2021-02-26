@@ -15,8 +15,8 @@ func main() {
 			Address: diem.AccountAddress(
 				[16]uint8{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 			),
-			Module:     diem.Identifier("LBR"),
-			Name:       diem.Identifier("LBR"),
+			Module:     diem.Identifier("XDX"),
+			Name:       diem.Identifier("XDX"),
 			TypeParams: []diem.TypeTag{},
 		},
 	}
@@ -35,7 +35,7 @@ func main() {
 		panic("wrong script content")
 	}
 
-	bytes, err := script.bcsSerialize()
+	bytes, err := script.BcsSerialize()
 	if err != nil {
 		panic("failed to serialize")
 	}

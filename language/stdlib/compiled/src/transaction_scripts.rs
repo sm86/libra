@@ -8,9 +8,9 @@
 //! on.
 
 use anyhow::{anyhow, Error, Result};
-use include_dir::{include_dir, Dir};
 use diem_crypto::HashValue;
 use diem_types::transaction::{ScriptABI, SCRIPT_HASH_LENGTH};
+use include_dir::{include_dir, Dir};
 use std::{convert::TryFrom, fmt, path::PathBuf};
 
 // This includes the script ABIs as binaries. We must use this hack to work around
@@ -55,18 +55,11 @@ pub enum StdlibScript {
     UpdateDiemVersion,
     UpdateMintingAbility,
     UpdateDualAttestationLimit,
-
-    // 0L
-    ReconfigSetup,
-    OracleTx,
-    MinerStateCommit,
-    MinerStateOnboarding,
-    CreateUserAccount,
     // ...add new scripts here
 }
 
 impl StdlibScript {
-    /// Return a vector containing all of the standard diemry scripts (i.e., all inhabitants of the
+    /// Return a vector containing all of the standard library scripts (i.e., all inhabitants of the
     /// StdlibScript enum)
     pub fn all() -> Vec<Self> {
         use StdlibScript::*;
@@ -105,13 +98,6 @@ impl StdlibScript {
             UpdateDiemVersion,
             UpdateMintingAbility,
             UpdateDualAttestationLimit,
-
-            // 0L
-            ReconfigSetup,
-            OracleTx,
-            MinerStateCommit,
-            MinerStateOnboarding,
-            CreateUserAccount,
             // ...add new scripts here
         ]
     }
@@ -130,7 +116,7 @@ impl StdlibScript {
         self.to_string()
     }
 
-    /// Return true if `code_bytes` is the bytecode of one of the standard diemry scripts
+    /// Return true if `code_bytes` is the bytecode of one of the standard library scripts
     pub fn is(code_bytes: &[u8]) -> bool {
         Self::try_from(code_bytes).is_ok()
     }
@@ -163,10 +149,6 @@ impl StdlibScript {
 pub struct CompiledBytes(Vec<u8>);
 
 impl CompiledBytes {
-    /// constructor
-    pub fn new(bytes : Vec<u8>) -> Self {
-        CompiledBytes(bytes)
-    }
     /// Return the sha3-256 hash of the script bytes
     pub fn hash(&self) -> HashValue {
         Self::hash_bytes(&self.0)
@@ -186,7 +168,7 @@ impl CompiledBytes {
 impl TryFrom<&[u8]> for StdlibScript {
     type Error = Error;
 
-    /// Return `Some(<script_name>)` if  `code_bytes` is the bytecode of one of the standard diemry
+    /// Return `Some(<script_name>)` if  `code_bytes` is the bytecode of one of the standard library
     /// scripts, None otherwise.
     fn try_from(code_bytes: &[u8]) -> Result<Self> {
         let hash = CompiledBytes::hash_bytes(code_bytes);
@@ -194,7 +176,7 @@ impl TryFrom<&[u8]> for StdlibScript {
             .iter()
             .find(|script| script.hash() == hash)
             .cloned()
-            .ok_or_else(|| anyhow!("Could not create standard diemry script from bytes"))
+            .ok_or_else(|| anyhow!("Could not create standard library script from bytes"))
     }
 }
 
@@ -241,12 +223,6 @@ impl fmt::Display for StdlibScript {
                 UpdateDiemVersion => "update_diem_version",
                 UpdateExchangeRate => "update_exchange_rate",
                 UpdateMintingAbility => "update_minting_ability",
-                // 0L
-                ReconfigSetup => "ol_reconfig_bulk_update_setup",
-                OracleTx => "ol_oracle_tx",
-                MinerStateCommit => "ol_miner_state_commit",
-                MinerStateOnboarding => "ol_miner_state_onboarding",
-                CreateUserAccount => "ol_create_user_account",
             }
         )
     }
@@ -279,7 +255,7 @@ mod test {
             if files.len() > scripts.len() {
                 "Did you forget to extend the StdlibScript enum?"
             } else {
-                "Did you forget to rebuild the standard diemry?"
+                "Did you forget to rebuild the standard library?"
             }
         );
     }

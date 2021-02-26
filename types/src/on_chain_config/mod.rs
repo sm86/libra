@@ -34,7 +34,7 @@ pub use self::{
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub struct ConfigID(&'static str, &'static str);
 
-const CONFIG_ADDRESS_STR: &str = "0x0";
+const CONFIG_ADDRESS_STR: &str = "0xA550C18";
 
 pub fn config_address() -> AccountAddress {
     AccountAddress::from_hex_literal(CONFIG_ADDRESS_STR).expect("failed to get address")
@@ -160,7 +160,7 @@ pub fn new_epoch_event_key() -> EventKey {
 pub fn access_path_for_config(address: AccountAddress, config_name: Identifier) -> AccessPath {
     AccessPath::new(
         address,
-        AccessPath::resource_access_vec(&StructTag {
+        AccessPath::resource_access_vec(StructTag {
             address: CORE_CODE_ADDRESS,
             module: Identifier::new("DiemConfig").unwrap(),
             name: Identifier::new("DiemConfig").unwrap(),

@@ -10,7 +10,7 @@ use crate::{
     validator_verifier::{ValidatorVerifier, VerifyError},
 };
 use diem_crypto::{ed25519::Ed25519Signature, hash::HashValue};
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest_derive::Arbitrary;
 use serde::{Deserialize, Serialize};

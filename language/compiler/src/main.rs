@@ -7,8 +7,8 @@ use anyhow::Context;
 use bytecode_verifier::{verify_module, verify_script, DependencyChecker};
 use compiled_stdlib::{stdlib_modules, StdLibOptions};
 use compiler::{util, Compiler};
-use ir_to_bytecode::parser::{parse_module, parse_script};
 use diem_types::{access_path::AccessPath, account_address::AccountAddress, account_config};
+use ir_to_bytecode::parser::{parse_module, parse_script};
 use std::{
     convert::TryFrom,
     fs,
@@ -104,7 +104,7 @@ fn main() {
             script.get_external_deps()
         }
         .into_iter()
-        .map(|m| AccessPath::code_access_path(&m))
+        .map(AccessPath::code_access_path)
         .collect();
         println!(
             "{}",

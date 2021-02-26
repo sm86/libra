@@ -5,7 +5,6 @@
 use crate::{counters::CRITICAL_ERRORS, create_access_path, logging::AdapterLogSchema};
 #[allow(unused_imports)]
 use anyhow::format_err;
-use fail::fail_point;
 use diem_logger::prelude::*;
 use diem_state_view::{StateView, StateViewId};
 use diem_types::{
@@ -14,6 +13,7 @@ use diem_types::{
     vm_status::StatusCode,
     write_set::{WriteOp, WriteSet},
 };
+use fail::fail_point;
 use move_core_types::{
     account_address::AccountAddress,
     language_storage::{ModuleId, StructTag},

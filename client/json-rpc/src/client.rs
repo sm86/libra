@@ -116,32 +116,6 @@ impl JsonRpcBatch {
         self.add_request("get_state_proof".to_string(), vec![json!(known_version)]);
     }
 
-    pub fn add_miner_state_with_proof_request(
-        &mut self,
-        account: AccountAddress,
-        version: Option<u64>,
-    ) {
-        self.add_request(
-            "get_miner_state".to_string(),
-            vec![
-                json!(account.to_string()),
-                json!(version),
-            ],
-        );
-    }
-
-    pub fn add_query_oracle_upgrade_with_proof_request(
-        &mut self,
-        version: Option<u64>,
-    ) {
-        self.add_request(
-            "query_oracle_upgrade".to_string(),
-            vec![
-                json!(version),
-            ],
-        );
-    }
-
     pub fn add_get_account_state_with_proof_request(
         &mut self,
         account: AccountAddress,

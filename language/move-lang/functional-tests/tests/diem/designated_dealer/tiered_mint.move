@@ -8,10 +8,10 @@
 script {
     use 0x1::DesignatedDealer;
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(account: &signer) {
         let dummy_auth_key_prefix = x"00000000000000000000000000000001";
-        DiemAccount::create_designated_dealer<Coin1>(
+        DiemAccount::create_designated_dealer<XUS>(
             account, 0xDEADBEEF, dummy_auth_key_prefix, x"", false
         );
         assert(DesignatedDealer::exists_at(0xDEADBEEF), 0);
@@ -29,10 +29,10 @@ script {
 //! sender: blessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
         let designated_dealer_address = 0xDEADBEEF;
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, designated_dealer_address, 99*1000000, 0
         );
     }
@@ -49,9 +49,9 @@ script {
 //! sender: blessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, 0xDEADBEEF, 5000001*1000000, 1
         );
     }
@@ -66,9 +66,9 @@ script {
 //! sender: blessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, 0xDEADBEEF, 5000001*1000000, 2
         );
     }
@@ -83,9 +83,9 @@ script {
 //! sender: blessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, 0xDEADBEEF, 50000001*1000000, 3
         );
     }
@@ -100,9 +100,9 @@ script {
 //! sender: blessed
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, 0xDEADBEEF, 500000001*1000000, 3
         );
     }
@@ -116,10 +116,10 @@ script {
 //! sender: blessed
 script {
     use 0x1::DesignatedDealer;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
         // DesignatedDealer::update_tier(&tc_capability, 0xDEADBEEF, 4, 1000000); // invalid tier index (max index 3)
-        DesignatedDealer::update_tier<Coin1>(tc_account, 0xDEADBEEF, 4, 1000000); // invalid tier index (max index 3)
+        DesignatedDealer::update_tier<XUS>(tc_account, 0xDEADBEEF, 4, 1000000); // invalid tier index (max index 3)
     }
 }
 
@@ -132,9 +132,9 @@ script {
 //! sender: ricky
 script {
     use 0x1::DiemAccount;
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     fun main(tc_account: &signer) {
-        DiemAccount::tiered_mint<Coin1>(
+        DiemAccount::tiered_mint<XUS>(
             tc_account, 0xDEADBEEF, 1, 0
         );
     }

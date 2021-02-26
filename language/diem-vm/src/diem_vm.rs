@@ -5,14 +5,10 @@ use crate::{
     access_path_cache::AccessPathCache,
     counters::*,
     data_cache::{RemoteStorage, StateViewCache},
-    errors::{
-        convert_normal_prologue_error, convert_normal_success_epilogue_error,
-        convert_write_set_prologue_error, expect_only_successful_execution,
-    },
+    errors::{convert_epilogue_error, convert_prologue_error, expect_only_successful_execution},
     system_module_names::*,
     transaction_metadata::TransactionMetadata,
 };
-use fail::fail_point;
 use diem_logger::prelude::*;
 use diem_state_view::StateView;
 use diem_types::{
@@ -23,10 +19,10 @@ use diem_types::{
     transaction::{TransactionOutput, TransactionStatus},
     vm_status::{KeptVMStatus, StatusCode, VMStatus},
     write_set::{WriteOp, WriteSet, WriteSetMut},
-    block_metadata::BlockMetadata,
-    upgrade_payload::UpgradePayloadResource,
 };
+use fail::fail_point;
 use move_core_types::{
+    account_address::AccountAddress,
     gas_schedule::{CostTable, GasAlgebra, GasUnits},
     identifier::IdentStr,
 };
@@ -244,7 +240,7 @@ impl DiemVMImpl {
                 cost_strategy,
                 log_context,
             )
-            .or_else(|err| convert_normal_prologue_error(err, log_context))
+            .or_else(|err| convert_prologue_error(err, log_context))
     }
 
     /// Run the prologue of a transaction by calling into `MODULE_PROLOGUE_NAME` function stored
@@ -283,7 +279,7 @@ impl DiemVMImpl {
                 cost_strategy,
                 log_context,
             )
-            .or_else(|err| convert_normal_prologue_error(err, log_context))
+            .or_else(|err| convert_prologue_error(err, log_context))
     }
 
     /// Run the epilogue of a transaction by calling into `EPILOGUE_NAME` function stored
@@ -324,7 +320,7 @@ impl DiemVMImpl {
                 cost_strategy,
                 log_context,
             )
-            .or_else(|err| convert_normal_success_epilogue_error(err, log_context))
+            .or_else(|err| convert_epilogue_error(err, log_context))
     }
 
     /// Run the failure epilogue of a transaction by calling into `USER_EPILOGUE_NAME` function
@@ -395,7 +391,7 @@ impl DiemVMImpl {
                 &mut cost_strategy,
                 log_context,
             )
-            .or_else(|err| convert_write_set_prologue_error(err, log_context))
+            .or_else(|err| convert_prologue_error(err, log_context))
     }
 
     /// Run the epilogue of a transaction by calling into `WRITESET_EPILOGUE_NAME` function stored
@@ -430,111 +426,6 @@ impl DiemVMImpl {
 
     pub fn new_session<'r, R: RemoteCache>(&self, r: &'r R) -> Session<'r, '_, R> {
         self.move_vm.new_session(r)
-    }
-
-    // Note: currently the upgrade needs two blocks to happen: 
-    // In the first block, consensus is reached and recorded; 
-    // in the second block, the payload is applied and history is recorded
-    pub(crate) fn tick_oracle_consensus<R: RemoteCache> (
-        &self,
-        session: &mut Session<R>,
-        block_metadata: BlockMetadata,
-        txn_data: &TransactionMetadata,
-        cost_strategy: &mut CostStrategy,
-        log_context: &impl LogContext,
-    ) -> Result<(), VMStatus> {
-        if let Ok((round, _timestamp, _previous_vote, _proposer)) = block_metadata.into_inner() {
-            println!("======================================  round is {}", round);
-            // hardcoding consensus checking on round 2
-            if round==2 {
-                println!("====================================== checking upgrade");
-                // tick Oracle::check_upgrade
-                let args = vec![
-                    Value::transaction_argument_signer_reference(txn_data.sender),
-                ];
-                session.execute_function(
-                    &ORACLE_MODULE,
-                    &CHECK_UPGRADE,
-                    vec![],
-                    args,
-                    txn_data.sender(),
-                    cost_strategy,
-                    log_context,
-                ).expect("Couldn't check upgrade");
-            }
-        }
-
-        Ok(())
-    }
-
-    pub(crate) fn apply_stdlib_upgrade<R: RemoteCache> (
-        &self,
-        session: &mut Session<R>,
-        remote_cache: &StateViewCache<'_>,
-        block_metadata: BlockMetadata,
-        txn_data: &TransactionMetadata,
-        cost_strategy: &mut CostStrategy,
-        log_context: &impl LogContext,
-    ) -> Result<(), VMStatus> {
-        if let Ok((round, timestamp, _previous_vote, _proposer)) = block_metadata.into_inner() {
-            // hardcoding upgrade on round 2
-            if round==2 {
-                // check the UpgradePayload flag
-                let ap = UpgradePayloadResource::access_path();
-                let gref = 
-                    StateViewCache::get(remote_cache, &ap).ok();
-                let upgrade_payload = 
-                match gref {
-                    Some(bytes) => {
-                        let payload = bytes.map(|data_blob| {
-                            bcs::from_bytes(data_blob.as_slice()).expect("Failure decoding upgrade payload resource")
-                        });
-                        payload.unwrap_or(UpgradePayloadResource::new(vec![]))
-                    },
-                    None => UpgradePayloadResource::new(vec![]),
-                };
-
-                let payload = upgrade_payload.payload;
-                if payload.len() > 0 {
-                    println!("====================================== Consensus has been reached in the previous block");
-
-                    // publish the agreed stdlib
-                    let new_stdlib = stdlib::import_stdlib(&payload);
-                    let mut counter = 0;
-                    for module in new_stdlib {
-                        let mut bytes = vec![];
-                        module
-                            .serialize(&mut bytes)
-                            .expect("Failed to serialize module");
-                        session.revise_module(
-                            bytes, 
-                            account_config::CORE_CODE_ADDRESS, 
-                            cost_strategy, 
-                            log_context
-                        ).expect("Failed to publish module");
-                        counter += 1;
-                    }
-                    println!("====================================== published {} modules", counter);
-
-                    // reset the UpgradePayload
-                    let args = vec![
-                        Value::transaction_argument_signer_reference(txn_data.sender),
-                    ];
-                    session.execute_function(
-                        &UPGRADE_MODULE,
-                        &RESET_PAYLOAD,
-                        vec![],
-                        args,
-                        txn_data.sender(),
-                        cost_strategy,
-                        log_context,
-                    ).expect("Couldn't reset payload");
-                    println!("====================================== end publish module at {}", timestamp);
-                }
-            }
-        }
-
-        Ok(())
     }
 }
 
@@ -591,9 +482,9 @@ pub fn txn_effects_to_writeset_and_events_cached<C: AccessPathCache>(
             let op = match val_opt {
                 None => WriteOp::Deletion,
                 Some((ty_layout, val)) => {
-                    let blob = val.simple_serialize(&ty_layout).ok_or_else(|| {
-                        VMStatus::Error(StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR)
-                    })?;
+                    let blob = val.simple_serialize(&ty_layout).ok_or(VMStatus::Error(
+                        StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR,
+                    ))?;
 
                     WriteOp::Value(blob)
                 }
@@ -614,9 +505,9 @@ pub fn txn_effects_to_writeset_and_events_cached<C: AccessPathCache>(
         .events
         .into_iter()
         .map(|(guid, seq_num, ty_tag, ty_layout, val)| {
-            let msg = val
-                .simple_serialize(&ty_layout)
-                .ok_or_else(|| VMStatus::Error(StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR))?;
+            let msg = val.simple_serialize(&ty_layout).ok_or(VMStatus::Error(
+                StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR,
+            ))?;
             let key = EventKey::try_from(guid.as_slice())
                 .map_err(|_| VMStatus::Error(StatusCode::EVENT_KEY_MISMATCH))?;
             Ok(ContractEvent::new(key, seq_num, ty_tag, msg))
@@ -629,8 +520,9 @@ pub fn txn_effects_to_writeset_and_events_cached<C: AccessPathCache>(
 pub(crate) fn charge_global_write_gas_usage<R: RemoteCache>(
     cost_strategy: &mut CostStrategy,
     session: &Session<R>,
+    sender: &AccountAddress,
 ) -> Result<(), VMStatus> {
-    let total_cost = session.num_mutated_accounts()
+    let total_cost = session.num_mutated_accounts(sender)
         * cost_strategy
             .cost_table()
             .gas_constants

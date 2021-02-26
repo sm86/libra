@@ -6,22 +6,22 @@ import java.util.ArrayList;
 
 import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned; // used as documentation.
-import org.diem.stdlib.Helpers;
-import org.diem.stdlib.ScriptCall;;
-import org.diem.types.AccountAddress;
-import org.diem.types.Identifier;
-import org.diem.types.Script;
-import org.diem.types.StructTag;
-import org.diem.types.TypeTag;
+import com.diem.stdlib.Helpers;
+import com.diem.stdlib.ScriptCall;;
+import com.diem.types.AccountAddress;
+import com.diem.types.Identifier;
+import com.diem.types.Script;
+import com.diem.types.StructTag;
+import com.diem.types.TypeTag;
 
 public class StdlibDemo {
 
     public static void main(String[] args) throws Exception {
         StructTag.Builder builder = new StructTag.Builder();
         builder.address = AccountAddress.valueOf(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
-        builder.module = new Identifier("LBR");
-        builder.name = new Identifier("LBR");
-        builder.type_params = new ArrayList<org.diem.types.TypeTag>();
+        builder.module = new Identifier("XDX");
+        builder.name = new Identifier("XDX");
+        builder.type_params = new ArrayList<com.diem.types.TypeTag>();
         StructTag tag = builder.build();
 
         TypeTag token = new TypeTag.Struct(tag);

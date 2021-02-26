@@ -3,7 +3,7 @@
 
 use crate::{
     account_address::AccountAddress,
-    account_config::COIN1_NAME,
+    account_config::XUS_NAME,
     chain_id::ChainId,
     transaction::{
         GovernanceRole, RawTransaction, Script, SignedTransaction, Transaction, TransactionInfo,
@@ -27,7 +27,7 @@ fn test_invalid_signature() {
             Script::new(vec![], vec![], vec![]),
             0,
             0,
-            COIN1_NAME.to_owned(),
+            XUS_NAME.to_owned(),
             0,
             ChainId::test(),
         ),

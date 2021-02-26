@@ -1,7 +1,7 @@
 // Copyright (c) The Diem Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use diem_types::vm_status::sub_status::NFE_BCS_SERIALIZATION_FAILURE;
+use move_core_types::vm_status::sub_status::NFE_BCS_SERIALIZATION_FAILURE;
 use move_vm_types::{
     gas_schedule::NativeCostIndex,
     loaded_data::runtime_types::Type,

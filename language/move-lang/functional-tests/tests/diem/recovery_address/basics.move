@@ -13,12 +13,12 @@
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 fun main(tc_account: &signer) {
     let add_all_currencies = false;
 
-    DiemAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<XUS>(
         tc_account,
         {{parent1}},
         {{parent1::auth_key}},
@@ -26,7 +26,7 @@ fun main(tc_account: &signer) {
         add_all_currencies,
     );
 
-    DiemAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<XUS>(
         tc_account,
         {{parent2}},
         {{parent2::auth_key}},
@@ -42,11 +42,11 @@ fun main(tc_account: &signer) {
 //! new-transaction
 //! sender: parent1
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 fun main(account: &signer) {
-    DiemAccount::create_child_vasp_account<Coin1>(account, {{child1}}, {{child1::auth_key}}, false);
-    DiemAccount::create_child_vasp_account<Coin1>(account, {{child2}}, {{child2::auth_key}}, false)
+    DiemAccount::create_child_vasp_account<XUS>(account, {{child1}}, {{child1::auth_key}}, false);
+    DiemAccount::create_child_vasp_account<XUS>(account, {{child2}}, {{child2::auth_key}}, false)
 }
 }
 // check: "Keep(EXECUTED)"
@@ -175,14 +175,14 @@ module Holder {
 
 //! new-transaction
 //! sender: blessed
-//! type-args: 0x1::Coin1::Coin1
+//! type-args: 0x1::XUS::XUS
 //! args: 0, {{vasp1}}, {{vasp1::auth_key}}, b"bob", true
 stdlib_script::create_parent_vasp_account
 // check: "Keep(EXECUTED)"
 
 //! new-transaction
 //! sender: blessed
-//! type-args: 0x1::Coin1::Coin1
+//! type-args: 0x1::XUS::XUS
 //! args: 0, {{vasp2}}, {{vasp2::auth_key}}, b"bob", true
 stdlib_script::create_parent_vasp_account
 // check: "Keep(EXECUTED)"

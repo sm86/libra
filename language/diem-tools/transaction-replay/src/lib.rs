@@ -9,13 +9,11 @@ use diem_types::{
     transaction::{ChangeSet, Transaction, TransactionOutput, Version},
 };
 use diem_validator_interface::{
-    DBDebuggerInterface, DebuggerStateView, JsonRpcDebuggerInterface, DiemValidatorInterface,
+    DBDebuggerInterface, DebuggerStateView, DiemValidatorInterface, JsonRpcDebuggerInterface,
 };
-use diem_vm::{
-    data_cache::RemoteStorage, txn_effects_to_writeset_and_events, DiemVM, VMExecutor,
-};
+use diem_vm::{data_cache::RemoteStorage, txn_effects_to_writeset_and_events, DiemVM, VMExecutor};
 use move_core_types::gas_schedule::{GasAlgebra, GasUnits};
-use move_lang::{compiled_unit::CompiledUnit, move_compile_no_report, shared::Address};
+use move_lang::{compiled_unit::CompiledUnit, move_compile, shared::Address};
 use move_vm_runtime::{logging::NoContextLog, move_vm::MoveVM, session::Session};
 use move_vm_test_utils::{ChangeSet as MoveChanges, DeltaStorage};
 use move_vm_types::gas_schedule::{zero_cost_schedule, CostStrategy};
@@ -232,7 +230,7 @@ fn compile_move_script(file_path: &str, sender: AccountAddress) -> Result<Vec<u8
     let targets = &vec![cur_path];
     let sender_opt = Some(sender_addr);
     let (files, units_or_errors) =
-        move_compile_no_report(targets, &stdlib::stdlib_files(), sender_opt, None)?;
+        move_compile(targets, &stdlib::stdlib_files(), sender_opt, None)?;
     let unit = match units_or_errors {
         Err(errors) => {
             let error_buffer = move_lang::errors::report_errors_to_color_buffer(files, errors);

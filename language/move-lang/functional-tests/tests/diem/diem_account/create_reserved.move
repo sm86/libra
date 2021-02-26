@@ -5,9 +5,9 @@
 //! sender: blessed
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<XUS>(
         account, 0x0, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -17,9 +17,9 @@ fun main(account: &signer) {
 //! sender: diemroot
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<XUS>(
         account, 0x0, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -29,9 +29,9 @@ fun main(account: &signer) {
 //! sender: blessed
 script {
 use 0x1::DiemAccount;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
-    DiemAccount::create_parent_vasp_account<LBR>(
+    DiemAccount::create_parent_vasp_account<XDX>(
         account, 0x1, x"00000000000000000000000000000000", x"", false);
 }
 }
@@ -41,9 +41,9 @@ fun main(account: &signer) {
 //! sender: diemroot
 script {
 use 0x1::DiemAccount;
-use 0x1::LBR::LBR;
+use 0x1::XDX::XDX;
 fun main(account: &signer) {
-    DiemAccount::create_parent_vasp_account<LBR>(
+    DiemAccount::create_parent_vasp_account<XDX>(
         account, 0x1, x"00000000000000000000000000000000", x"", false);
 }
 }

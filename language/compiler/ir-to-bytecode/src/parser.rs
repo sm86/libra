@@ -11,8 +11,8 @@ use codespan_reporting::{
         Config,
     },
 };
-use ir_to_bytecode_syntax::syntax::{self, ParseError};
 use diem_types::account_address::AccountAddress;
+use ir_to_bytecode_syntax::syntax::{self, ParseError};
 use move_ir_types::{ast, location::*};
 
 /// Determine if a character is an allowed eye-visible (printable) character.

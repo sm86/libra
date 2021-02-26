@@ -83,11 +83,10 @@ impl Encryptor {
         seq_num: u64,
     ) -> Result<Vec<u8>, Error> {
         let keys = self.read()?;
-
         let key = keys
             .keys
             .get(&keys.current)
-            .ok_or_else(|| Error::VersionNotFound(keys.current))?;
+            .ok_or(Error::VersionNotFound(keys.current))?;
         let mut enc_addrs = Vec::new();
         for (idx, addr) in network_addresses.iter().cloned().enumerate() {
             enc_addrs.push(addr.encrypt(&key.0, keys.current, &account, seq_num, idx as u32)?);

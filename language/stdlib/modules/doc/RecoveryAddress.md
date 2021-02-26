@@ -357,7 +357,7 @@ Aborts if <code>to_recover.address</code> and <code>recovery_address belong <b>t
     // Only accept the rotation capability <b>if</b> both accounts belong <b>to</b> the same <a href="VASP.md#0x1_VASP">VASP</a>
     <b>let</b> to_recover_address = *<a href="DiemAccount.md#0x1_DiemAccount_key_rotation_capability_address">DiemAccount::key_rotation_capability_address</a>(&to_recover);
     <b>assert</b>(
-        <a href="VASP.md#0x1_VASP_parent_address">VASP::parent_address</a>(recovery_address) == <a href="VASP.md#0x1_VASP_parent_address">VASP::parent_address</a>(to_recover_address),
+        <a href="VASP.md#0x1_VASP_is_same_vasp">VASP::is_same_vasp</a>(recovery_address, to_recover_address),
         <a href="Errors.md#0x1_Errors_invalid_argument">Errors::invalid_argument</a>(<a href="RecoveryAddress.md#0x1_RecoveryAddress_EINVALID_KEY_ROTATION_DELEGATION">EINVALID_KEY_ROTATION_DELEGATION</a>)
     );
 
@@ -456,6 +456,14 @@ A RecoveryAddress has its own <code>KeyRotationCapability</code>.
 ### Persistence of KeyRotationCapability
 
 
+<code><a href="RecoveryAddress.md#0x1_RecoveryAddress">RecoveryAddress</a></code> persists
+
+
+<pre><code><b>invariant</b> <b>update</b> [<b>global</b>] <b>forall</b> addr: address <b>where</b> <b>old</b>(<b>exists</b>&lt;<a href="RecoveryAddress.md#0x1_RecoveryAddress">RecoveryAddress</a>&gt;(addr)):
+    <b>exists</b>&lt;<a href="RecoveryAddress.md#0x1_RecoveryAddress">RecoveryAddress</a>&gt;(addr);
+</code></pre>
+
+
 If <code>recovery_addr</code> holds the <code>KeyRotationCapability</code> of <code>to_recovery_addr</code>
 in the previous state, then it continues to hold the capability after the update.
 
@@ -535,6 +543,6 @@ Returns true if <code>recovery_address</code> holds the
 
 
 [//]: # ("File containing references which can be used from documentation")
-[ACCESS_CONTROL]: https://github.com/diem/lip/blob/master/lips/lip-2.md
-[ROLE]: https://github.com/diem/lip/blob/master/lips/lip-2.md#roles
-[PERMISSION]: https://github.com/diem/lip/blob/master/lips/lip-2.md#permissions
+[ACCESS_CONTROL]: https://github.com/diem/dip/blob/master/dips/dip-2.md
+[ROLE]: https://github.com/diem/dip/blob/master/dips/dip-2.md#roles
+[PERMISSION]: https://github.com/diem/dip/blob/master/dips/dip-2.md#permissions

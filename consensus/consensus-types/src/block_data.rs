@@ -7,7 +7,7 @@ use crate::{
     vote_data::VoteData,
 };
 use diem_crypto::hash::HashValue;
-use diem_crypto_derive::{CryptoHasher, BCSCryptoHash};
+use diem_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use diem_types::{
     block_info::BlockInfo,
     ledger_info::{LedgerInfo, LedgerInfoWithSignatures},

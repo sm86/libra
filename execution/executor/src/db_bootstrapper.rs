@@ -5,7 +5,6 @@
 
 use crate::Executor;
 use anyhow::{ensure, format_err, Result};
-use executor_types::BlockExecutor;
 use diem_crypto::{hash::PRE_GENESIS_BLOCK_ID, HashValue};
 use diem_logger::prelude::*;
 use diem_state_view::{StateView, StateViewId};
@@ -13,13 +12,14 @@ use diem_types::{
     access_path::AccessPath,
     account_config::diem_root_address,
     block_info::{BlockInfo, GENESIS_EPOCH, GENESIS_ROUND, GENESIS_TIMESTAMP_USECS},
-    ledger_info::{LedgerInfo, LedgerInfoWithSignatures},
     diem_timestamp::DiemTimestampResource,
+    ledger_info::{LedgerInfo, LedgerInfoWithSignatures},
     on_chain_config::{config_address, ConfigurationResource},
     transaction::Transaction,
     waypoint::Waypoint,
 };
 use diem_vm::VMExecutor;
+use executor_types::BlockExecutor;
 use move_core_types::move_resource::MoveResource;
 use std::collections::btree_map::BTreeMap;
 use storage_interface::{state_view::VerifiedStateView, DbReaderWriter, TreeState};

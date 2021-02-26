@@ -5,6 +5,7 @@ use crate::smoke_test_environment::SmokeTestEnvironment;
 use cli::client_proxy::ClientProxy;
 use diem_config::config::{Identity, NodeConfig, SecureBackend};
 use diem_crypto::ed25519::Ed25519PublicKey;
+use diem_types::account_address::AccountAddress;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::{collections::BTreeMap, fs::File, io::Write, path::PathBuf, str::FromStr};
 
@@ -21,10 +22,10 @@ pub fn compare_balances(
     let extracted_balances_dec: BTreeMap<_, _> = extracted_balances
         .into_iter()
         .map(|balance_str| {
-            let (currency_code, stripped_str) = if balance_str.ends_with("Coin1") {
-                ("Coin1", balance_str.trim_end_matches("Coin1"))
-            } else if balance_str.ends_with("LBR") {
-                ("LBR", balance_str.trim_end_matches("LBR"))
+            let (currency_code, stripped_str) = if balance_str.ends_with("XUS") {
+                ("XUS", balance_str.trim_end_matches("XUS"))
+            } else if balance_str.ends_with("XDX") {
+                ("XDX", balance_str.trim_end_matches("XDX"))
             } else {
                 panic!("Unexpected currency type returned for balance")
             };
@@ -56,6 +57,22 @@ pub fn setup_swarm_and_client_proxy(
     (env, client)
 }
 
+/// Waits for a transaction to be processed by all validator nodes in the smoke
+/// test environment.
+pub fn wait_for_transaction_on_all_nodes(
+    env: &SmokeTestEnvironment,
+    num_nodes: usize,
+    account: AccountAddress,
+    sequence_number: u64,
+) {
+    for i in 0..num_nodes {
+        let client = env.get_validator_client(i, None);
+        client
+            .wait_for_transaction(account, sequence_number)
+            .unwrap();
+    }
+}
+
 /// This module provides useful functions for operating, handling and managing
 /// DiemSwarm instances. It is particularly useful for working with tests that
 /// require a SmokeTestEnvironment, as it provides a generic interface across
@@ -65,6 +82,7 @@ pub mod diem_swarm_utils {
     use crate::test_utils::fetch_backend_storage;
     use cli::client_proxy::ClientProxy;
     use diem_config::config::{NodeConfig, SecureBackend, WaypointConfig};
+    use diem_events_fetcher::DiemEventsFetcher;
     use diem_key_manager::diem_interface::JsonRpcDiemInterface;
     use diem_operational_tool::test_helper::OperationalTool;
     use diem_secure_storage::{KVStorage, Storage};
@@ -100,8 +118,8 @@ pub mod diem_swarm_utils {
             false,
             /* faucet server */ None,
             Some(mnemonic_file_path),
-            None,
-            waypoint.unwrap_or_else(|| swarm.config.waypoint),
+            waypoint.unwrap_or(swarm.config.waypoint),
+            true,
         )
         .unwrap()
     }
@@ -122,6 +140,14 @@ pub mod diem_swarm_utils {
         let swarm_rpc_endpoint =
             format!("http://localhost:{}", node_config.json_rpc.address.port());
         DiemDebugger::json_rpc(swarm_rpc_endpoint.as_str()).unwrap()
+    }
+
+    /// Returns a Diem Event Fetcher pointing to a node at the given node index.
+    pub fn get_diem_event_fetcher(swarm: &DiemSwarm, node_index: usize) -> DiemEventsFetcher {
+        let (node_config, _) = load_node_config(swarm, node_index);
+        let swarm_rpc_endpoint =
+            format!("http://localhost:{}", node_config.json_rpc.address.port());
+        DiemEventsFetcher::new(swarm_rpc_endpoint.as_str()).unwrap()
     }
 
     /// Returns an operational tool pointing to a validator node at the given node index.

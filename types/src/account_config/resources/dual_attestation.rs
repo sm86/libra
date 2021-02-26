@@ -46,10 +46,10 @@ impl MoveResource for Credential {
     const STRUCT_NAME: &'static str = "Credential";
 }
 
-/// Defines the dual attest limit in microDiem LBR
+/// Defines the dual attest limit in microDiem XDX
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Limit {
-    pub micro_lbr_limit: u64,
+    pub micro_xdx_limit: u64,
 }
 
 impl OnChainConfig for Limit {

@@ -6,7 +6,6 @@ use anyhow::{format_err, Context, Result};
 use consensus_types::{
     block::Block, quorum_cert::QuorumCert, timeout_certificate::TimeoutCertificate, vote::Vote,
 };
-use executor_types::ExecutedTrees;
 use diem_config::config::NodeConfig;
 use diem_crypto::HashValue;
 use diem_logger::prelude::*;
@@ -15,6 +14,7 @@ use diem_types::{
     block_info::Round, epoch_change::EpochChangeProof, ledger_info::LedgerInfo,
     transaction::Version,
 };
+use executor_types::ExecutedTrees;
 use std::{cmp::max, collections::HashSet, sync::Arc};
 use storage_interface::DbReader;
 

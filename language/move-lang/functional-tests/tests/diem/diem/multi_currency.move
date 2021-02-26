@@ -1,6 +1,6 @@
 //! account: alice, 0, 0, address
 //! account: bob, 0, 0, address
-//! account: richie, 10Coin1
+//! account: richie, 10XUS
 //! account: sally, 0, 0, address
 
 // BEGIN: registration of a currency
@@ -31,12 +31,12 @@ module COIN {
 
     struct COIN { }
 
-    public fun initialize(lr_account: &signer, tc_account: &signer) {
+    public fun initialize(dr_account: &signer, tc_account: &signer) {
         // Register the COIN currency.
         Diem::register_SCS_currency<COIN>(
-            lr_account,
+            dr_account,
             tc_account,
-            FixedPoint32::create_from_rational(1, 2), // exchange rate to LBR
+            FixedPoint32::create_from_rational(1, 2), // exchange rate to XDX
             1000000, // scaling_factor = 10^6
             100,     // fractional_part = 10^2
             b"COIN",
@@ -56,8 +56,8 @@ module COIN {
 script {
 use 0x1::TransactionFee;
 use 0x1::COIN::{Self, COIN};
-fun main(lr_account: &signer, tc_account: &signer) {
-    COIN::initialize(lr_account, tc_account);
+fun main(dr_account: &signer, tc_account: &signer) {
+    COIN::initialize(dr_account, tc_account);
     TransactionFee::add_txn_fee_currency<COIN>(tc_account);
 }
 }
@@ -86,13 +86,13 @@ fun main(account: &signer) {
 //! new-transaction
 //! sender: blessed
 script {
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::COIN::COIN;
 use 0x1::DiemAccount;
 fun main(tc_account: &signer) {
     let add_all_currencies = false;
 
-    DiemAccount::create_parent_vasp_account<Coin1>(
+    DiemAccount::create_parent_vasp_account<XUS>(
         tc_account,
         {{alice}},
         {{alice::auth_key}},
@@ -116,10 +116,10 @@ fun main(tc_account: &signer) {
 //! sender: richie
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 10, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 10, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap);
 }
 }
@@ -154,9 +154,9 @@ fun main(account: &signer) {
 //! sender: bob
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -172,14 +172,14 @@ fun main(account: &signer) {
 }
 // check: "Keep(ABORTED { code: 261,"
 
-// Adding Coin1 a second time should fail with ADD_EXISTING_CURRENCY
+// Adding XUS a second time should fail with ADD_EXISTING_CURRENCY
 //! new-transaction
 //! sender: alice
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
-    DiemAccount::add_currency<Coin1>(account);
+    DiemAccount::add_currency<XUS>(account);
 }
 }
 // check: "Keep(ABORTED { code: 3846,"
@@ -188,13 +188,13 @@ fun main(account: &signer) {
 //! sender: alice
 script {
 use 0x1::DiemAccount;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
-    DiemAccount::pay_from<Coin1>(&with_cap, {{bob}}, 10, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{bob}}, 10, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap);
-    assert(DiemAccount::balance<Coin1>({{alice}}) == 0, 0);
-    assert(DiemAccount::balance<Coin1>({{bob}}) == 10, 1);
+    assert(DiemAccount::balance<XUS>({{alice}}) == 0, 0);
+    assert(DiemAccount::balance<XUS>({{bob}}) == 10, 1);
 }
 }
 // check: "Keep(EXECUTED)"
@@ -204,15 +204,15 @@ fun main(account: &signer) {
 script {
 use 0x1::DiemAccount;
 use 0x1::COIN::COIN;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 fun main(account: &signer) {
     let with_cap = DiemAccount::extract_withdraw_capability(account);
     DiemAccount::pay_from<COIN>(&with_cap, {{alice}}, 10, x"", x"");
-    DiemAccount::pay_from<Coin1>(&with_cap, {{alice}}, 10, x"", x"");
+    DiemAccount::pay_from<XUS>(&with_cap, {{alice}}, 10, x"", x"");
     DiemAccount::restore_withdraw_capability(with_cap);
-    assert(DiemAccount::balance<Coin1>({{bob}}) == 0, 2);
+    assert(DiemAccount::balance<XUS>({{bob}}) == 0, 2);
     assert(DiemAccount::balance<COIN>({{bob}}) == 0, 3);
-    assert(DiemAccount::balance<Coin1>({{alice}}) == 10, 4);
+    assert(DiemAccount::balance<XUS>({{alice}}) == 10, 4);
     assert(DiemAccount::balance<COIN>({{alice}}) == 10, 5);
 }
 }

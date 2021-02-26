@@ -4,7 +4,7 @@
 
 //! sender: alice
 module AlicePays {
-    use 0x1::Coin1::Coin1;
+    use 0x1::XUS::XUS;
     use 0x1::DiemAccount;
 
     resource struct T {
@@ -19,7 +19,7 @@ module AlicePays {
 
     public fun pay(payee: address, amount: u64) acquires T {
         let t = borrow_global<T>({{alice}});
-        DiemAccount::pay_from<Coin1>(
+        DiemAccount::pay_from<XUS>(
             &t.cap,
             payee,
             amount,
@@ -46,15 +46,15 @@ fun main(sender: &signer) {
 //! sender: bob
 script {
 use {{alice}}::AlicePays;
-use 0x1::Coin1::Coin1;
+use 0x1::XUS::XUS;
 use 0x1::DiemAccount;
 
 fun main() {
-    let carol_prev_balance = DiemAccount::balance<Coin1>({{carol}});
-    let alice_prev_balance = DiemAccount::balance<Coin1>({{alice}});
+    let carol_prev_balance = DiemAccount::balance<XUS>({{carol}});
+    let alice_prev_balance = DiemAccount::balance<XUS>({{alice}});
     AlicePays::pay({{carol}}, 10);
-    assert(carol_prev_balance + 10 == DiemAccount::balance<Coin1>({{carol}}), 0);
-    assert(alice_prev_balance - 10 == DiemAccount::balance<Coin1>({{alice}}), 1);
+    assert(carol_prev_balance + 10 == DiemAccount::balance<XUS>({{carol}}), 0);
+    assert(alice_prev_balance - 10 == DiemAccount::balance<XUS>({{alice}}), 1);
 }
 }
 // check: "Keep(EXECUTED)"
