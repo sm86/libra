@@ -1724,7 +1724,6 @@ dependencies = [
  "once_cell",
  "rand 0.7.3",
  "serde",
- "serde_json",
  "storage-interface",
  "thiserror",
  "tokio",
@@ -1946,7 +1945,6 @@ dependencies = [
  "diem-secure-time",
  "diem-temppath",
  "diem-types",
- "diem-vault-client",
  "diem-workspace-hack",
  "hex",
  "serde",
@@ -2614,7 +2612,6 @@ dependencies = [
  "codespan-reporting",
  "datatest-stable",
  "diem-types",
- "diem-vm",
  "diem-workspace-hack",
  "log",
  "move-core-types",
@@ -3686,7 +3683,6 @@ dependencies = [
  "pem",
  "reqwest",
  "serde",
- "serde-value",
  "serde_json",
  "serde_yaml",
  "static_assertions",
@@ -3699,14 +3695,6 @@ dependencies = [
 [[package]]
 name = "language-benchmarks"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67c21572b4949434e4fc1e1978b99c5f77064153c59d998bf13ecd96fb5ecba7"
-
-[[package]]
-name = "kernel32-sys"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 dependencies = [
  "anyhow",
  "bytecode-verifier",
@@ -4256,7 +4244,6 @@ version = "0.1.0"
 dependencies = [
  "diem-crypto",
  "diem-workspace-hack",
- "hex 0.4.2",
  "mirai-annotations",
  "move-core-types",
  "move-vm-types",
@@ -7345,7 +7332,6 @@ dependencies = [
  "diem-types",
  "diem-vm",
  "diem-workspace-hack",
- "hex 0.4.2",
  "move-core-types",
  "move-vm-runtime",
  "move-vm-types",
