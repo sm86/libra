@@ -2,10 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // FIXME: (gnazario) storage helper doesn't belong in the genesis tool, but it's attached to it right now
-
-use std::convert::TryFrom;
-
-
 use crate::command::Command;
 use consensus_types::safety_data::SafetyData;
 use diem_crypto::{
@@ -58,13 +54,14 @@ impl StorageHelper {
     }
 
     ///////// 0L  /////////
-    pub fn initialize_with_mnemonic_swarm(&self, namespace: String, mnemonic: String) {
+    pub fn initialize_with_mnemonic_swarm(&self, namespace: String, mnemonic: String, seed: [u8; 32]) {
         let keys = KeyScheme::new_from_mnemonic(mnemonic);
         let mut storage = self.storage(namespace.clone());
-        // let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed([5; 32]);
-        let dummy_root = Ed25519PrivateKey::try_from("8108aedfacf5cf1d73c67b6936397ba5fa72817f1b5aab94658238ddcdc08010".as_bytes()).unwrap();
 
-        storage
+        let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed(seed);
+        let dummy_root = Ed25519PrivateKey::generate(&mut rng);
+
+        storage       
             .import_private_key(DIEM_ROOT_KEY, dummy_root.clone())
             .unwrap();
         // let diem_root_key = storage_owner.export_private_key(DIEM_ROOT_KEY).unwrap();
@@ -115,7 +112,10 @@ impl StorageHelper {
         if is_genesis {
             // Data needed for testnet, swarm, and genesis ceremony.
             let mut storage_root = self.storage("root".to_owned());
-            let dummy_root = Ed25519PrivateKey::try_from( "8108aedfacf5cf1d73c67b6936397ba5fa72817f1b5aab94658238ddcdc08010".as_bytes()).unwrap();
+
+            let mut seed = [0u8; 32];
+            let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed(seed);
+            let dummy_root = Ed25519PrivateKey::generate(&mut rng);
 
             storage_root
                 .import_private_key(DIEM_ROOT_KEY, dummy_root.clone())
@@ -173,15 +173,6 @@ impl StorageHelper {
     pub fn path_string(&self) -> &str {
         self.temppath.path().to_str().unwrap()
     }
-
-    // pub fn initialize_by_idx(&self, namespace: String, idx: usize) {
-    //     let partial_seed = bcs::to_bytes(&idx).unwrap();
-    //     let mut seed = [0u8; 32];
-    //     let data_to_copy = 32 - std::cmp::min(32, partial_seed.len());
-    //     seed[data_to_copy..].copy_from_slice(partial_seed.as_slice());
-    //     self.initialize(namespace, seed);
-    // }
-    
     
 
     // 0L: change, initialize the 0th account with a fixture mnemonic "Alice". So we can test miner and other APIs.
@@ -194,7 +185,7 @@ impl StorageHelper {
         // idx 0 is for diem account in swarm tests.
         // idx 1  is for the first node OWNER, set a fixed mnemonic to derive keys for this one so we can simulate miner workflow.
         if idx == 1 {
-            self.initialize_with_mnemonic_swarm(namespace, mnem_alice);
+            self.initialize_with_mnemonic_swarm(namespace, mnem_alice, seed);
         } else {
             self.initialize(namespace, seed);
         }
