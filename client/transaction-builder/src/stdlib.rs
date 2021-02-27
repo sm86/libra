@@ -145,6 +145,57 @@ pub enum ScriptCall {
         sliding_nonce: u64,
     },
 
+    /// # Summary
+    /// Adds a validator account to the validator set, and triggers a
+    /// reconfiguration of the system to admit the account to the validator set for the system. This
+    /// transaction can only be successfully called by the Diem Root account.
+    ///
+    /// # Technical Description
+    /// This script adds the account at `validator_address` to the validator set.
+    /// This transaction emits a `DiemConfig::NewEpochEvent` event and triggers a
+    /// reconfiguration. Once the reconfiguration triggered by this script's
+    /// execution has been performed, the account at the `validator_address` is
+    /// considered to be a validator in the network.
+    ///
+    /// This transaction script will fail if the `validator_address` address is already in the validator set
+    /// or does not have a `ValidatorConfig::ValidatorConfig` resource already published under it.
+    ///
+    /// # Parameters
+    /// | Name                | Type         | Description                                                                                                                        |
+    /// | ------              | ------       | -------------                                                                                                                      |
+    /// | `lr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+    /// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
+    /// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
+    /// | `validator_address` | `address`    | The validator account address to be added to the validator set.                                                                    |
+    ///
+    /// # Common Abort Conditions
+    /// | Error Category             | Error Reason                                  | Description                                                                                                                               |
+    /// | ----------------           | --------------                                | -------------                                                                                                                             |
+    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `lr_account`.                                                                            |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.                                                |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                                                                             |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                                                                         |
+    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`                  | The sending account is not the Diem Root account.                                                                                        |
+    /// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                          | The sending account is not the Diem Root account.                                                                                        |
+    /// | 0                          | 0                                             | The provided `validator_name` does not match the already-recorded human name for the validator.                                           |
+    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR` | The validator to be added does not have a `ValidatorConfig::ValidatorConfig` resource published under it, or its `config` field is empty. |
+    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EALREADY_A_VALIDATOR`           | The `validator_address` account is already a registered validator.                                                                        |
+    /// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
+    ///
+    /// # Related Scripts
+    /// * `Script::create_validator_account`
+    /// * `Script::create_validator_operator_account`
+    /// * `Script::register_validator_config`
+    /// * `Script::remove_validator_and_reconfigure`
+    /// * `Script::set_validator_operator`
+    /// * `Script::set_validator_operator_with_nonce_admin`
+    /// * `Script::set_validator_config_and_reconfigure`
+    AddValidatorAndReconfigure {
+        sliding_nonce: u64,
+        validator_name: Bytes,
+        validator_address: AccountAddress,
+    },
+
     AutopayCreateInstruction {
         uid: u64,
         payee: AccountAddress,
@@ -496,6 +547,99 @@ pub enum ScriptCall {
     CreateUserAccount {
         challenge: Bytes,
         solution: Bytes,
+    },
+
+    /// # Summary
+    /// Creates a Validator account. This transaction can only be sent by the Diem
+    /// Root account.
+    ///
+    /// # Technical Description
+    /// Creates an account with a Validator role at `new_account_address`, with authentication key
+    /// `auth_key_prefix` | `new_account_address`. It publishes a
+    /// `ValidatorConfig::ValidatorConfig` resource with empty `config`, and
+    /// `operator_account` fields. The `human_name` field of the
+    /// `ValidatorConfig::ValidatorConfig` is set to the passed in `human_name`.
+    /// This script does not add the validator to the validator set or the system,
+    /// but only creates the account.
+    ///
+    /// # Parameters
+    /// | Name                  | Type         | Description                                                                                     |
+    /// | ------                | ------       | -------------                                                                                   |
+    /// | `lr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
+    /// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
+    /// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
+    /// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
+    /// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
+    ///
+    /// # Common Abort Conditions
+    /// | Error Category              | Error Reason                            | Description                                                                                |
+    /// | ----------------            | --------------                          | -------------                                                                              |
+    /// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                             |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
+    /// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
+    /// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
+    /// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
+    ///
+    /// # Related Scripts
+    /// * `Script::add_validator_and_reconfigure`
+    /// * `Script::create_validator_operator_account`
+    /// * `Script::register_validator_config`
+    /// * `Script::remove_validator_and_reconfigure`
+    /// * `Script::set_validator_operator`
+    /// * `Script::set_validator_operator_with_nonce_admin`
+    /// * `Script::set_validator_config_and_reconfigure`
+    CreateValidatorAccount {
+        sliding_nonce: u64,
+        new_account_address: AccountAddress,
+        auth_key_prefix: Bytes,
+        human_name: Bytes,
+    },
+
+    /// # Summary
+    /// Creates a Validator Operator account. This transaction can only be sent by the Diem
+    /// Root account.
+    ///
+    /// # Technical Description
+    /// Creates an account with a Validator Operator role at `new_account_address`, with authentication key
+    /// `auth_key_prefix` | `new_account_address`. It publishes a
+    /// `ValidatorOperatorConfig::ValidatorOperatorConfig` resource with the specified `human_name`.
+    /// This script does not assign the validator operator to any validator accounts but only creates the account.
+    ///
+    /// # Parameters
+    /// | Name                  | Type         | Description                                                                                     |
+    /// | ------                | ------       | -------------                                                                                   |
+    /// | `lr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
+    /// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
+    /// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
+    /// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
+    /// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
+    ///
+    /// # Common Abort Conditions
+    /// | Error Category              | Error Reason                            | Description                                                                                |
+    /// | ----------------            | --------------                          | -------------                                                                              |
+    /// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                             |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
+    /// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
+    /// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
+    /// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
+    /// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
+    ///
+    /// # Related Scripts
+    /// * `Script::create_validator_account`
+    /// * `Script::add_validator_and_reconfigure`
+    /// * `Script::register_validator_config`
+    /// * `Script::remove_validator_and_reconfigure`
+    /// * `Script::set_validator_operator`
+    /// * `Script::set_validator_operator_with_nonce_admin`
+    /// * `Script::set_validator_config_and_reconfigure`
+    CreateValidatorOperatorAccount {
+        sliding_nonce: u64,
+        new_account_address: AccountAddress,
+        auth_key_prefix: Bytes,
+        human_name: Bytes,
     },
 
     DemoE2e {
@@ -1323,6 +1467,15 @@ impl ScriptCall {
                 hash,
                 sliding_nonce,
             } => encode_add_to_script_allow_list_script(hash, sliding_nonce),
+            AddValidatorAndReconfigure {
+                sliding_nonce,
+                validator_name,
+                validator_address,
+            } => encode_add_validator_and_reconfigure_script(
+                sliding_nonce,
+                validator_name,
+                validator_address,
+            ),
             AutopayCreateInstruction {
                 uid,
                 payee,
@@ -1388,6 +1541,28 @@ impl ScriptCall {
                 challenge,
                 solution,
             } => encode_create_user_account_script(challenge, solution),
+            CreateValidatorAccount {
+                sliding_nonce,
+                new_account_address,
+                auth_key_prefix,
+                human_name,
+            } => encode_create_validator_account_script(
+                sliding_nonce,
+                new_account_address,
+                auth_key_prefix,
+                human_name,
+            ),
+            CreateValidatorOperatorAccount {
+                sliding_nonce,
+                new_account_address,
+                auth_key_prefix,
+                human_name,
+            } => encode_create_validator_operator_account_script(
+                sliding_nonce,
+                new_account_address,
+                auth_key_prefix,
+                human_name,
+            ),
             DemoE2e { world } => encode_demo_e2e_script(world),
             FreezeAccount {
                 sliding_nonce,
@@ -1669,6 +1844,67 @@ pub fn encode_add_to_script_allow_list_script(hash: Vec<u8>, sliding_nonce: u64)
         vec![
             TransactionArgument::U8Vector(hash),
             TransactionArgument::U64(sliding_nonce),
+        ],
+    )
+}
+
+/// # Summary
+/// Adds a validator account to the validator set, and triggers a
+/// reconfiguration of the system to admit the account to the validator set for the system. This
+/// transaction can only be successfully called by the Diem Root account.
+///
+/// # Technical Description
+/// This script adds the account at `validator_address` to the validator set.
+/// This transaction emits a `DiemConfig::NewEpochEvent` event and triggers a
+/// reconfiguration. Once the reconfiguration triggered by this script's
+/// execution has been performed, the account at the `validator_address` is
+/// considered to be a validator in the network.
+///
+/// This transaction script will fail if the `validator_address` address is already in the validator set
+/// or does not have a `ValidatorConfig::ValidatorConfig` resource already published under it.
+///
+/// # Parameters
+/// | Name                | Type         | Description                                                                                                                        |
+/// | ------              | ------       | -------------                                                                                                                      |
+/// | `lr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+/// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
+/// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
+/// | `validator_address` | `address`    | The validator account address to be added to the validator set.                                                                    |
+///
+/// # Common Abort Conditions
+/// | Error Category             | Error Reason                                  | Description                                                                                                                               |
+/// | ----------------           | --------------                                | -------------                                                                                                                             |
+/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`                | A `SlidingNonce` resource is not published under `lr_account`.                                                                            |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`                | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.                                                |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`                | The `sliding_nonce` is too far in the future.                                                                                             |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED`       | The `sliding_nonce` has been previously recorded.                                                                                         |
+/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`                  | The sending account is not the Diem Root account.                                                                                        |
+/// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                          | The sending account is not the Diem Root account.                                                                                        |
+/// | 0                          | 0                                             | The provided `validator_name` does not match the already-recorded human name for the validator.                                           |
+/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR` | The validator to be added does not have a `ValidatorConfig::ValidatorConfig` resource published under it, or its `config` field is empty. |
+/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::EALREADY_A_VALIDATOR`           | The `validator_address` account is already a registered validator.                                                                        |
+/// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
+///
+/// # Related Scripts
+/// * `Script::create_validator_account`
+/// * `Script::create_validator_operator_account`
+/// * `Script::register_validator_config`
+/// * `Script::remove_validator_and_reconfigure`
+/// * `Script::set_validator_operator`
+/// * `Script::set_validator_operator_with_nonce_admin`
+/// * `Script::set_validator_config_and_reconfigure`
+pub fn encode_add_validator_and_reconfigure_script(
+    sliding_nonce: u64,
+    validator_name: Vec<u8>,
+    validator_address: AccountAddress,
+) -> Script {
+    Script::new(
+        ADD_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(sliding_nonce),
+            TransactionArgument::U8Vector(validator_name),
+            TransactionArgument::Address(validator_address),
         ],
     )
 }
@@ -2090,6 +2326,121 @@ pub fn encode_create_user_account_script(challenge: Vec<u8>, solution: Vec<u8>) 
         vec![
             TransactionArgument::U8Vector(challenge),
             TransactionArgument::U8Vector(solution),
+        ],
+    )
+}
+
+/// # Summary
+/// Creates a Validator account. This transaction can only be sent by the Diem
+/// Root account.
+///
+/// # Technical Description
+/// Creates an account with a Validator role at `new_account_address`, with authentication key
+/// `auth_key_prefix` | `new_account_address`. It publishes a
+/// `ValidatorConfig::ValidatorConfig` resource with empty `config`, and
+/// `operator_account` fields. The `human_name` field of the
+/// `ValidatorConfig::ValidatorConfig` is set to the passed in `human_name`.
+/// This script does not add the validator to the validator set or the system,
+/// but only creates the account.
+///
+/// # Parameters
+/// | Name                  | Type         | Description                                                                                     |
+/// | ------                | ------       | -------------                                                                                   |
+/// | `lr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
+/// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
+/// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
+/// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
+/// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
+///
+/// # Common Abort Conditions
+/// | Error Category              | Error Reason                            | Description                                                                                |
+/// | ----------------            | --------------                          | -------------                                                                              |
+/// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                             |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
+/// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
+/// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
+/// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
+///
+/// # Related Scripts
+/// * `Script::add_validator_and_reconfigure`
+/// * `Script::create_validator_operator_account`
+/// * `Script::register_validator_config`
+/// * `Script::remove_validator_and_reconfigure`
+/// * `Script::set_validator_operator`
+/// * `Script::set_validator_operator_with_nonce_admin`
+/// * `Script::set_validator_config_and_reconfigure`
+pub fn encode_create_validator_account_script(
+    sliding_nonce: u64,
+    new_account_address: AccountAddress,
+    auth_key_prefix: Vec<u8>,
+    human_name: Vec<u8>,
+) -> Script {
+    Script::new(
+        CREATE_VALIDATOR_ACCOUNT_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(sliding_nonce),
+            TransactionArgument::Address(new_account_address),
+            TransactionArgument::U8Vector(auth_key_prefix),
+            TransactionArgument::U8Vector(human_name),
+        ],
+    )
+}
+
+/// # Summary
+/// Creates a Validator Operator account. This transaction can only be sent by the Diem
+/// Root account.
+///
+/// # Technical Description
+/// Creates an account with a Validator Operator role at `new_account_address`, with authentication key
+/// `auth_key_prefix` | `new_account_address`. It publishes a
+/// `ValidatorOperatorConfig::ValidatorOperatorConfig` resource with the specified `human_name`.
+/// This script does not assign the validator operator to any validator accounts but only creates the account.
+///
+/// # Parameters
+/// | Name                  | Type         | Description                                                                                     |
+/// | ------                | ------       | -------------                                                                                   |
+/// | `lr_account`          | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
+/// | `sliding_nonce`       | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                      |
+/// | `new_account_address` | `address`    | Address of the to-be-created Validator account.                                                 |
+/// | `auth_key_prefix`     | `vector<u8>` | The authentication key prefix that will be used initially for the newly created account.        |
+/// | `human_name`          | `vector<u8>` | ASCII-encoded human name for the validator.                                                     |
+///
+/// # Common Abort Conditions
+/// | Error Category              | Error Reason                            | Description                                                                                |
+/// | ----------------            | --------------                          | -------------                                                                              |
+/// | `Errors::NOT_PUBLISHED`     | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                             |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not. |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                              |
+/// | `Errors::INVALID_ARGUMENT`  | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                          |
+/// | `Errors::REQUIRES_ADDRESS`  | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                         |
+/// | `Errors::REQUIRES_ROLE`     | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                         |
+/// | `Errors::ALREADY_PUBLISHED` | `Roles::EROLE_ID`                       | The `new_account_address` address is already taken.                                        |
+///
+/// # Related Scripts
+/// * `Script::create_validator_account`
+/// * `Script::add_validator_and_reconfigure`
+/// * `Script::register_validator_config`
+/// * `Script::remove_validator_and_reconfigure`
+/// * `Script::set_validator_operator`
+/// * `Script::set_validator_operator_with_nonce_admin`
+/// * `Script::set_validator_config_and_reconfigure`
+pub fn encode_create_validator_operator_account_script(
+    sliding_nonce: u64,
+    new_account_address: AccountAddress,
+    auth_key_prefix: Vec<u8>,
+    human_name: Vec<u8>,
+) -> Script {
+    Script::new(
+        CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(sliding_nonce),
+            TransactionArgument::Address(new_account_address),
+            TransactionArgument::U8Vector(auth_key_prefix),
+            TransactionArgument::U8Vector(human_name),
         ],
     )
 }
@@ -3122,6 +3473,14 @@ fn decode_add_to_script_allow_list_script(script: &Script) -> Option<ScriptCall>
     })
 }
 
+fn decode_add_validator_and_reconfigure_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::AddValidatorAndReconfigure {
+        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
+        validator_name: decode_u8vector_argument(script.args().get(1)?.clone())?,
+        validator_address: decode_address_argument(script.args().get(2)?.clone())?,
+    })
+}
+
 fn decode_autopay_create_instruction_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::AutopayCreateInstruction {
         uid: decode_u64_argument(script.args().get(0)?.clone())?,
@@ -3196,6 +3555,24 @@ fn decode_create_user_account_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::CreateUserAccount {
         challenge: decode_u8vector_argument(script.args().get(0)?.clone())?,
         solution: decode_u8vector_argument(script.args().get(1)?.clone())?,
+    })
+}
+
+fn decode_create_validator_account_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::CreateValidatorAccount {
+        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
+        new_account_address: decode_address_argument(script.args().get(1)?.clone())?,
+        auth_key_prefix: decode_u8vector_argument(script.args().get(2)?.clone())?,
+        human_name: decode_u8vector_argument(script.args().get(3)?.clone())?,
+    })
+}
+
+fn decode_create_validator_operator_account_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::CreateValidatorOperatorAccount {
+        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
+        new_account_address: decode_address_argument(script.args().get(1)?.clone())?,
+        auth_key_prefix: decode_u8vector_argument(script.args().get(2)?.clone())?,
+        human_name: decode_u8vector_argument(script.args().get(3)?.clone())?,
     })
 }
 
@@ -3417,6 +3794,10 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
         Box::new(decode_add_to_script_allow_list_script),
     );
     map.insert(
+        ADD_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
+        Box::new(decode_add_validator_and_reconfigure_script),
+    );
+    map.insert(
         AUTOPAY_CREATE_INSTRUCTION_CODE.to_vec(),
         Box::new(decode_autopay_create_instruction_script),
     );
@@ -3452,6 +3833,14 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
     map.insert(
         CREATE_USER_ACCOUNT_CODE.to_vec(),
         Box::new(decode_create_user_account_script),
+    );
+    map.insert(
+        CREATE_VALIDATOR_ACCOUNT_CODE.to_vec(),
+        Box::new(decode_create_validator_account_script),
+    );
+    map.insert(
+        CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE.to_vec(),
+        Box::new(decode_create_validator_operator_account_script),
     );
     map.insert(DEMO_E2E_CODE.to_vec(), Box::new(decode_demo_e2e_script));
     map.insert(
@@ -3612,6 +4001,18 @@ const ADD_TO_SCRIPT_ALLOW_LIST_CODE: &[u8] = &[
     0, 3, 1, 7, 10, 0, 10, 2, 17, 1, 11, 0, 11, 1, 17, 0, 2,
 ];
 
+const ADD_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 91, 8, 136, 1, 16, 0, 0,
+    0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
+    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
+    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
+    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
+    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
+    95, 110, 97, 109, 101, 13, 97, 100, 100, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1, 11,
+    2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2, 2,
+];
+
 const AUTOPAY_CREATE_INSTRUCTION_CODE: &[u8] = &[
     161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 15, 5, 19, 19, 7, 38, 56, 8, 94, 16, 0, 0, 0,
     1, 1, 2, 0, 1, 0, 0, 3, 2, 3, 0, 0, 4, 1, 4, 0, 1, 6, 12, 1, 5, 5, 6, 12, 3, 5, 3, 3, 0, 1, 1,
@@ -3714,6 +4115,27 @@ const CREATE_USER_ACCOUNT_CODE: &[u8] = &[
     112, 114, 111, 111, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 4, 14, 14, 1,
     14, 2, 17, 1, 12, 3, 10, 3, 56, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 33, 12, 4, 11, 4, 3, 13, 6, 1, 0,
     0, 0, 0, 0, 0, 0, 39, 2,
+];
+
+const CREATE_VALIDATOR_ACCOUNT_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 72, 8, 108, 16, 0, 0, 0,
+    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
+    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
+    110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
+    95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
+    100, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 0, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 17, 1, 2,
+];
+
+const CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 81, 8, 117, 16, 0, 0, 0,
+    1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10,
+    2, 10, 2, 11, 68, 105, 101, 109, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105,
+    110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101,
+    95, 111, 114, 95, 97, 98, 111, 114, 116, 33, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105,
+    100, 97, 116, 111, 114, 95, 111, 112, 101, 114, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117,
+    110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11,
+    0, 10, 2, 11, 3, 11, 4, 17, 1, 2,
 ];
 
 const DEMO_E2E_CODE: &[u8] = &[

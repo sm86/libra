@@ -8,7 +8,8 @@ use move_core_types::{
 };
 use once_cell::sync::Lazy;
 
-pub const XDX_NAME: &str = "XDX";
+//TODO: Why two coins here?
+pub const XDX_NAME: &str = "GAS";
 pub const XUS_NAME: &str = "GAS";
 
 pub fn xus_tag() -> TypeTag {
