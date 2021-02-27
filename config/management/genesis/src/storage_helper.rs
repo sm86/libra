@@ -113,7 +113,7 @@ impl StorageHelper {
             // Data needed for testnet, swarm, and genesis ceremony.
             let mut storage_root = self.storage("root".to_owned());
 
-            let mut seed = [0u8; 32];
+            let seed = [0u8; 32];
             let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed(seed);
             let dummy_root = Ed25519PrivateKey::generate(&mut rng);
 
