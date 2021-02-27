@@ -46,7 +46,8 @@ pub(crate) enum NativeFunction {
     DestroySigner,
     //////// 0L ////////
     VDFVerify,
-    RedeemAuthKeyParse,}
+    RedeemAuthKeyParse
+}
 
 impl NativeFunction {
     pub(crate) fn resolve(
@@ -79,7 +80,9 @@ impl NativeFunction {
             (&CORE_CODE_ADDRESS, "Signer", "borrow_address") => SignerBorrowAddress,
             //////// 0L ////////
             (&CORE_CODE_ADDRESS, "VDF", "verify") => VDFVerify, // OL Change
-            (&CORE_CODE_ADDRESS, "VDF", "extract_address_from_challenge") => RedeemAuthKeyParse,   // 0L change            _ => return None,
+            (&CORE_CODE_ADDRESS, "VDF", "extract_address_from_challenge") => RedeemAuthKeyParse,
+            // 0L change 
+            _ => return None,
         })
     }
 
