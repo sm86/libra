@@ -285,6 +285,7 @@ fn create_and_initialize_main_accounts(
     let native_gas_costs = bcs::to_bytes(&genesis_gas_schedule.native_table)
         .expect("Failure serializing genesis native gas costs");
     
+    dbg!(&genesis_gas_schedule.native_table);
     println!("Genesis initialize");
     exec_function(
         session,

@@ -114,7 +114,7 @@ impl NativeFunction {
             Self::SignerBorrowAddress => signer::native_borrow_address(ctx, t, v),
             Self::CreateSigner => account::native_create_signer(ctx, t, v),
             Self::DestroySigner => account::native_destroy_signer(ctx, t, v),
-                        //////// 0L ////////
+            //////// 0L ////////
             Self::VDFVerify => vdf::verify(ctx, t, v), // 0L change
             Self::RedeemAuthKeyParse => vdf::extract_address_from_challenge(ctx, t, v),
         };

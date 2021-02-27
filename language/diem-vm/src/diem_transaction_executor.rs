@@ -468,6 +468,7 @@ impl DiemVM {
             .or_else(|e| {
                 expect_only_successful_execution(e, BLOCK_PROLOGUE.as_str(), log_context)
             })?;
+
         SYSTEM_TRANSACTIONS_EXECUTED.inc();
 
         let output = get_transaction_output(
