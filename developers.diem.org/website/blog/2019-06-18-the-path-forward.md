@@ -53,7 +53,7 @@ Below is a list of some major features we are hoping to implement this year, man
 * Addressing:
     * We will formalize a specification for sharing payment addresses on the Diem Blockchain.
 * Clients:
-    * APIs — These APIs should provide ergonomic methods to meet real-world use cases, such as submitting transactions, accessing blockchain data, and monitoring for incoming payments. Possible approaches could include encouraging the use of a diemry, which acts as a light client or encouraging the use of RPCs to communicate with a process that runs the client.
+    * APIs — These APIs should provide ergonomic methods to meet real-world use cases, such as submitting transactions, accessing blockchain data, and monitoring for incoming payments. Possible approaches could include encouraging the use of a library, which acts as a light client or encouraging the use of RPCs to communicate with a process that runs the client.
 * Consensus:
     * Increasing resiliency against liveness attacks — One advantage of the DiemBFT framework is that the correctness of the protocol is concentrated to a single software component — this is work which we have already completed. We plan to improve our resiliency against attacks on the liveness of the protocol by applying techniques, such as using more robust leader election mechanisms and enhancing inter-validator communication to increase the spread of information within the network. We have done an initial exploration of these and other mechanisms in the [DiemBFT paper](https://developers.diem.org/docs/state-machine-replication-paper) and are working to finalize our approach.
     * We will investigate the use of efficient signature aggregation to reduce the size of quorum certificates.

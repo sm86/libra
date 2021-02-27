@@ -5,11 +5,11 @@
 
 const React = require('react');
 
-const CompDiemry = require('../../core/CompDiemry.js');
+const CompLibrary = require('../../core/CompLibrary.js');
 
-const MarkdownBlock = CompDiemry.MarkdownBlock;
-const Container = CompDiemry.Container;
-const GridBlock = CompDiemry.GridBlock;
+const MarkdownBlock = CompLibrary.MarkdownBlock;
+const Container = CompLibrary.Container;
+const GridBlock = CompLibrary.GridBlock;
 
 const bash = (...args) => `~~~bash\n${String.raw(...args)}\n~~~`;
 

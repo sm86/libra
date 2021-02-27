@@ -34,7 +34,7 @@ We made incremental progress laying the groundwork toward a more open programmin
 - Tooling
   - Updated tooling for formal verification to support new language features
   - Added support for specifications in the Move IR compiler
-  - Pre-released code for [guppy: a diemry for querying Rust dependency graphs](https://github.com/cadiem/cargo-guppy), and cargo-guppy, a command-line frontend for the guppy diemry
+  - Pre-released code for [guppy: a library for querying Rust dependency graphs](https://github.com/cadiem/cargo-guppy), and cargo-guppy, a command-line frontend for the guppy library
   - Added support for generic types to automate bytecode test generation
   - Enhanced the functional test framework with significant usability improvements
 - Move language

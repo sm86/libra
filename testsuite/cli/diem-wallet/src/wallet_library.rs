@@ -28,6 +28,7 @@ use diem_types::{
 };
 use rand::{rngs::OsRng, Rng};
 use std::{collections::HashMap, path::Path};
+use diem_global_constants::SALT_0L;
 
 /// WalletLibrary contains all the information needed to recreate a particular wallet
 pub struct WalletLibrary {
@@ -50,7 +51,7 @@ impl WalletLibrary {
 
     /// Constructor that instantiates a new WalletLibrary from Mnemonic
     pub fn new_from_mnemonic(mnemonic: Mnemonic) -> Self {
-        let seed = Seed::new(&mnemonic, "DIEM");
+        let seed = Seed::new(&mnemonic, SALT_0L);
         WalletLibrary {
             mnemonic,
             key_factory: KeyFactory::new(&seed).unwrap(),
@@ -184,7 +185,12 @@ impl WalletLibrary {
         }
     }
 
-    /// Return authentication key (AuthenticationKey) for an address in the wallet
+    pub fn get_key_factory(&self) -> &KeyFactory{
+        &self.key_factory
+
+
+    }
+        /// Return authentication key (AuthenticationKey) for an address in the wallet
     pub fn get_authentication_key(&self, address: &AccountAddress) -> Result<AuthenticationKey> {
         if let Some(child) = self.addr_map.get(&address) {
             Ok(self
@@ -195,7 +201,9 @@ impl WalletLibrary {
             Err(WalletError::DiemWalletGeneric("missing address".to_string()).into())
         }
     }
+    
 }
+
 
 /// WalletLibrary naturally support TransactionSigner trait.
 impl TransactionSigner for WalletLibrary {

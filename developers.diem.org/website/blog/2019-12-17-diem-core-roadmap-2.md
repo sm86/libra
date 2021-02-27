@@ -59,7 +59,7 @@ Below is a summary of our progress. Some new items have been added for visibilit
 | Reconfiguration (of the Validator Set) | Diem Protocol | We are actively working on consensus workflow (the unit test is pending review) as well as smart contract support (key rotation is supported, but adding/removing is in progress)  |
 | Reliability and Testing | Diem Protocol | Integrated Cluster Test now runs on every diff and discovers bugs in mempool/state sync, measures TPS (transactions per second) and latency. |
 | Waypoints | Diem Protocol | We realized we could simplify the StateSynchronization flow ([consensus/state synchronizer integration on GitHub](https://github.com/diem/diem/issues/1491))), so this is being worked on as a precursor to the rest of the Waypoints work. |
-| Collections | Move | **MVP for Vector done!** <br/> We might still want to revisit the API to figure out a better standard diemry experience. |
+| Collections | Move | **MVP for Vector done!** <br/> We might still want to revisit the API to figure out a better standard library experience. |
 | Events | Move | **Done!** <br/> Next steps are to optimize the storage schema. |
 | Generics | Move | **Nearly done!**<ul><li>IR parser, compiler, and all verifier checks have been implemented.</li><li>Fully supported in the VM, except for publishing generic resources directly. (A non-generic wrapper needs to be used right now.)</li><li>Next steps are to add more handwritten tests and prop tests.</li></ul>|
 | Developer Infrastructure | Diem Community | We are in the process of finalizing the release process, but recently have: <ul><li>Now run continuous build and cluster test every 3 hours</li><li>Initiated notifications when nightly integration fails for Docker, config, or fuzzing tests</li>|

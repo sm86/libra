@@ -748,8 +748,8 @@ jobs:
             set -x
             echo "$BUSTER_TAGS" | while IFS= read -r tag ; do
               tag_no_sha=`echo $tag | sed 's/@.*//'`
-              docker tag debian:$tag ${AWS_ECR_ACCOUNT_URL}/diemry/debian:${tag_no_sha}
-              docker push ${AWS_ECR_ACCOUNT_URL}/diemry/debian:${tag_no_sha}
+              docker tag debian:$tag ${AWS_ECR_ACCOUNT_URL}/library/debian:${tag_no_sha}
+              docker push ${AWS_ECR_ACCOUNT_URL}/library/debian:${tag_no_sha}
             done
 
   ######################################################################################################

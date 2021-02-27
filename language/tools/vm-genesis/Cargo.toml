@@ -30,10 +30,15 @@ transaction-builder = { path = "../../transaction-builder", version = "0.1.0"}
 vm = { path = "../../vm", version = "0.1.0" }
 diem-vm = { path = "../../diem-vm", version = "0.1.0" }
 
+######## 0L
+hex = "0.4"
+serde = { version = "1.0.116", features = ["rc"], default-features = false }
+
 [dev-dependencies]
 proptest = "0.10.1"
 proptest-derive = "0.2.0"
 diem-proptest-helpers = { path = "../../../common/proptest-helpers", version = "0.1.0" }
+
 
 [features]
 default = []

@@ -284,13 +284,13 @@ fn test_mine_genesis() {
 //Not really a test, just a way to generate fixtures.
 fn create_fixtures() {
     
-    use diem_wallet::WalletDiemry;
+    use diem_wallet::WalletLibrary;
 
     // if no file is found, the block height is 0
     //let blocks_dir = Path::new("./test_blocks");
     for i in 0..6 {
         let ns = i.to_string();
-        let mut wallet = WalletDiemry::new();
+        let mut wallet = WalletLibrary::new();
 
         let (auth_key, _) = wallet.new_address().expect("Could not generate address");
 

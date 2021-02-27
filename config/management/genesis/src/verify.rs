@@ -202,7 +202,10 @@ fn compare_genesis(
 
 /// Compute the ledger given a genesis writeset transaction and return access to that ledger and
 /// the waypoint for that state.
-fn compute_genesis(
+
+//////// 0L ////////
+// made public
+pub fn compute_genesis(
     genesis_path: &PathBuf,
     db_path: &Path,
 ) -> Result<(DbReaderWriter, Waypoint), Error> {

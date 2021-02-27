@@ -95,7 +95,7 @@ To compile `SimpleFee.move`, use the [dev compile](reference/diem-cli#dev-d-mdas
 diem% dev compile 0 <path to SimpleFee.move> <path to language/stdlib/modules>
 ```
 * 0 &mdash; Index/ref_id of the account that the module will be published under.
-* Arguments listed after the source file name specify dependencies, and since this module depends on the Move standard diemry, you need to specify the path to that directory.
+* Arguments listed after the source file name specify dependencies, and since this module depends on the Move standard library, you need to specify the path to that directory.
 
 The Move code gets fed into the compiler in a `.move` file and the compiler outputs the corresponding bytecode file. When you are ready to publish this module into an account on the blockchain,  use this bytecode file and not the `.move` file.
 

@@ -76,7 +76,7 @@ The reference safety analysis is set up as a flow analysis (or abstract interpre
 
 ```text
 *
-├── invalid-mutations  # Diemry used by proptests
+├── invalid-mutations  # Library used by proptests
 ├── src                # Core bytecode verifier files
 ├── tests              # Proptests
 ```

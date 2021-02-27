@@ -907,6 +907,54 @@ pub enum ScriptCall {
     },
 
     /// # Summary
+    /// This script removes a validator account from the validator set, and triggers a reconfiguration
+    /// of the system to remove the validator from the system. This transaction can only be
+    /// successfully called by the Diem Root account.
+    ///
+    /// # Technical Description
+    /// This script removes the account at `validator_address` from the validator set. This transaction
+    /// emits a `DiemConfig::NewEpochEvent` event. Once the reconfiguration triggered by this event
+    /// has been performed, the account at `validator_address` is no longer considered to be a
+    /// validator in the network. This transaction will fail if the validator at `validator_address`
+    /// is not in the validator set.
+    ///
+    /// # Parameters
+    /// | Name                | Type         | Description                                                                                                                        |
+    /// | ------              | ------       | -------------                                                                                                                      |
+    /// | `lr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+    /// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
+    /// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
+    /// | `validator_address` | `address`    | The validator account address to be removed from the validator set.                                                                |
+    ///
+    /// # Common Abort Conditions
+    /// | Error Category             | Error Reason                            | Description                                                                                     |
+    /// | ----------------           | --------------                          | -------------                                                                                   |
+    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                                  |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.      |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                                   |
+    /// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                               |
+    /// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | The sending account is not the Diem Root account or Treasury Compliance account                |
+    /// | 0                          | 0                                       | The provided `validator_name` does not match the already-recorded human name for the validator. |
+    /// | `Errors::INVALID_ARGUMENT` | `DiemSystem::ENOT_AN_ACTIVE_VALIDATOR` | The validator to be removed is not in the validator set.                                        |
+    /// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                              |
+    /// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                              |
+    /// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
+    ///
+    /// # Related Scripts
+    /// * `Script::create_validator_account`
+    /// * `Script::create_validator_operator_account`
+    /// * `Script::register_validator_config`
+    /// * `Script::add_validator_and_reconfigure`
+    /// * `Script::set_validator_operator`
+    /// * `Script::set_validator_operator_with_nonce_admin`
+    /// * `Script::set_validator_config_and_reconfigure`
+    RemoveValidatorAndReconfigure {
+        sliding_nonce: u64,
+        validator_name: Bytes,
+        validator_address: AccountAddress,
+    },
+
+    /// # Summary
     /// Rotates the transaction sender's authentication key to the supplied new authentication key. May
     /// be sent by any account.
     ///
@@ -1629,6 +1677,15 @@ impl ScriptCall {
                 consensus_pubkey,
                 validator_network_addresses,
                 fullnode_network_addresses,
+            ),
+            RemoveValidatorAndReconfigure {
+                sliding_nonce,
+                validator_name,
+                validator_address,
+            } => encode_remove_validator_and_reconfigure_script(
+                sliding_nonce,
+                validator_name,
+                validator_address,
             ),
             RotateAuthenticationKey { new_key } => encode_rotate_authentication_key_script(new_key),
             RotateAuthenticationKeyWithNonce {
@@ -2794,6 +2851,64 @@ pub fn encode_register_validator_config_script(
 }
 
 /// # Summary
+/// This script removes a validator account from the validator set, and triggers a reconfiguration
+/// of the system to remove the validator from the system. This transaction can only be
+/// successfully called by the Diem Root account.
+///
+/// # Technical Description
+/// This script removes the account at `validator_address` from the validator set. This transaction
+/// emits a `DiemConfig::NewEpochEvent` event. Once the reconfiguration triggered by this event
+/// has been performed, the account at `validator_address` is no longer considered to be a
+/// validator in the network. This transaction will fail if the validator at `validator_address`
+/// is not in the validator set.
+///
+/// # Parameters
+/// | Name                | Type         | Description                                                                                                                        |
+/// | ------              | ------       | -------------                                                                                                                      |
+/// | `lr_account`        | `&signer`    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+/// | `sliding_nonce`     | `u64`        | The `sliding_nonce` (see: `SlidingNonce`) to be used for this transaction.                                                         |
+/// | `validator_name`    | `vector<u8>` | ASCII-encoded human name for the validator. Must match the human name in the `ValidatorConfig::ValidatorConfig` for the validator. |
+/// | `validator_address` | `address`    | The validator account address to be removed from the validator set.                                                                |
+///
+/// # Common Abort Conditions
+/// | Error Category             | Error Reason                            | Description                                                                                     |
+/// | ----------------           | --------------                          | -------------                                                                                   |
+/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | A `SlidingNonce` resource is not published under `lr_account`.                                  |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_OLD`          | The `sliding_nonce` is too old and it's impossible to determine if it's duplicated or not.      |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_TOO_NEW`          | The `sliding_nonce` is too far in the future.                                                   |
+/// | `Errors::INVALID_ARGUMENT` | `SlidingNonce::ENONCE_ALREADY_RECORDED` | The `sliding_nonce` has been previously recorded.                                               |
+/// | `Errors::NOT_PUBLISHED`    | `SlidingNonce::ESLIDING_NONCE`          | The sending account is not the Diem Root account or Treasury Compliance account                |
+/// | 0                          | 0                                       | The provided `validator_name` does not match the already-recorded human name for the validator. |
+/// | `Errors::INVALID_ARGUMENT` | `DiemSystem::ENOT_AN_ACTIVE_VALIDATOR` | The validator to be removed is not in the validator set.                                        |
+/// | `Errors::REQUIRES_ADDRESS` | `CoreAddresses::EDIEM_ROOT`            | The sending account is not the Diem Root account.                                              |
+/// | `Errors::REQUIRES_ROLE`    | `Roles::EDIEM_ROOT`                    | The sending account is not the Diem Root account.                                              |
+/// | `Errors::INVALID_STATE`    | `DiemConfig::EINVALID_BLOCK_TIME`      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
+///
+/// # Related Scripts
+/// * `Script::create_validator_account`
+/// * `Script::create_validator_operator_account`
+/// * `Script::register_validator_config`
+/// * `Script::add_validator_and_reconfigure`
+/// * `Script::set_validator_operator`
+/// * `Script::set_validator_operator_with_nonce_admin`
+/// * `Script::set_validator_config_and_reconfigure`
+pub fn encode_remove_validator_and_reconfigure_script(
+    sliding_nonce: u64,
+    validator_name: Vec<u8>,
+    validator_address: AccountAddress,
+) -> Script {
+    Script::new(
+        REMOVE_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
+        vec![],
+        vec![
+            TransactionArgument::U64(sliding_nonce),
+            TransactionArgument::U8Vector(validator_name),
+            TransactionArgument::Address(validator_address),
+        ],
+    )
+}
+
+/// # Summary
 /// Rotates the transaction sender's authentication key to the supplied new authentication key. May
 /// be sent by any account.
 ///
@@ -3663,6 +3778,14 @@ fn decode_register_validator_config_script(script: &Script) -> Option<ScriptCall
     })
 }
 
+fn decode_remove_validator_and_reconfigure_script(script: &Script) -> Option<ScriptCall> {
+    Some(ScriptCall::RemoveValidatorAndReconfigure {
+        sliding_nonce: decode_u64_argument(script.args().get(0)?.clone())?,
+        validator_name: decode_u8vector_argument(script.args().get(1)?.clone())?,
+        validator_address: decode_address_argument(script.args().get(2)?.clone())?,
+    })
+}
+
 fn decode_rotate_authentication_key_script(script: &Script) -> Option<ScriptCall> {
     Some(ScriptCall::RotateAuthenticationKey {
         new_key: decode_u8vector_argument(script.args().get(0)?.clone())?,
@@ -3879,6 +4002,10 @@ static SCRIPT_DECODER_MAP: once_cell::sync::Lazy<DecoderMap> = once_cell::sync::
     map.insert(
         REGISTER_VALIDATOR_CONFIG_CODE.to_vec(),
         Box::new(decode_register_validator_config_script),
+    );
+    map.insert(
+        REMOVE_VALIDATOR_AND_RECONFIGURE_CODE.to_vec(),
+        Box::new(decode_remove_validator_and_reconfigure_script),
     );
     map.insert(
         ROTATE_AUTHENTICATION_KEY_CODE.to_vec(),
@@ -4257,6 +4384,19 @@ const REGISTER_VALIDATOR_CONFIG_CODE: &[u8] = &[
     0, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67,
     111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 7, 11, 0, 10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 2,
+];
+
+const REMOVE_VALIDATOR_AND_RECONFIGURE_CODE: &[u8] = &[
+    161, 28, 235, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 94, 8, 139, 1, 16, 0, 0,
+    0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6,
+    12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 10, 68, 105, 101, 109, 83, 121, 115, 116, 101, 109, 12,
+    83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116,
+    111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99,
+    101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110,
+    95, 110, 97, 109, 101, 16, 114, 101, 109, 111, 118, 101, 95, 118, 97, 108, 105, 100, 97, 116,
+    111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10,
+    3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10,
+    3, 17, 2, 2,
 ];
 
 const ROTATE_AUTHENTICATION_KEY_CODE: &[u8] = &[

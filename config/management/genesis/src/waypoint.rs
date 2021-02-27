@@ -25,7 +25,7 @@ pub struct CreateWaypoint {
 
 impl CreateWaypoint {
     pub fn execute(self) -> Result<Waypoint, Error> {
-        let genesis_helper = crate::genesis::Genesis {
+        let genesis_helper = crate::ol_genesis::Genesis {
             config: self.config,
             chain_id: self.chain_id,
             backend: self.shared_backend,

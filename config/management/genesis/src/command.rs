@@ -11,7 +11,7 @@ pub enum Command {
     #[structopt(about = "Create a waypoint")]
     CreateWaypoint(crate::waypoint::CreateWaypoint),
     #[structopt(about = "Retrieves data from a store to produce genesis")]
-    Genesis(crate::genesis::Genesis),
+    Genesis(crate::ol_genesis::Genesis),
     #[structopt(about = "Set the waypoint in the validator storage")]
     InsertWaypoint(diem_management::waypoint::InsertWaypoint),
     #[structopt(about = "Submits an Ed25519PublicKey for the diem root")]

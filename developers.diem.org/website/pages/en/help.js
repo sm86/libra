@@ -5,10 +5,10 @@
 
 const React = require('react');
 
-const CompDiemry = require('../../core/CompDiemry.js');
+const CompLibrary = require('../../core/CompLibrary.js');
 
-const Container = CompDiemry.Container;
-const GridBlock = CompDiemry.GridBlock;
+const Container = CompLibrary.Container;
+const GridBlock = CompLibrary.GridBlock;
 
 function Help(props) {
   const {config: siteConfig, language = ''} = props;
