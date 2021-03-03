@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+./cython_test/*.so
+./cython_test/build/
+./cython_test/example_cy.c

@@ -1,8 +1,5 @@
-
-
 #include <string>
 
-// ---------------------------- ethS ---------------------------- //
 
 // --- librescue_prover.a
 extern bool rescue_prove(int argc, char** argv);
@@ -24,12 +21,4 @@ extern "C" bool rescue_verify_c(
     const char* annotation_file_name
 ) {
     return rescue_verify(proof, public_input, parameters, annotation_file_name);
-}
-
-// ---------------------------- ethS end ----------------------- //
-
-// --- libtest.a
-extern void f1(std::string const& str, int reps);
-extern "C" void f1_c(const char* name, int reps) {
-    f1(name, reps);
 }
