@@ -140,6 +140,32 @@ pub fn get_params_from_swarm(
 }
 
 /// Get params from command line
+pub fn get_params_experiment(
+    waypoint_str: &str, 
+    url_str: &str,
+) -> Result<TxParams, Error> {
+    let url =  Url::parse(url_str).unwrap();
+    let waypoint: Waypoint =  waypoint_str.parse().unwrap();
+    let (auth_key, address, wallet) = keygen::account_from_prompt();
+    
+    let keys = KeyScheme::new_from_mnemonic(wallet.mnemonic());
+    let keypair = KeyPair::from(keys.child_1_operator.get_private_key());
+
+    let tx_params = TxParams {
+        auth_key,
+        address,
+        url,
+        waypoint,
+        keypair,
+        max_gas_unit_for_tx: 1_000_000,
+        coin_price_per_unit: 1, // in micro_gas
+        user_tx_timeout: 5_000,
+    };
+
+    Ok(tx_params)
+}
+
+/// Get params from command line
 pub fn get_params_from_command_line(
     waypoint_str: &str, 
     url_str: &str
@@ -185,6 +211,9 @@ pub fn get_params_from_toml(config: AppConfig) -> Result<TxParams, Error> {
 
     Ok(tx_params)
 }
+
+
+
 
 /// Wait for the response from the libra RPC.
 pub fn wait_for_tx(

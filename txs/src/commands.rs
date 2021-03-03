@@ -15,6 +15,7 @@ mod keygen_cmd;
 mod create_account_cmd;
 mod oracle_upgrade_cmd;
 mod version_cmd;
+mod rotate_keys_cmd;
 
 use self::{
     init_cmd::InitCmd,
