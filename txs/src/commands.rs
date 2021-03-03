@@ -59,6 +59,10 @@ pub enum TxsCmd {
     /// The `version` subcommand
     #[options(help = "display version information")]
     Version(VersionCmd),
+    
+    /// The `rotate` subcommand
+    #[options(help = "rotate keys")]
+    Rotate(rotate_keys_cmd::RotateKeysCmd)
 }
 
 /// This trait allows you to define how application configuration is loaded.
