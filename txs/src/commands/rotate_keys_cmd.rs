@@ -6,7 +6,7 @@ use libra_types::{
     account_address::AccountAddress, waypoint::Waypoint, 
 };
 use libra_types::transaction::{
-    Script, TransactionPayload, authenticator::AuthenticationKey
+    authenticator::AuthenticationKey
 };
 
 use abscissa_core::{Command, Options, Runnable};
