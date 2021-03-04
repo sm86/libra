@@ -76,18 +76,18 @@ pub fn submit_tx(
         chain_id,
     )?;
 
-    // get account_data struct
-    let mut sender_account_data = AccountData {
-        address: tx_params.address,
-        authentication_key: Some(tx_params.auth_key.to_vec()),
-        key_pair: Some(tx_params.keypair.clone()),
-        sequence_number,
-        status: AccountStatus::Persisted,
-    };
+    // // get account_data struct
+    // let mut sender_account_data = AccountData {
+    //     address: tx_params.address,
+    //     authentication_key: Some(tx_params.auth_key.to_vec()),
+    //     key_pair: Some(tx_params.keypair.clone()),
+    //     sequence_number,
+    //     status: AccountStatus::Persisted,
+    // };
     
     // Submit the transaction with libra_client
     match client.submit_transaction(
-        Some(&mut sender_account_data),
+        None, //Some(&mut sender_account_data),
         txn
     ){
         Ok(_) => {
@@ -146,10 +146,12 @@ pub fn get_params_experiment(
 ) -> Result<TxParams, Error> {
     let url =  Url::parse(url_str).unwrap();
     let waypoint: Waypoint =  waypoint_str.parse().unwrap();
-    let (auth_key, address, wallet) = keygen::account_from_prompt();
+    let (_, address, wallet) = keygen::account_from_prompt();
     
     let keys = KeyScheme::new_from_mnemonic(wallet.mnemonic());
     let keypair = KeyPair::from(keys.child_1_operator.get_private_key());
+
+    let auth_key= keys.child_1_operator.get_authentication_key();
 
     let tx_params = TxParams {
         auth_key,
@@ -174,7 +176,7 @@ pub fn get_params_from_command_line(
     let waypoint: Waypoint =  waypoint_str.parse().unwrap();
     let (auth_key, address, wallet) = keygen::account_from_prompt();
     let keys = KeyScheme::new_from_mnemonic(wallet.mnemonic());
-    let keypair = KeyPair::from(keys.child_0_owner.get_private_key());
+    let keypair = KeyPair::from(keys.child_1_operator.get_private_key());
 
     let tx_params = TxParams {
         auth_key,

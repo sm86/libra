@@ -24,6 +24,7 @@ impl KeyScheme {
     /// Generates the necessary private keys for validator and full node set up.
     pub fn new(wallet: &WalletLibrary) -> Self {
         let kf = wallet.get_key_factory();
+
         Self {
             child_0_owner: kf.private_child(ChildNumber::new(0)).unwrap(),
             child_1_operator: kf.private_child(ChildNumber::new(1)).unwrap(),
