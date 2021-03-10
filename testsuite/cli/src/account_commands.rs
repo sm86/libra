@@ -351,8 +351,7 @@ impl Command for AccountCommandAutopayBatch {
         "<file path>"
     }
 
-    fn execute(&self, client: &mut ClientProxy, params: &[&str]) {
-        // do loop in here
+    fn execute(&self, client: &mut ClientProxy, params: &[&str]) {        
         let file = fs::File::open(params[1])
             .expect("file should open read only");
         let json: serde_json::Value = serde_json::from_reader(file)
@@ -377,10 +376,10 @@ impl Command for AccountCommandAutopayBatch {
             }
         }).collect();
 
-        match client.autopay_enable("0") {
-            Ok(()) => println!("Autopay enabled"),
-            Err(e) => report_error("error creating local account", e),
-        }
+        // match client.autopay_enable("0") {
+        //     Ok(()) => println!("Autopay enabled"),
+        //     Err(e) => report_error("error creating local account", e),
+        // }
 
         for inst in list {
             match client.autopay_batch(
